@@ -1,0 +1,276 @@
+﻿<Grid x:Class="MyRecipes.Controls.CreateEditRecipe"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MyRecipes.Controls"
+      xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+      xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+      xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:materialExt="https://spiegelp.github.io/MaterialDesignExtensions/winfx/xaml"
+      xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+      xmlns:converter="clr-namespace:MyRecipes.Converter"
+      xmlns:commands="clr-namespace:MyRecipes.ViewModel.Commands"
+      xmlns:enum="clr-namespace:MyRecipes.Core.Enum"
+      mc:Ignorable="d" 
+      d:DesignHeight="400" d:DesignWidth="700"
+      d:DataContext="{d:DesignInstance {x:Type dvm:CreateEditRecipeDesignViewModel}, IsDesignTimeCreatable=True}">
+    <Grid.Style>
+        <Style TargetType="Grid">
+            <Setter Property="Tag" Value="Neues Rezept erstellen"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsEdit}" Value="True">
+                    <Setter Property="Tag" Value="Rezept bearbeiten"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Grid.Style>
+    <Grid.DataContext>
+        <vm:CreateEditRecipeViewModel/>
+    </Grid.DataContext>
+    <Grid.Resources>
+        <converter:StringEmptyConverter x:Key="StringEmptyConverter"/>
+        <converter:IndexConverter x:Key="IndexConverter"/>
+        <converter:ListIndexConverter x:Key="ListIndexConverter"/>
+        <converter:LengthConverter x:Key="LengthConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <commands:OpenUrlCommand x:Key="OpenUrlCommand"/>
+    </Grid.Resources>
+    <DockPanel>
+        <TextBox DockPanel.Dock="Top" Text="{Binding Recipe.Name, UpdateSourceTrigger=PropertyChanged}" 
+                 material:HintAssist.Hint="Rezept Name" material:TextFieldAssist.HasClearButton="True" 
+                 material:HintAssist.IsFloating="True" Margin="0,0,0,4" FontSize="15"/>
+        <DockPanel DockPanel.Dock="Bottom" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
+                <Button Click="Save_Click" Margin="8,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                            <Setter Property="Content" Value="SPEICHERN"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEdit}" Value="False">
+                                    <Setter Property="Content" Value="ERSTELLEN"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignFlatButton}" Click="Abort_Click"/>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel Width="340">
+            <DockPanel DockPanel.Dock="Bottom">
+                <DockPanel LastChildFill="False">
+                    <metro:NumericUpDown Value="{Binding IngredientAmount, UpdateSourceTrigger=PropertyChanged}" 
+                                             ParsingNumberStyle="AllowDecimalPoint" NumericInputMode="All" 
+                                             Minimum=".01" BorderThickness="0,0,0,1" Background="Transparent" 
+                                             BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" DockPanel.Dock="Bottom"
+                                             Height="21" MinHeight="21" Margin="0,0,0,5" SnapsToDevicePixels="True"/>
+                    <TextBlock Text="Menge" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                </DockPanel>
+                <ComboBox material:HintAssist.Hint="Messart" SelectedIndex="{Binding SelectedMeasurementTypeIndex, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:MeasurementType}}}"
+                          Style="{DynamicResource MaterialDesignFloatingHintComboBox}" Margin="4,0"/>
+                <Button Style="{StaticResource MaterialDesignIconButton}" DockPanel.Dock="Right" Click="AddIngredient_Click">
+                    <material:PackIcon Kind="Add" />
+                </Button>
+                <ComboBox material:HintAssist.Hint="Zutat" Margin="8,0" SelectedIndex="{Binding SelectedIngredientIndex, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding AvailableIngredients, UpdateSourceTrigger=PropertyChanged}" IsEditable="True"
+                                  Style="{DynamicResource MaterialDesignFloatingHintComboBox}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+            </DockPanel>
+            <Grid Height="170" DockPanel.Dock="Top">
+                <Image Source="{Binding Recipe.RecipeImages, Converter={StaticResource ListIndexConverter}, ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom" Margin="4" Click="UploadImage_Click" ToolTip="Bild hinzufügen">
+                    <material:PackIcon Kind="Upload"/>
+                </Button>
+            </Grid>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,8">
+                <TextBlock Text="Portionen:" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" Margin="0,0,8,0"/>
+                <metro:NumericUpDown Value="{Binding Recipe.Servings, UpdateSourceTrigger=PropertyChanged}" ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                         Minimum="1" BorderThickness="0,0,0,1" Background="Transparent" 
+                                         BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}"/>
+            </StackPanel>
+            <ListView ItemsSource="{Binding Recipe.Ingredients, UpdateSourceTrigger=PropertyChanged}" 
+                      AlternationCount="2" HorizontalContentAlignment="Stretch" Margin="0,0,0,4">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" MinWidth="40"/>
+                            <TextBlock Text="{Binding MeasurementType, UpdateSourceTrigger=PropertyChanged}" MinWidth="50"/>
+                            <Button Style="{DynamicResource MaterialDesignIconButton}" DockPanel.Dock="Right"
+                                            Height="24" Width="24" Click="RemoveIngredient_Click" ToolTip="Zutat entfernen"
+                                            DataContext="{Binding}">
+                                <material:PackIcon Kind="Remove"/>
+                            </Button>
+                            <TextBlock Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"
+                                               Visibility="Visible">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Ingredient.ProductLink, Converter={StaticResource StringEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <!--<TextBlock Visibility="{Binding Ingredient.ProductLink, Converter={StaticResource StringIsEmptyVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                        <Hyperlink Command="{StaticResource OpenUrlCommand}" CommandParameter="{Binding Ingredient.ProductLink}">
+                                            <Run Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Hyperlink>
+                                    </TextBlock>-->
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+        <Border Margin="6,4" Style="{StaticResource SplitterAccentVerticalStyle}"/>
+        <material:DialogHost x:Name="dialogHost" DialogTheme="Inherit">
+            <material:DialogHost.DialogContent>
+                <StackPanel Margin="16" x:Name="dialog_preparationStep">
+                    <TextBlock Text="Beschreibung" />
+                    <TextBox Margin="0 8 0 0" HorizontalAlignment="Stretch" AcceptsReturn="True" 
+                         VerticalScrollBarVisibility="Auto" Height="80" Text="{Binding NewPreparationStepText, UpdateSourceTrigger=PropertyChanged}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button IsDefault="True" Margin="0 8 8 0"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="AddEditPreparationStep_Click"
+                            IsEnabled="{Binding AddPreparationStepEnabled, UpdateSourceTrigger=PropertyChanged}">
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                    True
+                                </system:Boolean>
+                            </Button.CommandParameter>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                    <Setter Property="Content" Value="HINZUFÜGEN"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEditPreparationStep}" Value="True">
+                                            <Setter Property="Content" Value="SPEICHERN"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Content="ABBRECHEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                    False
+                                </system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </material:DialogHost.DialogContent>
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}" 
+                           Margin="0,0,0,6"/>
+                <Button DockPanel.Dock="Top" Content="NEUER SCHRITT"
+                    Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
+                <material:Transitioner DockPanel.Dock="Bottom" SelectedIndex="0">
+                    <DockPanel Height="40">
+                        <TextBlock Text="Kategorien:" Style="{DynamicResource MaterialDesignBody1TextBlock}"
+                                   VerticalAlignment="Center"/>
+                        <Button DockPanel.Dock="Right" Width="30" Height="30"
+                                Padding="0" HorizontalAlignment="Center" HorizontalContentAlignment="Center" 
+                                VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0"
+                                Style="{DynamicResource MaterialDesignIconButton}"
+                                Command="{x:Static material:Transitioner.MoveNextCommand}">
+                            <material:PackIcon Kind="Add"/>
+                        </Button>
+                        <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ItemsSource="{Binding Recipe.Categories}" Margin="0,-4">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <material:Chip Content="{Binding Name}" IsDeletable="True"
+                                           DeleteClick="Category_DeleteClick" DataContext="{Binding}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </DockPanel>
+                    <material:TransitionerSlide OpeningEffect="{material:TransitionEffect Kind=SlideInFromTop}">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="HINZUFÜGEN" Margin="4,0,0,0" Click="AddCategory_Click"
+                                Command="{x:Static material:Transitioner.MovePreviousCommand}"
+                                    IsEnabled="{Binding AddCategoryEnabled}"/>
+                            <ComboBox ItemsSource="{Binding AvailableCategories, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                    </material:TransitionerSlide>
+                </material:Transitioner>
+                <ListView x:Name="preparationStepsList" ItemsSource="{Binding Recipe.PreparationSteps, UpdateSourceTrigger=PropertyChanged}" 
+                          HorizontalContentAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel MaxWidth="{Binding ElementName=preparationStepsList, Path=ActualWidth,
+                                Converter={StaticResource LengthConverter}, ConverterParameter=-30}">
+                                <Button Style="{StaticResource MaterialDesignIconButton}"
+                                DockPanel.Dock="Right" ToolTip="Schritt entfernen"
+                                    Click="RemovePreparationStep_Click" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                  AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
+                                                  ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}">
+                                    <material:PackIcon Kind="Close" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignIconButton}"
+                                        DockPanel.Dock="Right" ToolTip="Schritt bearbeiten"
+                                        Click="EditPreparationStep_Click" 
+                                        Command="{x:Static material:DialogHost.OpenDialogCommand}"
+                                        Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                  AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
+                                                  ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}">
+                                    <material:PackIcon Kind="Edit" />
+                                </Button>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                  AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
+                                                  ConverterParameter=1, UpdateSourceTrigger=PropertyChanged}" Margin="0,-8,8,0" 
+                                           Style="{DynamicResource MaterialDesignHeadline4TextBlock}"
+                                           MinWidth="40" TextAlignment="Right"/>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </DockPanel>
+        </material:DialogHost>
+    </DockPanel>
+    <materialExt:OpenFileControl x:Name="dialog" SwitchPathPartsAsButtonsEnabled="True"
+                                Visibility="{Binding ShowOpenFileDialog, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                materialExt:FileSystemControl.Cancel="dialog_Cancel"
+                                materialExt:BaseFileControl.FileSelected="dialog_FileSelected"/>
+</Grid>

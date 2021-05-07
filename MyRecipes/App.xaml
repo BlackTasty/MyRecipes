@@ -1,0 +1,151 @@
+﻿<Application x:Class="MyRecipes.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MyRecipes"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converter="clr-namespace:MyRecipes.Converter"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Sienna.xaml" />
+
+                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="DeepPurple" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />
+
+                <!-- primary colors -->
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Brown.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{StaticResource Primary100}" />
+                    <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{StaticResource Primary100Foreground}" />
+                    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{StaticResource Primary500}" />
+                    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" />
+                    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{StaticResource Primary600}" />
+                    <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{StaticResource Primary600Foreground}" />
+                </ResourceDictionary>
+
+                <!-- accent color -->
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.DeepPurple.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{StaticResource Accent400}" />
+                    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{StaticResource Accent400Foreground}" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="SeasonBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+                <Setter Property="Margin" Value="0,-2"/>
+                <Setter Property="BorderThickness" Value="1,.5,0,0"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignBodyLight}"/>
+            </Style>
+
+            <Style x:Key="AppBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignIconButton}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="6,-2"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+            </Style>
+
+            <Style x:Key="AppBarBadge" TargetType="{x:Type materialDesign:Badged}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="6,-2"/>
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="Width" Value="36"/>
+                <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+            </Style>
+
+            <Style x:Key="SplitterAccentHorizontalStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterAccentVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+                <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterLightHorizontalStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterLightVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+                <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterMidHorizontalStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterMidVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+                <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterDarkHorizontalStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueDarkBrush}"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterDarkVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+                <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterForegroundHorizontalStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignBodyLight}"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <Style x:Key="SplitterForegroundVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+                <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            </Style>
+
+            <Style x:Key="SeasonHeaderBorderStyle" TargetType="Border" BasedOn="{StaticResource SplitterForegroundVerticalStyle}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+                <Setter Property="Margin" Value="0,-4"/>
+            </Style>
+
+            <converter:TagFormatConverter x:Key="TagFormatConverter"/>
+
+            <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}"/>
+            <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />
+            <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}"/>
+            <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}"/>
+            <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}"/>
+            <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}"/>
+            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{DynamicResource Primary700}"/>
+            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}"/>
+            <LinearGradientBrush x:Key="ProgressBrush" EndPoint="0.001,0.5" StartPoint="1.002,0.5">
+                <GradientStop Color="{DynamicResource Primary700}" Offset="0"/>
+                <GradientStop Color="{DynamicResource Primary300}" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="CheckmarkFill" Color="{DynamicResource Primary500}"/>
+            <SolidColorBrush x:Key="RightArrowFill" Color="{DynamicResource Primary500}"/>
+            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{DynamicResource Primary500Foreground}"/>
+            <SolidColorBrush x:Key="IdealForegroundDisabledBrush" Color="{DynamicResource Primary500}" Opacity="0.4"/>
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchBrush.Win10" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
+
+            <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}"  Color="Transparent"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}"  Color="Transparent"/>
+
+            <SolidColorBrush x:Key="SeasonFreshBackground" Color="#c2eeb2" Opacity=".5"/>
+            <SolidColorBrush x:Key="SeasonWarehouseBackground" Color="#f0c583" Opacity=".7"/>
+            
+            <SolidColorBrush x:Key="WarnColor" Color="#FFBD4646" Opacity=".85"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

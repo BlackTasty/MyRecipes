@@ -1,0 +1,128 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.RecipeView"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+           xmlns:converter="clr-namespace:MyRecipes.Converter"
+           xmlns:commands="clr-namespace:MyRecipes.ViewModel.Commands"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800"
+           d:DataContext="{d:DesignInstance {x:Type dvm:RecipeViewDesignViewModel}, IsDesignTimeCreatable=True}"
+           Tag="{Binding Recipe.Name}">
+    <DockPanel.DataContext>
+        <vm:RecipeViewViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <converter:StringEmptyConverter x:Key="StringEmptyConverter"/>
+        <converter:IndexConverter x:Key="IndexConverter"/>
+        <converter:ListIndexConverter x:Key="ListIndexConverter"/>
+
+        <commands:OpenUrlCommand x:Key="OpenUrlCommand"/>
+    </DockPanel.Resources>
+    <DockPanel Width="340">
+        <Image Height="200" DockPanel.Dock="Top" 
+               Source="{Binding Recipe.RecipeImages, Mode=OneWay, Converter={StaticResource ListIndexConverter}}"
+               RenderOptions.BitmapScalingMode="HighQuality"/>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,8">
+            <TextBlock Text="Portionen:" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" Margin="0,0,8,0"/>
+            <metro:NumericUpDown Value="{Binding Servings}" ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                 Minimum="1" BorderThickness="0,0,0,1" Background="Transparent" 
+                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}"/>
+        </StackPanel>
+        <ListView ItemsSource="{Binding Ingredients}" AlternationCount="2" HorizontalContentAlignment="Stretch">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent"/>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkBackground}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <TextBlock Text="{Binding Amount}" MinWidth="40"/>
+                        <TextBlock Text="{Binding MeasurementType}" MinWidth="50"/>
+                        <TextBlock Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"
+                                           Visibility="Visible">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Ingredient.ProductLink, Converter={StaticResource StringEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <!--<TextBlock Visibility="{Binding Ingredient.ProductLink, Converter={StaticResource StringIsEmptyVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                    <Hyperlink Command="{StaticResource OpenUrlCommand}" CommandParameter="{Binding Ingredient.ProductLink}">
+                                        <Run Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Hyperlink>
+                                </TextBlock>-->
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DockPanel>
+    <Border Style="{StaticResource SplitterAccentVerticalStyle}" Margin="6,4"/>
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
+                   Margin="0,0,0,6"/>
+        <DockPanel DockPanel.Dock="Bottom" Height="40">
+            <TextBlock Text="Kategorien:" Style="{DynamicResource MaterialDesignBody1TextBlock}"
+                                   VerticalAlignment="Center"/>
+            <ListBox DockPanel.Dock="Bottom" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ItemsSource="{Binding Recipe.Categories}" Margin="0,-4">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <material:Chip Content="{Binding Name}" DataContext="{Binding}"
+                                       Click="Category_Click"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </DockPanel>
+        <ListView ItemsSource="{Binding Recipe.PreparationSteps}" 
+                  HorizontalContentAlignment="Stretch" Margin="0,0,0,4">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                  AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
+                                                  ConverterParameter=1}" Margin="0,-8,8,0" Style="{DynamicResource MaterialDesignHeadline4TextBlock}"/>
+                        <TextBlock Text="{Binding}"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+    </DockPanel>
+</DockPanel>

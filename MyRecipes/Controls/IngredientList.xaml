@@ -1,0 +1,189 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.IngredientList"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:converter="clr-namespace:MyRecipes.Converter"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           xmlns:enum="clr-namespace:MyRecipes.Core.Enum"
+           xmlns:recipes="clr-namespace:MyRecipes.Core.Recipes"
+           xmlns:season="clr-namespace:MyRecipes.Core.SeasonCalendar"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800" 
+           Tag="{Binding AvailableIngredients.Count, Converter={StaticResource TagFormatConverter}, ConverterParameter=Zutaten: {0}}"
+           d:DataContext="{d:DesignInstance {x:Type dvm:IngredientListDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:IngredientListViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <converter:StringEmptyConverter x:Key="StringEmptyConverter"/>
+    </DockPanel.Resources>
+    <material:DialogHost DialogTheme="Inherit">
+        <material:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <TextBlock Text="Liste an Zutaten (mit ENTER trennen)" />
+                <TextBox Margin="0 8 0 0" HorizontalAlignment="Stretch" AcceptsReturn="True" 
+                         VerticalScrollBarVisibility="Auto" MinHeight="80" MaxHeight="200"
+                         Text="{Binding IngredientListRaw, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="0 8 8 0" Content="HINZUFÜGEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="AddIngredients_Click"
+                            IsEnabled="{Binding AddMultipleEnabled, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                True
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" IsCancel="True" Margin="0 8 8 0" Content="ABBRECHEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="AbortAddMultiple_Click">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                False
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </material:DialogHost.DialogContent>
+        <DockPanel>
+            <material:Card DockPanel.Dock="Top" Padding="4">
+                <DockPanel Margin="4,4,0,4">
+                    <ToggleButton DockPanel.Dock="Right"
+                              material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=SortAlphabeticalAscending}"
+                              IsChecked="{Binding SortAscending, UpdateSourceTrigger=PropertyChanged}" Margin="8,4">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                                <Setter Property="ToolTip" Value="Absteigend sortiert"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SortAscending}" Value="True">
+                                        <Setter Property="ToolTip" Value="Aufsteigend sortiert"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <material:PackIcon Kind="SortAlphabeticalDescending"/>
+                    </ToggleButton>
+                    <ToggleButton material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=Search}" 
+                                  Margin="16,4,4,4" DockPanel.Dock="Right" Click="ToggleSearch_Manage_Click">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionAccentToggleButton}">
+                                <Setter Property="ToolTip" Value="Zutaten hinzufügen"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked}" Value="True">
+                                        <Setter Property="ToolTip" Value="Liste filtern"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <material:PackIcon Kind="NotebookEditOutline"/>
+                    </ToggleButton>
+
+                    <material:Transitioner x:Name="topCardTransitioner" SelectedIndex="0">
+                        <material:TransitionerSlide>
+                            <material:TransitionerSlide.ForwardWipe>
+                                <material:CircleWipe/>
+                            </material:TransitionerSlide.ForwardWipe>
+                            <material:TransitionerSlide.BackwardWipe>
+                                <material:CircleWipe/>
+                            </material:TransitionerSlide.BackwardWipe>
+                            <DockPanel>
+                                <Button Content="MEHRERE HINZUFÜGEN" DockPanel.Dock="Right"
+                                        Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" DockPanel.Dock="Right" Click="AddIngredient_Click"
+                                        IsEnabled="{Binding AddIngredientEnabled, UpdateSourceTrigger=PropertyChanged}" Margin="4,4,16,4">
+                                    <material:PackIcon Kind="Add" />
+                                </Button>
+                                <TextBlock DockPanel.Dock="Top" Text="Zutaten hinzufügen"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                <TextBox VerticalAlignment="Center" 
+                                         Text="{Binding NewIngredientName, UpdateSourceTrigger=PropertyChanged}" 
+                                         material:HintAssist.Hint="Zutat" material:TextFieldAssist.HasClearButton="True"
+                                         material:HintAssist.IsFloating="True"/>
+                            </DockPanel>
+                        </material:TransitionerSlide>
+                        <material:TransitionerSlide>
+                            <material:TransitionerSlide.ForwardWipe>
+                                <material:CircleWipe/>
+                            </material:TransitionerSlide.ForwardWipe>
+                            <material:TransitionerSlide.BackwardWipe>
+                                <material:CircleWipe/>
+                            </material:TransitionerSlide.BackwardWipe>
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="Suchen/Filtern"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                <Button Content="SUCHEN" DockPanel.Dock="Right" Click="Search_Click" Margin="8,4,4,4"/>
+                                <ComboBox material:HintAssist.Hint="Kategorie" SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type recipes:IngredientCategory}}}"
+                                          Style="{DynamicResource MaterialDesignFloatingHintComboBox}" Margin="4,0"/>
+                                <TextBox VerticalAlignment="Center" Text="{Binding IngredientSearch, UpdateSourceTrigger=PropertyChanged}" 
+                                         material:HintAssist.Hint="Zutat-Suche" material:TextFieldAssist.HasClearButton="True"
+                                         material:HintAssist.IsFloating="True"/>
+                            </DockPanel>
+                        </material:TransitionerSlide>
+                    </material:Transitioner>
+                </DockPanel>
+            </material:Card>
+            <ListView ItemsSource="{Binding AvailableIngredients, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch" AlternationCount="2">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Button Style="{StaticResource MaterialDesignIconButton}"
+                                    DockPanel.Dock="Right" ToolTip="Zutat entfernen" DataContext="{Binding}"
+                                    Click="RemoveIngredient_Click" Foreground="{StaticResource WarnColor}">
+                                <material:PackIcon Kind="Close" />
+                            </Button>
+                            <Button
+                                    DockPanel.Dock="Right" ToolTip="Saison konfigurieren" DataContext="{Binding}"
+                                    Click="OpenSeasonConfigurator_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IngredientCategory}" Value="1">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IngredientCategory}" Value="2">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IngredientCategory}" Value="3">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <material:PackIcon Kind="Timetable" />
+                            </Button>
+                            <ComboBox material:HintAssist.Hint="Saison-Kategorie" DockPanel.Dock="Right"
+                                      SelectedItem="{Binding IngredientCategory}" MinWidth="140"
+                                      ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type recipes:IngredientCategory}}}"/>
+                            <TextBlock Text="{Binding}" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
+                                       VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+    </material:DialogHost>
+</DockPanel>

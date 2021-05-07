@@ -1,0 +1,1070 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.SaisonCalendar"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           mc:Ignorable="d" Tag="Saisonkalender"
+           d:DesignHeight="450" d:DesignWidth="800"
+           d:DataContext="{d:DesignInstance {x:Type dvm:SaisonCalendarDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:SaisonCalendarViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <Style x:Key="SaisonFillBaseStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Margin" Value="8,4"/>
+        </Style>
+    </DockPanel.Resources>
+    <material:Card DockPanel.Dock="Bottom" material:ShadowAssist.ShadowDepth="Depth3" Margin="0,4">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+            <Border Background="{StaticResource MaterialDesignPaper}" Width="30" Height="30" Margin="4,4,8,4"
+                    CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
+            <TextBlock Text=" = nicht gelagert/geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
+                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+            <Border Background="{StaticResource SeasonWarehouseBackground}" Width="30" Height="30" Margin="4,4,8,4"
+                    CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
+            <TextBlock Text=" = gelagert" VerticalAlignment="Center" Margin="0,0,32,0"
+                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+            <Border Background="{StaticResource SeasonFreshBackground}" Width="30" Height="30" Margin="4,4,8,4"
+                    CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
+            <TextBlock Text="Grau = wird geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
+                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+        </StackPanel>
+    </material:Card>
+    <Button Click="SlidePrevious_Click" Margin="4,0,8,0">
+        <Button.Style>
+            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="0">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="ToolTip" Value=""/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="1">
+                        <Setter Property="ToolTip" Value="Obst"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="2">
+                        <Setter Property="ToolTip" Value="Gemüse"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+        <material:PackIcon Kind="ChevronLeft"/>
+    </Button>
+    <Button Click="SlideNext_Click" DockPanel.Dock="Right" Margin="8,0,4,0">
+        <Button.Style>
+            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="0">
+                        <Setter Property="ToolTip" Value="Gemüse"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="1">
+                        <Setter Property="ToolTip" Value="Nüsse"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=saisonCalendarView, Path=SelectedIndex}" Value="2">
+                        <Setter Property="ToolTip" Value=""/>
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+        <material:PackIcon Kind="ChevronRight"/>
+    </Button>
+    <Grid>
+        <material:Card Margin="0,52,0,4">
+            <material:Transitioner x:Name="saisonCalendarView" SelectedIndex="0">
+                <material:TransitionerSlide>
+                    <material:TransitionerSlide.ForwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.ForwardWipe>
+                    <material:TransitionerSlide.BackwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.BackwardWipe>
+                    <DockPanel>
+                        <ListView HorizontalContentAlignment="Stretch" Margin="0,0,0,2" 
+                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          Background="Transparent"
+                          ItemsSource="{Binding SeasonFruits, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Style.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent"/>
+                                    </Style.Resources>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" MinWidth="250" VerticalAlignment="Center"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                        <UniformGrid Columns="12" DockPanel.Dock="Top" Height="34">
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                        </UniformGrid>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
+                </material:TransitionerSlide>
+                <material:TransitionerSlide>
+                    <material:TransitionerSlide.ForwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.ForwardWipe>
+                    <material:TransitionerSlide.BackwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.BackwardWipe>
+                    <DockPanel>
+                        <ListView HorizontalContentAlignment="Stretch" Margin="0,0,0,2" 
+                              ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              ItemsSource="{Binding SeasonVegetables, UpdateSourceTrigger=PropertyChanged}"
+                              Background="Transparent">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Style.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent"/>
+                                    </Style.Resources>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" MinWidth="250" VerticalAlignment="Center"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                        <UniformGrid Columns="12" DockPanel.Dock="Top" Height="34">
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                        </UniformGrid>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
+                </material:TransitionerSlide>
+                <material:TransitionerSlide>
+                    <material:TransitionerSlide.ForwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.ForwardWipe>
+                    <material:TransitionerSlide.BackwardWipe>
+                        <material:SlideWipe Direction="Down"/>
+                    </material:TransitionerSlide.BackwardWipe>
+                    <DockPanel>
+                        <ListView HorizontalContentAlignment="Stretch" Margin="0,0,0,2" 
+                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          Background="Transparent"
+                          ItemsSource="{Binding SeasonNuts, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Style.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent"/>
+                                    </Style.Resources>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" MinWidth="250" VerticalAlignment="Center"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                        <UniformGrid Columns="12" DockPanel.Dock="Top" Height="34">
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[0], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[1], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[2], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[3], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[4], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[5], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[6], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[7], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[8], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[9], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[10], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                            <Border Style="{StaticResource SeasonBorderStyle}">
+                                                <Border>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border" BasedOn="{StaticResource SaisonFillBaseStyle}">
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="1"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonWarehouseBackground}"/>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding SeasonPlan[11], UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="{StaticResource SeasonFreshBackground}"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Border>
+                                        </UniformGrid>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
+                </material:TransitionerSlide>
+            </material:Transitioner>
+        </material:Card>
+        <material:Card VerticalAlignment="Top" Margin="-32,0" material:ShadowAssist.ShadowDepth="Depth3">
+            <DockPanel Margin="32,0">
+                <ComboBox MinWidth="286" VerticalAlignment="Center" Margin="-32,0,-4,0" 
+                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                          FontSize="17"
+                          material:HintAssist.Hint="Kategorie" material:HintAssist.IsFloating="True"
+                          SelectedIndex="{Binding ElementName=saisonCalendarView, Path=SelectedIndex, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Obst"/>
+                    <ComboBoxItem Content="Gemüse"/>
+                    <ComboBoxItem Content="Nüsse"/>
+                </ComboBox>
+                <ToggleButton DockPanel.Dock="Right"
+                              material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=SortAlphabeticalAscending}"
+                              Margin="-16,0,-24,0" IsChecked="{Binding SortAscending,UpdateSourceTrigger=PropertyChanged}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                            <Setter Property="ToolTip" Value="Absteigend sortiert"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SortAscending}" Value="True">
+                                    <Setter Property="ToolTip" Value="Aufsteigend sortiert"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                    <material:PackIcon Kind="SortAlphabeticalDescending"/>
+                </ToggleButton>
+                <UniformGrid Columns="12" Margin="5,0,22,0">
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="JÄN" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="FEB" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="MÄR" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="APR" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="MAI" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="JUN" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="JUL" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="AUG" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="SEP" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="OKT" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="NOV" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                    <Border Style="{StaticResource SeasonHeaderBorderStyle}">
+                        <TextBlock Text="DEZ" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    </Border>
+                </UniformGrid>
+            </DockPanel>
+        </material:Card>
+    </Grid>
+</DockPanel>

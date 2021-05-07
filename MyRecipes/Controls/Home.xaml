@@ -1,0 +1,51 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.Home"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Tag="Startseite">
+    <DockPanel.DataContext>
+        <vm:HomeViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel DockPanel.Dock="Top">
+        <TextBlock Text="Zuletzt angesehen"
+               Style="{StaticResource MaterialDesignHeadline4TextBlock}"/>
+        <Button Style="{StaticResource MaterialDesignIconForegroundButton}" DockPanel.Dock="Right"
+                Click="RefreshHistory_Click" HorizontalAlignment="Right" ToolTip="Aktualisieren">
+            <material:PackIcon Kind="Refresh"/>
+        </Button>
+    </DockPanel>
+    <Border Style="{StaticResource SplitterAccentHorizontalStyle}" Margin="4,6" DockPanel.Dock="Top"/>
+    <ListView Background="Transparent" BorderThickness="1,0,0,0" ItemsSource="{Binding History}" 
+              VerticalAlignment="Top"
+                      HorizontalContentAlignment="Stretch" Height="300" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListView.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="Transparent"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+        </ListView.Resources>
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <EventSetter Event="MouseDoubleClick" Handler="ProjectHistoryItem_MouseDoubleClick"/>
+            </Style>
+        </ListView.ItemContainerStyle>
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <DockPanel Margin="8,0">
+                    <TextBlock Text="{Binding LastAccessDate, StringFormat={}{0:dd.MM.yyyy HH:mm}, UpdateSourceTrigger=PropertyChanged}" 
+                                       DockPanel.Dock="Right" VerticalAlignment="Center" Foreground="Gray"/>
+                    <Border BorderBrush="DarkGray" BorderThickness="1,0,0,0" DockPanel.Dock="Right" Margin="4"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}" DockPanel.Dock="Right" FontSize="14"/>
+                        <TextBlock Text="{Binding FilePath, TargetNullValue=C:/Hi/There}" DockPanel.Dock="Right" 
+                                           Foreground="Gray" Margin="4,2"/>
+                    </StackPanel>
+                </DockPanel>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</DockPanel>

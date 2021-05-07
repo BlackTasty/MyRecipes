@@ -1,0 +1,103 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.CategoryList"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:converter="clr-namespace:MyRecipes.Converter"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800"
+           Tag="{Binding AvailableCategories.Count, Converter={StaticResource TagFormatConverter}, ConverterParameter=Kategorien: {0}}"
+           d:DataContext="{d:DesignInstance {x:Type dvm:CategoryListDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:CategoryListViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <converter:StringEmptyConverter x:Key="StringEmptyConverter"/>
+    </DockPanel.Resources>
+    <material:DialogHost DialogTheme="Inherit">
+        <material:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <TextBlock Text="Liste an Zutaten (mit ENTER trennen)" />
+                <TextBox Margin="0 8 0 0" HorizontalAlignment="Stretch" AcceptsReturn="True" 
+                         VerticalScrollBarVisibility="Auto" MinHeight="80" MaxHeight="200"
+                         Text="{Binding CategoryListRaw, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="0 8 8 0" Content="HINZUFÜGEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="AddCategories_Click"
+                            IsEnabled="{Binding AddMultipleEnabled, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                True
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" IsCancel="True" Margin="0 8 8 0" Content="ABBRECHEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="AbortAddMultiple_Click">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                False
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </material:DialogHost.DialogContent>
+        <DockPanel>
+            <material:Card DockPanel.Dock="Top" Padding="4">
+                <DockPanel>
+                    <ToggleButton DockPanel.Dock="Right" Style="{StaticResource MaterialDesignActionToggleButton}"
+                              material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=SortAlphabeticalAscending}"
+                              IsChecked="{Binding SortAscending, UpdateSourceTrigger=PropertyChanged}" Margin="8,4">
+                        <material:PackIcon Kind="SortAlphabeticalDescending"/>
+                    </ToggleButton>
+                    <Button Content="MEHRERE HINZUFÜGEN" DockPanel.Dock="Right"
+                            Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" DockPanel.Dock="Right" Click="AddCategory_Click"
+                            IsEnabled="{Binding AddCategoryEnabled, UpdateSourceTrigger=PropertyChanged}" Margin="4,4,16,4">
+                        <material:PackIcon Kind="Add" />
+                    </Button>
+                    <TextBox VerticalAlignment="Center" Text="{Binding NewCategoryName, UpdateSourceTrigger=PropertyChanged}" 
+                             material:HintAssist.Hint="Kategorie" material:TextFieldAssist.HasClearButton="True"
+                             material:HintAssist.IsFloating="True"/>
+                </DockPanel>
+            </material:Card>
+            <ListView ItemsSource="{Binding AvailableCategories, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch" AlternationCount="2">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Button Style="{StaticResource MaterialDesignIconButton}"
+                                    DockPanel.Dock="Right" ToolTip="Kategorie entfernen" DataContext="{Binding}"
+                                    Click="RemoveCategory_Click" Foreground="{StaticResource WarnColor}">
+                                <material:PackIcon Kind="Close" />
+                            </Button>
+                            <TextBlock Text="{Binding}" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
+                                       VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+    </material:DialogHost>
+</DockPanel>

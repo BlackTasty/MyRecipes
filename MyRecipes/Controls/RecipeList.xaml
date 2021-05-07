@@ -1,0 +1,290 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.RecipeList"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           xmlns:converter="clr-namespace:MyRecipes.Converter"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800" 
+           Tag="{Binding AvailableRecipes.Count, Converter={StaticResource TagFormatConverter}, ConverterParameter=Rezepte: {0}}"
+           d:DataContext="{d:DesignInstance {x:Type dvm:RecipeListDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:RecipeListViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <converter:ListIndexConverter x:Key="ListIndexConverter"/>
+        <Storyboard x:Key="ExpandAddRecipeButton">
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="border_addRecipe">
+                <EasingThicknessKeyFrame KeyTime="0" Value="0,0,0,-48">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.3" Value="0,0,0,-30">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+            </ThicknessAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="RetractAddRecipeButton">
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="border_addRecipe">
+                <EasingThicknessKeyFrame KeyTime="0" Value="0,0,0,-30">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.3" Value="0,0,0,-48">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+            </ThicknessAnimationUsingKeyFrames>
+        </Storyboard>
+    </DockPanel.Resources>
+    <DockPanel.Triggers>
+        <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="border_addRecipe">
+            <BeginStoryboard Storyboard="{StaticResource ExpandAddRecipeButton}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="border_addRecipe">
+            <BeginStoryboard x:Name="RetractAddRecipeButton_BeginStoryboard" Storyboard="{StaticResource RetractAddRecipeButton}"/>
+        </EventTrigger>
+    </DockPanel.Triggers>
+    <material:DialogHost>
+        <material:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <TextBlock>
+                    <Run Text="Bist du sicher das du das Rezept &quot;"/><Run Text="{Binding SelectedRecipeForDeletion.Name}"/><Run Text="&quot; löschen möchtest?"/>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="0 8 8 0" 
+                            Content="ENTFERNEN"
+                            Background="{StaticResource WarnColor}"
+                            BorderBrush="{StaticResource WarnColor}"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}"
+                            Click="ConfirmRemoveRecipe_Click"
+                            IsEnabled="{Binding AddMultipleEnabled, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                True
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" IsCancel="True" Margin="0 8 8 0" Content="ABBRECHEN"
+                            Command="{x:Static material:DialogHost.CloseDialogCommand}">
+                        <Button.CommandParameter>
+                            <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                False
+                            </system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </material:DialogHost.DialogContent>
+        <DockPanel>
+            <material:Card DockPanel.Dock="Top" Padding="4">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Suche nach Rezept" 
+                                     IsChecked="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton Content="Suche nach Zutaten" Margin="8,0"
+                                     IsChecked="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton Content="Suche nach Kategorie" 
+                                     IsChecked="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <DockPanel Margin="0,4">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+                        <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                        <TextBox VerticalAlignment="Center" KeyDown="SearchRecipeName_KeyDown"
+                                 Text="{Binding SearchRecipeName, UpdateSourceTrigger=PropertyChanged}"
+                                 material:TextFieldAssist.HasClearButton="True"
+                                 material:HintAssist.Hint="Rezept"
+                                 material:HintAssist.IsFloating="True"/>
+                    </DockPanel>
+                    <UniformGrid Margin="0,4" Rows="2">
+                        <UniformGrid.Style>
+                            <Style TargetType="UniformGrid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </UniformGrid.Style>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                            <ComboBox ItemsSource="{Binding AvailableIngredients, UpdateSourceTrigger=PropertyChanged}" 
+                                      SelectionChanged="ComboBox_SelectionChanged"
+                                      material:HintAssist.Hint="Zutat"
+                                      material:TextFieldAssist.HasClearButton="True"
+                                      material:HintAssist.IsFloating="True">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </DockPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Ausgewählte Zutaten:" VerticalAlignment="Center"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                            <ListView ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,-4" 
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                         ItemsSource="{Binding SelectedIngredients, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <material:Chip Content="{Binding Name}" IsDeletable="True"
+                                           DeleteClick="Chip_DeleteClick"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                        </StackPanel>
+                    </UniformGrid>
+                    <DockPanel Margin="0,4">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+                        <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                        <Button DockPanel.Dock="Right" ToolTip="Auswahl löschen"  Margin="0,-8"
+                                Click="ClearCategorySelection_Click">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <material:PackIcon Kind="Close" Width="16" Height="16"/>
+                        </Button>
+                        <ComboBox ItemsSource="{Binding AvailableCategories, UpdateSourceTrigger=PropertyChanged}" 
+                                  SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionChanged="FilterCategory_SelectionChanged"
+                                  material:HintAssist.Hint="Kategorie"
+                                  material:HintAssist.IsFloating="True">
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                        </ComboBox>
+                    </DockPanel>
+                </StackPanel>
+            </material:Card>
+            <Grid Margin="0,4,0,0">
+                <ListView ItemsSource="{Binding AvailableRecipes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="Recipe_MouseDoubleClick"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Image Width="150" Height="90" Margin="0,0,8,0"
+                                       Source="{Binding RecipeImages, Converter={StaticResource ListIndexConverter}, ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <material:PopupBox PlacementMode="LeftAndAlignMiddles" DockPanel.Dock="Right"
+                                                   Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"
+                                                   ToolTip="Eigenschaften" UnfurlOrientation="Horizontal"
+                                                   Margin="8">
+                                    <material:PopupBox.ToggleContent>
+                                        <material:PackIcon Kind="DotsHorizontal" Margin="10" Width="24" Height="24"/>
+                                    </material:PopupBox.ToggleContent>
+                                    <material:PopupBox.ToggleCheckedContent>
+                                        <material:PackIcon Kind="ChevronLeft" Margin="10" Width="24" Height="24" />
+                                    </material:PopupBox.ToggleCheckedContent>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button ToolTip="Rezept löschen" DataContext="{Binding}" Click="RemoveRecipe_Click"
+                                                Command="{x:Static material:DialogHost.OpenDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                                                Background="{StaticResource WarnColor}"
+                                                BorderBrush="{StaticResource WarnColor}" Margin="4,0">
+                                            <material:PackIcon Kind="Trash"/>
+                                        </Button>
+                                        <Button DataContext="{Binding}" Click="AddToShoppingList_Click"
+                                            ToolTip="Auf die Einkaufsliste">
+                                            <material:PackIcon Kind="BasketFill"/>
+                                        </Button>
+                                        <Button DataContext="{Binding}" Click="EditRecipe_Click"
+                                            ToolTip="Rezept bearbeiten">
+                                            <material:PackIcon Kind="Edit"/>
+                                        </Button>
+                                    </StackPanel>
+                                </material:PopupBox>
+                                <material:Card DockPanel.Dock="Right" UniformCornerRadius="24" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Margin="8">
+                                </material:Card>
+                                <UniformGrid Rows="2">
+                                    <TextBlock Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
+                               VerticalAlignment="Center"/>
+                                    <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ItemsSource="{Binding Categories, UpdateSourceTrigger=PropertyChanged}" Margin="0,-4">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <material:Chip Content="{Binding Name}" DataContext="{Binding}" Click="Category_Click"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </UniformGrid>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                    <material:Card x:Name="border_addRecipe" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="{StaticResource PrimaryHueMidBrush}"
+                    Padding="4,4,4,28" Margin="0,0,0,-48" UniformCornerRadius="24"
+              material:ShadowAssist.ShadowDepth="Depth3"
+                    MouseEnter="border_addRecipe_MouseEnter" MouseLeave="border_addRecipe_MouseLeave">
+                        <ToggleButton x:Name="btn_addRecipe" Style="{DynamicResource MaterialDesignActionLightToggleButton}"
+                              material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=HamburgerPlus}" 
+                              Margin="4,4,4,8" Click="CreateRecipe_Click" ToolTip="Rezept hinzufügen">
+                            <material:PackIcon Kind="ChevronUp"/>
+                        </ToggleButton>
+                    </material:Card>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </material:DialogHost>
+</DockPanel>
