@@ -1,4 +1,5 @@
-﻿using MyRecipes.Core.SeasonCalendar;
+﻿using MyRecipes.Core.Enum;
+using MyRecipes.Core.SeasonCalendar;
 using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,8 @@ namespace MyRecipes.Core.Recipes
     {
         private string mProductLink;
         private IngredientCategory mIngredientCategory;
+        private MeasurementType mMeasurementType;
+        private MeasurementConversion mMeasurementConversion;
         private VeryObservableCollection<Season> mSeasons = new VeryObservableCollection<Season>("Seasons");
 
         public string ProductLink
@@ -22,6 +25,27 @@ namespace MyRecipes.Core.Recipes
             {
                 changeManager.ObserveProperty(value);
                 mProductLink = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        public MeasurementConversion MeasurementConversion
+        {
+            get => mMeasurementConversion;
+            set
+            {
+                mMeasurementConversion = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public MeasurementType MeasurementType
+        {
+            get => mMeasurementType;
+            set
+            {
+                mMeasurementType = value;
                 InvokePropertyChanged();
             }
         }
@@ -73,15 +97,18 @@ namespace MyRecipes.Core.Recipes
 
         [JsonConstructor]
         public Ingredient(string guid, string name, string description, string productLink, DateTime lastModifyDate,
-            List<Season> seasons, IngredientCategory ingredientCategory) : 
+            List<Season> seasons, IngredientCategory ingredientCategory, MeasurementType measurementType, 
+            MeasurementConversion measurementConversion) : 
             base(guid, name, description, lastModifyDate)
         {
             mProductLink = productLink;
             mIngredientCategory = ingredientCategory;
+            mMeasurementType = measurementType;
             if (seasons != null)
             {
                 mSeasons.AddRange(seasons);
             }
+            mMeasurementConversion = measurementConversion != null ? measurementConversion : new MeasurementConversion(this);
         }
 
         public Ingredient(string name) : base(name)

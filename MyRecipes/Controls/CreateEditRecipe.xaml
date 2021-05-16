@@ -41,23 +41,27 @@
         <TextBox DockPanel.Dock="Top" Text="{Binding Recipe.Name, UpdateSourceTrigger=PropertyChanged}" 
                  material:HintAssist.Hint="Rezept Name" material:TextFieldAssist.HasClearButton="True" 
                  material:HintAssist.IsFloating="True" Margin="0,0,0,4" FontSize="15"/>
-        <DockPanel DockPanel.Dock="Bottom" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
-                <Button Click="Save_Click" Margin="8,0">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                            <Setter Property="Content" Value="SPEICHERN"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsEdit}" Value="False">
-                                    <Setter Property="Content" Value="ERSTELLEN"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignFlatButton}" Click="Abort_Click"/>
-            </StackPanel>
-        </DockPanel>
+        <material:Card DockPanel.Dock="Bottom">
+            <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
+                    <Button Click="Save_Click" Margin="8,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                <Setter Property="Content" Value="SPEICHERN"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEdit}" Value="False">
+                                        <Setter Property="Content" Value="ERSTELLEN"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="Abort_Click"
+                            Background="{StaticResource WarnColor}"
+                            BorderBrush="{StaticResource WarnColor}"/>
+                </StackPanel>
+            </DockPanel>
+        </material:Card>
         <DockPanel Width="340">
             <DockPanel DockPanel.Dock="Bottom">
                 <DockPanel LastChildFill="False">
@@ -85,7 +89,7 @@
                 </ComboBox>
             </DockPanel>
             <Grid Height="170" DockPanel.Dock="Top">
-                <Image Source="{Binding Recipe.RecipeImages, Converter={StaticResource ListIndexConverter}, ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}"
+                <Image Source="{Binding Recipe.RecipeImage.Image, UpdateSourceTrigger=PropertyChanged}"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
                             VerticalAlignment="Bottom" Margin="4" Click="UploadImage_Click" ToolTip="Bild hinzufügen">
@@ -191,8 +195,9 @@
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}" 
                            Margin="0,0,0,6"/>
-                <Button DockPanel.Dock="Top" Content="NEUER SCHRITT"
-                    Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
+                <Button DockPanel.Dock="Top" Content="NEUER SCHRITT" Margin="8,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
                 <material:Transitioner DockPanel.Dock="Bottom" SelectedIndex="0">
                     <DockPanel Height="40">
                         <TextBlock Text="Kategorien:" Style="{DynamicResource MaterialDesignBody1TextBlock}"

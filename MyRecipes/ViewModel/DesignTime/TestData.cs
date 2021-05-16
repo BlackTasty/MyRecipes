@@ -28,20 +28,20 @@ namespace MyRecipes.ViewModel.DesignTime
                     "Genießen"
                 },
                 GetTestCategories(),
-                new List<RecipeImage>()
-                {
-                    new RecipeImage(@"D:\Program Files (x86)\Steam\userdata\96277141\760\remote\588650\screenshots\20210406161102_1.jpg")
-                }, 6);
+                new RecipeImage(@"D:\Program Files (x86)\Steam\userdata\96277141\760\remote\588650\screenshots\20210406161102_1.jpg"), 
+                6);
         }
 
         public static Ingredient GetTestIngredient(string name, string link = "")
         {
-            return new Ingredient("", name, "", link, DateTime.Now, new List<Season>(), IngredientCategory.Unset);
+            return new Ingredient("", name, "", link, DateTime.Now, new List<Season>(), IngredientCategory.Unset, 
+                MeasurementType.Gram, null);
         }
 
         public static Ingredient GetTestIngredient(string name, List<Season> seasons, string link = "")
         {
-            return new Ingredient("", name, "", link, DateTime.Now, seasons, IngredientCategory.Unset);
+            return new Ingredient("", name, "", link, DateTime.Now, seasons, IngredientCategory.Unset,
+                MeasurementType.Gram, null);
         }
 
         public static List<Category> GetTestCategories()

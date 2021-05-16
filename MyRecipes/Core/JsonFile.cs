@@ -95,6 +95,11 @@ namespace MyRecipes.Core
             }
         }
 
+        public string GetJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
         protected virtual void SaveFile(T @object)
         {
             string json = JsonConvert.SerializeObject(@object);

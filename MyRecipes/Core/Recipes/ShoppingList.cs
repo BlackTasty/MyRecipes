@@ -10,25 +10,31 @@ namespace MyRecipes.Core.Recipes
 {
     class ShoppingList : ViewModelBase
     {
-        private VeryObservableCollection<RecipeIngredient> mRequiredIngredients = new VeryObservableCollection<RecipeIngredient>("RequiredIngredients");
+        private VeryObservableCollection<ShoppingRecipe> mSelectedRecipes = new VeryObservableCollection<ShoppingRecipe>("SelectedRecipes");
 
-        public VeryObservableCollection<RecipeIngredient> RequiredIngredients
+        public VeryObservableCollection<ShoppingRecipe> SelectedRecipes
         {
-            get => mRequiredIngredients;
+            get => mSelectedRecipes;
             set
             {
-                mRequiredIngredients = value;
+                mSelectedRecipes = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("IsEmpty");
             }
         }
 
-        public bool IsEmpty => mRequiredIngredients.Count == 0;
+        public bool IsEmpty => mSelectedRecipes.Count == 0;
 
         public void AddRecipe(Recipe recipe)
         {
+            mSelectedRecipes.Add(new ShoppingRecipe(recipe));
+            InvokePropertyChanged("IsEmpty");
+        }
+
+        /*public void AddRecipe(Recipe recipe)
+        {
             List<RecipeIngredient> ingredients = new List<RecipeIngredient>();
-            ingredients.AddRange(mRequiredIngredients);
+            ingredients.Add(recipe);
             foreach (RecipeIngredient ingredient in recipe.Ingredients)
             {
                 int index = ingredients.FindIndex(x => x.Ingredient.Name == ingredient.Ingredient.Name && 
@@ -44,15 +50,15 @@ namespace MyRecipes.Core.Recipes
             }
 
             Clear();
-            mRequiredIngredients.AddRange(ingredients.OrderBy(x => x.Ingredient.Name));
+            mSelectedRecipes.AddRange(ingredients.OrderBy(x => x.Ingredient.Name));
             InvokePropertyChanged("IsEmpty");
-        }
+        }*/
 
         public void Clear()
         {
-            if (mRequiredIngredients.Count > 0)
+            if (mSelectedRecipes.Count > 0)
             {
-                mRequiredIngredients.Clear();
+                mSelectedRecipes.Clear();
                 InvokePropertyChanged("IsEmpty");
             }
         }

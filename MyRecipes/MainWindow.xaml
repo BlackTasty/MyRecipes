@@ -124,7 +124,7 @@
                             ToolTip="Saisonkalendar">
                         <material:PackIcon Kind="Timetable"/>
                     </Button>
-                    <material:Badged DockPanel.Dock="Right" Badge="{Binding ShoppingList.RequiredIngredients.Count}"
+                    <material:Badged DockPanel.Dock="Right" Badge="{Binding ShoppingList.SelectedRecipes.Count}"
                                      Visibility="{Binding ShowShoppingListButton, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" 
                                      BadgePlacementMode="BottomRight" BadgeColorZoneMode="Dark"
                                      Style="{StaticResource AppBarBadge}">
@@ -155,11 +155,6 @@
                                        Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
                         </DockPanel>
                         <Border Style="{StaticResource SplitterForegroundHorizontalStyle}" Margin="8,2" DockPanel.Dock="Top"/>
-                        <DockPanel Margin="14,4,12,0" DockPanel.Dock="Top">
-                            <TextBlock Text="Anzahl" DockPanel.Dock="Right" 
-                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
-                            <TextBlock Text="Zutat" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
-                        </DockPanel>
                         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
                             <Button Margin="4" Content="EXPORTIEREN" Click="ExportShoppingList_Click"
                                     Style="{StaticResource MaterialDesignRaisedButton}"/>
@@ -167,39 +162,67 @@
                                     Background="{StaticResource WarnColor}"
                                     BorderBrush="{StaticResource WarnColor}"/>
                         </StackPanel>
-                        <ListView ItemsSource="{Binding ShoppingList.RequiredIngredients}"
-                                  Margin="0,4" AlternationCount="2" HorizontalContentAlignment="Stretch">
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel/>
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Style.Resources>
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                 Color="Transparent"/>
-                                    </Style.Resources>
-                                    <Style.Triggers>
-                                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                                            <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Margin="8,0">
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
-                                            <Run Text="{Binding Amount}"/>
-                                            <Run Text="{Binding MeasurementType}"/>
-                                        </TextBlock>
-                                        <TextBlock Text="{Binding Ingredient.Name}"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                        <ScrollViewer VerticalScrollBarVisibility="Disabled">
+                            <ListView ItemsSource="{Binding ShoppingList.SelectedRecipes}" HorizontalContentAlignment="Stretch"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <DockPanel DockPanel.Dock="Top">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Right">
+                                                    <metro:NumericUpDown Value="{Binding Servings, UpdateSourceTrigger=PropertyChanged}" 
+                                                                         ParsingNumberStyle="AllowDecimalPoint" NumericInputMode="All" 
+                                                                         Minimum=".01" BorderThickness="0,0,0,1" Background="Transparent" 
+                                                                         BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" DockPanel.Dock="Bottom"
+                                                                         Height="21" MinHeight="21" Margin="0,0,0,5" SnapsToDevicePixels="True"/>
+                                                    <TextBlock Text="Portionen" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                                </DockPanel>
+                                                <TextBlock Text="{Binding Recipe.Name}"
+                                                   Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
+                                            </DockPanel>
+                                            <DockPanel Margin="12,4,12,0" DockPanel.Dock="Top" IsHitTestVisible="False">
+                                                <TextBlock Text="Anzahl" DockPanel.Dock="Right" 
+                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                                <TextBlock Text="Zutat" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                            </DockPanel>
+                                            <ListView ItemsSource="{Binding Ingredients}" Margin="0,4" AlternationCount="2" 
+                                                  HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
+                                                <ListView.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ListView.ItemsPanel>
+                                                <ListView.ItemContainerStyle>
+                                                    <Style TargetType="ListViewItem">
+                                                        <Style.Resources>
+                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                                         Color="Transparent"/>
+                                                        </Style.Resources>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ListView.ItemContainerStyle>
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel Margin="8,0">
+                                                            <TextBlock DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                                            <Run Text="{Binding Amount}"/>
+                                                            <Run Text="{Binding MeasurementType}"/>
+                                                            </TextBlock>
+                                                            <TextBlock Text="{Binding Ingredient.Name}"
+                                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
                     </DockPanel>
                 </material:Card>
             </Grid>

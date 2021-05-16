@@ -54,6 +54,7 @@ namespace MyRecipes.Core.Recipes
             }
         }
 
+        [JsonIgnore]
         public bool HasImage => mRecipeImage != null;
 
         public RecipeImage RecipeImage

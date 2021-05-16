@@ -15,6 +15,7 @@ namespace MyRecipes.ViewModel.DesignTime
             ShowSaisonCalendarButton = true;
             ShoppingList = new Core.Recipes.ShoppingList();
             ShoppingList.AddRecipe(TestData.GetTestRecipe("Test"));
+            ShoppingList.AddRecipe(TestData.GetTestRecipe("Test2"));
             ShowShoppingList = true;
         }
     }

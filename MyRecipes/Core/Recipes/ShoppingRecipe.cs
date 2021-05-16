@@ -1,0 +1,72 @@
+﻿using MyRecipes.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyRecipes.Core.Recipes
+{
+    class ShoppingRecipe : ViewModelBase
+    {
+        private Recipe mRecipe;
+        private int mServings;
+        private VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
+
+        public Recipe Recipe
+        {
+            get => mRecipe;
+            set
+            {
+                mRecipe = value;
+                if (value != null)
+                {
+                    Servings = value.Servings;
+                }
+                else
+                {
+                    Servings = 1;
+                }
+                InvokePropertyChanged();
+            }
+        }
+
+        public int Servings
+        {
+            get => mServings;
+            set
+            {
+                mServings = Math.Max(1, value);
+                InvokePropertyChanged();
+
+                Ingredients.Clear();
+                if (mRecipe != null)
+                {
+                    List<RecipeIngredient> ingredients = new List<RecipeIngredient>();
+                    double servingRatio = (double)value / (double)mRecipe.Servings;
+
+                    foreach (RecipeIngredient ingredient in mRecipe.Ingredients)
+                    {
+                        ingredients.Add(ingredient.FromServingRatio(servingRatio));
+                    }
+                    Ingredients.AddRange(ingredients);
+                }
+            }
+        }
+
+        public VeryObservableCollection<RecipeIngredient> Ingredients
+        {
+            get => mIngredients;
+            set
+            {
+                mIngredients = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public ShoppingRecipe(Recipe recipe)
+        {
+            Recipe = recipe;
+        }
+    }
+}

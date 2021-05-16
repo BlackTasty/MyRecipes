@@ -215,7 +215,7 @@
                         <DataTemplate>
                             <DockPanel>
                                 <Image Width="150" Height="90" Margin="0,0,8,0"
-                                       Source="{Binding RecipeImages, Converter={StaticResource ListIndexConverter}, ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}"
+                                       Source="{Binding RecipeImage.Image, UpdateSourceTrigger=PropertyChanged}"
                                        RenderOptions.BitmapScalingMode="HighQuality"/>
                                 <material:PopupBox PlacementMode="LeftAndAlignMiddles" DockPanel.Dock="Right"
                                                    Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"
@@ -235,13 +235,13 @@
                                                 BorderBrush="{StaticResource WarnColor}" Margin="4,0">
                                             <material:PackIcon Kind="Trash"/>
                                         </Button>
-                                        <Button DataContext="{Binding}" Click="AddToShoppingList_Click"
-                                            ToolTip="Auf die Einkaufsliste">
-                                            <material:PackIcon Kind="BasketFill"/>
-                                        </Button>
                                         <Button DataContext="{Binding}" Click="EditRecipe_Click"
                                             ToolTip="Rezept bearbeiten">
                                             <material:PackIcon Kind="Edit"/>
+                                        </Button>
+                                        <Button DataContext="{Binding}" Click="AddToShoppingList_Click"
+                                            ToolTip="Auf die Einkaufsliste">
+                                            <material:PackIcon Kind="BasketFill"/>
                                         </Button>
                                     </StackPanel>
                                 </material:PopupBox>

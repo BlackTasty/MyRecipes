@@ -154,6 +154,13 @@
                                     Click="RemoveIngredient_Click" Foreground="{StaticResource WarnColor}">
                                 <material:PackIcon Kind="Close" />
                             </Button>
+                            <Button Style="{StaticResource MaterialDesignIconButton}" DataContext="{Binding}"
+                                    DockPanel.Dock="Right" ToolTip="Umrechnung konfigurieren">
+                                <material:PackIcon Kind="ScaleBalance"/>
+                            </Button>
+                            <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:MeasurementType}}}"
+                                      SelectedItem="{Binding MeasurementType}" DockPanel.Dock="Right" Width="60"
+                                      material:HintAssist.Hint="Maßeinheit"/>
                             <Button
                                     DockPanel.Dock="Right" ToolTip="Saison konfigurieren" DataContext="{Binding}"
                                     Click="OpenSeasonConfigurator_Click">
@@ -175,9 +182,10 @@
                                 </Button.Style>
                                 <material:PackIcon Kind="Timetable" />
                             </Button>
-                            <ComboBox material:HintAssist.Hint="Saison-Kategorie" DockPanel.Dock="Right"
+                            <ComboBox material:HintAssist.Hint="Kategorie" DockPanel.Dock="Right"
                                       SelectedItem="{Binding IngredientCategory}" MinWidth="140"
-                                      ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type recipes:IngredientCategory}}}"/>
+                                      ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type recipes:IngredientCategory}}}"
+                                      SelectionChanged="IngredientCategory_SelectionChanged"/>
                             <TextBlock Text="{Binding}" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
                                        VerticalAlignment="Center"/>
                         </DockPanel>

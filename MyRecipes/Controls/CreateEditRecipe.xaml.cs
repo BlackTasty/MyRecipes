@@ -112,8 +112,7 @@ namespace MyRecipes.Controls
         private void dialog_FileSelected(object sender, RoutedEventArgs e)
         {
             CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
-            vm.Recipe.RecipeImages.Clear();
-            vm.Recipe.RecipeImages.Add(new RecipeImage(dialog.CurrentFile));
+            vm.Recipe.RecipeImage = new RecipeImage(dialog.CurrentFile);
             vm.ShowOpenFileDialog = false;
         }
 

@@ -22,7 +22,7 @@ namespace MyRecipes.Core.Recipes
         [Description("Nüsse")]
         Nuts = 3,
         [Description("Fleisch (Geflügel)")]
-        Pultry = 5,
+        Poultry = 5,
         [Description("Fleisch (Rind)")]
         Beef = 6,
         [Description("Fleisch (Schwein)")]

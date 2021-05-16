@@ -1,4 +1,6 @@
-﻿using MyRecipes.Core.Recipes;
+﻿using ControlzEx.Standard;
+using MyRecipes.Core.Enum;
+using MyRecipes.Core.Recipes;
 using MyRecipes.Core.SeasonCalendar;
 using MyRecipes.ViewModel;
 using System;
@@ -135,6 +137,30 @@ namespace MyRecipes.Controls
             }
 
             vm.SetFilteredIngredients(filteredIngredients);
+        }
+
+        private void IngredientCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            IngredientListViewModel vm = DataContext as IngredientListViewModel;
+         
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is IngredientCategory category)
+            {
+                Ingredient ingredient = comboBox.DataContext as Ingredient;
+                switch (category)
+                {
+                    case IngredientCategory.Alcohol:
+                    case IngredientCategory.Liquid:
+                    case IngredientCategory.Oil:
+                    case IngredientCategory.Sauces:
+                        ingredient.MeasurementType = MeasurementType.Milliliters;
+                        break;
+                    case IngredientCategory.Flour:
+                    case IngredientCategory.Rice:
+                    case IngredientCategory.Bread:
+                        ingredient.MeasurementType = MeasurementType.Gram;
+                        break;
+                }
+            }
         }
     }
 }
