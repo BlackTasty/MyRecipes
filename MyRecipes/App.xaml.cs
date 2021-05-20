@@ -1,4 +1,5 @@
 ﻿using MyRecipes.Core;
+using MyRecipes.Core.Mobile;
 using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
 using System;
@@ -23,6 +24,8 @@ namespace MyRecipes
         private static VeryObservableCollection<Recipe> availableRecipes = new VeryObservableCollection<Recipe>("AvailableRecipes");
         private static VeryObservableStackCollection<Recipe> mHistory = new VeryObservableStackCollection<Recipe>("History", 10);
 
+        private static Server server = new Server();
+
         public static string BasePath => basePath;
 
         public static string DefaultRecipePath => Path.Combine(BasePath, "recipes");
@@ -41,6 +44,8 @@ namespace MyRecipes
         {
             get; set;
         }
+
+        public static Server Server => server;
 
         [STAThread]
         public static void Main()

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MyRecipes.Core.Enum
 {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum MeasurementType
+    public enum Unit
     {
         [Description("Pk")]
         Package, //e.g. Päckchen Vanillezucker

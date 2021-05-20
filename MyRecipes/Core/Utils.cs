@@ -1,6 +1,10 @@
 ﻿
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Windows.Media.Imaging;
 
 namespace MyRecipes.Core
@@ -62,6 +66,44 @@ namespace MyRecipes.Core
             }
             else
                 return null;
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
+                }
+                Dns.GetHostAddresses(Dns.GetHostName());
+            }
+
+            return "-";
+        }
+
+        public static List<string> GetAllLocalIPAddresses()
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                List<string> addresses = new List<string>();
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        addresses.Add(ip.ToString());
+                    }
+                }
+
+                return addresses;
+            }
+
+            return new List<string>() { "-" };
         }
     }
 }

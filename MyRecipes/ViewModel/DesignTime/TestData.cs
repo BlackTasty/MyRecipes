@@ -17,9 +17,9 @@ namespace MyRecipes.ViewModel.DesignTime
             return new Recipe("", name, "This is a test", DateTime.Now,
                 new List<RecipeIngredient>()
                 {
-                    new RecipeIngredient(GetTestIngredient("Mehl", "https://www.youtube.com/feed/subscriptions"), 500, MeasurementType.Gram),
-                    new RecipeIngredient(GetTestIngredient("Wasser"), 300, MeasurementType.Milliliters),
-                    new RecipeIngredient(GetTestIngredient("Backpulver"), 2, MeasurementType.Package)
+                    new RecipeIngredient(GetTestIngredient("Mehl", "https://www.youtube.com/feed/subscriptions"), 500, Unit.Gram),
+                    new RecipeIngredient(GetTestIngredient("Wasser"), 300, Unit.Milliliters),
+                    new RecipeIngredient(GetTestIngredient("Backpulver"), 2, Unit.Package)
                 },
                 new List<string>()
                 {
@@ -35,13 +35,13 @@ namespace MyRecipes.ViewModel.DesignTime
         public static Ingredient GetTestIngredient(string name, string link = "")
         {
             return new Ingredient("", name, "", link, DateTime.Now, new List<Season>(), IngredientCategory.Unset, 
-                MeasurementType.Gram, null);
+                Unit.Gram, null);
         }
 
         public static Ingredient GetTestIngredient(string name, List<Season> seasons, string link = "")
         {
             return new Ingredient("", name, "", link, DateTime.Now, seasons, IngredientCategory.Unset,
-                MeasurementType.Gram, null);
+                Unit.Gram, null);
         }
 
         public static List<Category> GetTestCategories()

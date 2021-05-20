@@ -11,12 +11,12 @@ namespace MyRecipes.Core.Recipes
 {
     public class MeasurementConversion : ViewModelBase
     {
-        private MeasurementType mSourceMeasurement;
-        private MeasurementType mTargetMeasurement;
+        private Unit mSourceMeasurement;
+        private Unit mTargetMeasurement;
         private double mSourceAmount;
         private double mTargetAmount;
 
-        public MeasurementType SourceMeasurement
+        public Unit SourceMeasurement
         {
             get => mSourceMeasurement;
             set
@@ -26,7 +26,7 @@ namespace MyRecipes.Core.Recipes
             }
         }
 
-        public MeasurementType TargetMeasurement
+        public Unit TargetMeasurement
         {
             get => mTargetMeasurement;
             set
@@ -57,8 +57,8 @@ namespace MyRecipes.Core.Recipes
         }
 
         [JsonConstructor]
-        public MeasurementConversion(MeasurementType sourceMeasurement, double sourceAmount, 
-            MeasurementType targetMeasurement, double targetAmount)
+        public MeasurementConversion(Unit sourceMeasurement, double sourceAmount, 
+            Unit targetMeasurement, double targetAmount)
         {
             mSourceAmount = sourceAmount;
             mSourceMeasurement = sourceMeasurement;

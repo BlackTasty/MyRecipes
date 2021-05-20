@@ -13,7 +13,7 @@ namespace MyRecipes.Core.Recipes
     {
         private Ingredient mIngredient;
         private double mAmount;
-        private MeasurementType mMeasurementType;
+        private Unit mMeasurementType;
 
         public Ingredient Ingredient
         {
@@ -35,7 +35,7 @@ namespace MyRecipes.Core.Recipes
             }
         }
 
-        public MeasurementType MeasurementType
+        public Unit MeasurementType
         {
             get => mMeasurementType;
             set
@@ -46,15 +46,17 @@ namespace MyRecipes.Core.Recipes
         }
 
         [JsonConstructor]
-        public RecipeIngredient(Ingredient ingredient, double amount, MeasurementType measurementType)
+        public RecipeIngredient(Ingredient ingredient, double amount, Unit measurementType)
         {
             Ingredient = ingredient;
             Amount = amount;
             MeasurementType = measurementType;
         }
 
-        public RecipeIngredient FromServingRatio(double ratio)
+        public RecipeIngredient FromServingRatio(double baseServings, double desiredServings)
         {
+            double ratio = desiredServings / baseServings;
+
             return new RecipeIngredient(Ingredient, Math.Round(Amount * ratio, 2), MeasurementType);
         }
     }

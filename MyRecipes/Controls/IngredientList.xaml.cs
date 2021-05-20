@@ -152,12 +152,12 @@ namespace MyRecipes.Controls
                     case IngredientCategory.Liquid:
                     case IngredientCategory.Oil:
                     case IngredientCategory.Sauces:
-                        ingredient.MeasurementType = MeasurementType.Milliliters;
+                        ingredient.MeasurementType = Unit.Milliliters;
                         break;
                     case IngredientCategory.Flour:
                     case IngredientCategory.Rice:
                     case IngredientCategory.Bread:
-                        ingredient.MeasurementType = MeasurementType.Gram;
+                        ingredient.MeasurementType = Unit.Gram;
                         break;
                 }
             }

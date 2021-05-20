@@ -104,9 +104,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Controls\AccountManagement.xaml.cs">
-      <DependentUpon>AccountManagement.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CategoryList.xaml.cs">
       <DependentUpon>CategoryList.xaml</DependentUpon>
     </Compile>
@@ -124,6 +121,9 @@
     </Compile>
     <Compile Include="Controls\RecipeView.xaml.cs">
       <DependentUpon>RecipeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RemoteConfiguration.xaml.cs">
+      <DependentUpon>RemoteConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SaisonCalendar.xaml.cs">
       <DependentUpon>SaisonCalendar.xaml</DependentUpon>
@@ -144,12 +144,15 @@
     <Compile Include="Core\Enum\EnumBindingSourceExtension.cs" />
     <Compile Include="Core\Events\CategoryClickedEventArgs.cs" />
     <Compile Include="Core\Events\RecipeOpeningEventArgs.cs" />
+    <Compile Include="Core\Events\ServerLoggedEventArgs.cs" />
     <Compile Include="Core\FilterObject.cs" />
     <Compile Include="Core\IBaseData.cs" />
-    <Compile Include="Core\Mobile\Account\User.cs" />
+    <Compile Include="Core\Mobile\Account\ConnectionCredentials.cs" />
     <Compile Include="Core\Mobile\Server.cs" />
     <Compile Include="Core\Mobile\Encryption\StringCiphering.cs" />
     <Compile Include="Core\Mobile\Encryption\Hasher.cs" />
+    <Compile Include="Core\Mobile\Transfer\RecipeImageTransfer.cs" />
+    <Compile Include="Core\Mobile\Transfer\RecipeTransfer.cs" />
     <Compile Include="Core\Observer\ChangeObservedEventArgs.cs" />
     <Compile Include="Core\Observer\IObserver.cs" />
     <Compile Include="Core\Observer\Observer.cs" />
@@ -181,6 +184,7 @@
     <Compile Include="ViewModel\DesignTime\MainDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\RecipeListDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\RecipeViewDesignViewModel.cs" />
+    <Compile Include="ViewModel\DesignTime\RemoteConfigurationDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\SaisonCalendarDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\SeasonIngredientConfiguratorDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\TestData.cs" />
@@ -190,15 +194,12 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\RecipeListViewModel.cs" />
     <Compile Include="ViewModel\RecipeViewViewModel.cs" />
+    <Compile Include="ViewModel\RemoteConfigurationViewModel.cs" />
     <Compile Include="ViewModel\SaisonCalendarViewModel.cs" />
     <Compile Include="ViewModel\SeasonIngredientConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\VeryObservableCollection.cs" />
     <Compile Include="ViewModel\VeryObservableStackCollection.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Page Include="Controls\AccountManagement.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\CategoryList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -223,6 +224,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\RemoteConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SaisonCalendar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,7 +246,7 @@
     </Compile>
     <Compile Include="Core\BaseData.cs" />
     <Compile Include="Core\Recipes\Ingredient.cs" />
-    <Compile Include="Core\Enum\MeasurementType.cs" />
+    <Compile Include="Core\Enum\Unit.cs" />
     <Compile Include="Core\Recipes\Recipe.cs" />
     <Compile Include="Core\Recipes\RecipeIngredient.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -277,6 +282,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Inconsolata.ttf" />
     <None Include="Resources\no_image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

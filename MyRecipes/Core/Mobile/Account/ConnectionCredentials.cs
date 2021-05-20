@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyRecipes.Core.Mobile.Account
 {
-    class User : ViewModelBase
+    public class ConnectionCredentials : ViewModelBase
     {
         private string mUsername;
         private string mEmail;
@@ -62,7 +62,7 @@ namespace MyRecipes.Core.Mobile.Account
         }
 
         [JsonConstructor]
-        public User(string name, string passwordSaved, string email)
+        public ConnectionCredentials(string name, string passwordSaved, string email)
         {
             mUsername = name;
             mEmail = email;
@@ -74,7 +74,7 @@ namespace MyRecipes.Core.Mobile.Account
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="password">The password of the user</param>
-        public User(string email, string password)
+        public ConnectionCredentials(string email, string password)
         {
 
         }
@@ -86,7 +86,7 @@ namespace MyRecipes.Core.Mobile.Account
         /// <param name="email">The email of the new user</param>
         /// <param name="password">The password of the new user</param>
         /// <param name="isRegister">Leave as is</param>
-        public User(string username, string email, string password, bool isRegister = true)
+        public ConnectionCredentials(string username, string email, string password, bool isRegister = true)
         {
 
         }

@@ -93,7 +93,7 @@ namespace MyRecipes.Core.Sidebar
             Content = content;
             if (content != null)
             {
-                (Content as FrameworkElement).Name = sidebarText;
+                (Content as FrameworkElement).Name = sidebarText.Replace(" ", "");
             }
             Index = index;
         }
@@ -151,7 +151,7 @@ namespace MyRecipes.Core.Sidebar
 
         public bool MatchContentTag(string name)
         {
-            return (Content as FrameworkElement).Name == name;
+            return (Content as FrameworkElement).Name == name.Replace(" ", "");
         }
     }
 }

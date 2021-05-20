@@ -43,11 +43,10 @@ namespace MyRecipes.Core.Recipes
                 if (mRecipe != null)
                 {
                     List<RecipeIngredient> ingredients = new List<RecipeIngredient>();
-                    double servingRatio = (double)value / (double)mRecipe.Servings;
 
                     foreach (RecipeIngredient ingredient in mRecipe.Ingredients)
                     {
-                        ingredients.Add(ingredient.FromServingRatio(servingRatio));
+                        ingredients.Add(ingredient.FromServingRatio(mRecipe.Servings, value));
                     }
                     Ingredients.AddRange(ingredients);
                 }

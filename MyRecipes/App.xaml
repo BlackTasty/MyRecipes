@@ -43,6 +43,8 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
+            <SolidColorBrush x:Key="t">#fff</SolidColorBrush>
+
             <Style x:Key="SeasonBorderStyle" TargetType="Border">
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
                 <Setter Property="Margin" Value="0,-2"/>
@@ -144,8 +146,9 @@
 
             <SolidColorBrush x:Key="SeasonFreshBackground" Color="#c2eeb2" Opacity=".5"/>
             <SolidColorBrush x:Key="SeasonWarehouseBackground" Color="#f0c583" Opacity=".7"/>
-            
+
             <SolidColorBrush x:Key="WarnColor" Color="#FFBD4646" Opacity=".85"/>
+            <SolidColorBrush x:Key="ServerRunningColor" Color="#FF46BD46" Opacity=".85"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

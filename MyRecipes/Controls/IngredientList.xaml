@@ -158,7 +158,7 @@
                                     DockPanel.Dock="Right" ToolTip="Umrechnung konfigurieren">
                                 <material:PackIcon Kind="ScaleBalance"/>
                             </Button>
-                            <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:MeasurementType}}}"
+                            <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:Unit}}}"
                                       SelectedItem="{Binding MeasurementType}" DockPanel.Dock="Right" Width="60"
                                       material:HintAssist.Hint="Maßeinheit"/>
                             <Button

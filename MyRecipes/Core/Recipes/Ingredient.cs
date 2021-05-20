@@ -14,7 +14,7 @@ namespace MyRecipes.Core.Recipes
     {
         private string mProductLink;
         private IngredientCategory mIngredientCategory;
-        private MeasurementType mMeasurementType;
+        private Unit mMeasurementType;
         private MeasurementConversion mMeasurementConversion;
         private VeryObservableCollection<Season> mSeasons = new VeryObservableCollection<Season>("Seasons");
 
@@ -40,7 +40,7 @@ namespace MyRecipes.Core.Recipes
             }
         }
 
-        public MeasurementType MeasurementType
+        public Unit MeasurementType
         {
             get => mMeasurementType;
             set
@@ -97,7 +97,7 @@ namespace MyRecipes.Core.Recipes
 
         [JsonConstructor]
         public Ingredient(string guid, string name, string description, string productLink, DateTime lastModifyDate,
-            List<Season> seasons, IngredientCategory ingredientCategory, MeasurementType measurementType, 
+            List<Season> seasons, IngredientCategory ingredientCategory, Unit measurementType, 
             MeasurementConversion measurementConversion) : 
             base(guid, name, description, lastModifyDate)
         {

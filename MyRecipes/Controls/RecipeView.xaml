@@ -59,8 +59,8 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <TextBlock Text="{Binding Amount}" MinWidth="40"/>
-                        <TextBlock Text="{Binding MeasurementType}" MinWidth="50"/>
+                        <TextBlock Text="{Binding Amount}" MinWidth="40" TextAlignment="Right"/>
+                        <TextBlock Text="{Binding MeasurementType}" MinWidth="50" Margin="6,0,0,0"/>
                         <TextBlock Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"
                                            Visibility="Visible">
                             <TextBlock.Style>

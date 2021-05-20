@@ -21,7 +21,6 @@
     <metro:MetroWindow.Resources>
         <converter:LengthConverter x:Key="LengthConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
         <DataTemplate x:Key="EntryDataTemplate">
             <StackPanel Orientation="Horizontal">
                 <material:PackIcon Kind="{Binding Icon}" Height="32" Width="32" Margin="16,0,0,0"/>

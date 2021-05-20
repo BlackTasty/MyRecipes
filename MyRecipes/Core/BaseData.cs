@@ -11,6 +11,11 @@ using System.Threading.Tasks;
 
 namespace MyRecipes.Core
 {
+    // dsd
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BaseData<T> : JsonFile<T>, IBaseData
     {
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;

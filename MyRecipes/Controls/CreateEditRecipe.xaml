@@ -73,7 +73,7 @@
                     <TextBlock Text="Menge" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
                 </DockPanel>
                 <ComboBox material:HintAssist.Hint="Messart" SelectedIndex="{Binding SelectedMeasurementTypeIndex, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:MeasurementType}}}"
+                          ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:Unit}}}"
                           Style="{DynamicResource MaterialDesignFloatingHintComboBox}" Margin="4,0"/>
                 <Button Style="{StaticResource MaterialDesignIconButton}" DockPanel.Dock="Right" Click="AddIngredient_Click">
                     <material:PackIcon Kind="Add" />
@@ -123,8 +123,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <TextBlock Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" MinWidth="40"/>
-                            <TextBlock Text="{Binding MeasurementType, UpdateSourceTrigger=PropertyChanged}" MinWidth="50"/>
+                            <TextBlock Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" MinWidth="40"
+                                       TextAlignment="Right"/>
+                            <TextBlock Text="{Binding MeasurementType, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" 
+                                       Margin="6,0,0,0"/>
                             <Button Style="{DynamicResource MaterialDesignIconButton}" DockPanel.Dock="Right"
                                             Height="24" Width="24" Click="RemoveIngredient_Click" ToolTip="Zutat entfernen"
                                             DataContext="{Binding}">

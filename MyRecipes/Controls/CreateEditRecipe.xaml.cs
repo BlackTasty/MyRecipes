@@ -51,7 +51,7 @@ namespace MyRecipes.Controls
         {
             CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
             vm.Recipe.Ingredients.Add(new RecipeIngredient(vm.AvailableIngredients[vm.SelectedIngredientIndex],
-                vm.IngredientAmount, (MeasurementType)vm.SelectedMeasurementTypeIndex));
+                vm.IngredientAmount, (Unit)vm.SelectedMeasurementTypeIndex));
         }
 
         private void AddEditPreparationStep_Click(object sender, RoutedEventArgs e)

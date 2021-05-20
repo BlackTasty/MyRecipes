@@ -1,4 +1,5 @@
-﻿using MyRecipes.Controls;
+﻿using MaterialDesignThemes.Wpf;
+using MyRecipes.Controls;
 using MyRecipes.Core.Recipes;
 using MyRecipes.Core.SeasonCalendar;
 using MyRecipes.Core.Sidebar;
@@ -188,21 +189,22 @@ namespace MyRecipes.ViewModel
             home = new Home();
             home.RecipeOpening += RecipeList_RecipeOpening;
 
-            SidebarEntry ingredients = new SidebarEntry("Zutaten", MaterialDesignThemes.Wpf.PackIconKind.Barley, ingredientList, 2);
+            SidebarEntry ingredients = new SidebarEntry("Zutaten", PackIconKind.Barley, ingredientList, 2);
             List<SidebarSubEntry> ingredientsSubEntries = new List<SidebarSubEntry>()
             {
-                new SidebarSubEntry("Saisonkalendar", MaterialDesignThemes.Wpf.PackIconKind.Timetable, new SaisonCalendar(), 20, ingredients, true),
+                new SidebarSubEntry("Saisonkalendar", PackIconKind.Timetable, new SaisonCalendar(), 20, ingredients, true),
             };
 
             ingredients.SetSubEntries(ingredientsSubEntries);
 
             Items = new List<SidebarEntry>()
             {
-                new SidebarEntry("Startseite", MaterialDesignThemes.Wpf.PackIconKind.Home, home, 0),
-                new SidebarEntry("Rezepte", MaterialDesignThemes.Wpf.PackIconKind.ChefHat, recipeList, 1),
+                new SidebarEntry("Startseite", PackIconKind.Home, home, 0),
+                new SidebarEntry("Rezepte", PackIconKind.ChefHat, recipeList, 1),
                 ingredients,
                 ingredientsSubEntries[0],
-                new SidebarEntry("Kategorien", MaterialDesignThemes.Wpf.PackIconKind.Group, new CategoryList(), 3)
+                new SidebarEntry("Kategorien", PackIconKind.Group, new CategoryList(), 3),
+                new SidebarEntry("Remote Verbindung", PackIconKind.AccessPointNetwork, new RemoteConfiguration(), 4)
             };
 
             Content = Items[0].Content as FrameworkElement;
