@@ -100,6 +100,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewModel\Sorting\SortChain.cs" />
+    <Compile Include="ViewModel\Sorting\SortRule.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -197,6 +199,7 @@
     <Compile Include="ViewModel\RemoteConfigurationViewModel.cs" />
     <Compile Include="ViewModel\SaisonCalendarViewModel.cs" />
     <Compile Include="ViewModel\SeasonIngredientConfiguratorViewModel.cs" />
+    <Compile Include="ViewModel\Sorting\SortFactory.cs" />
     <Compile Include="ViewModel\VeryObservableCollection.cs" />
     <Compile Include="ViewModel\VeryObservableStackCollection.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

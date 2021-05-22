@@ -104,6 +104,11 @@ namespace MyRecipes.Controls
             (DataContext as CreateEditRecipeViewModel).ShowOpenFileDialog = true;
         }
 
+        private void RemoveImage_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CreateEditRecipeViewModel).Recipe.RecipeImage = null;
+        }
+
         private void dialog_Cancel(object sender, RoutedEventArgs e)
         {
             (DataContext as CreateEditRecipeViewModel).ShowOpenFileDialog = false;

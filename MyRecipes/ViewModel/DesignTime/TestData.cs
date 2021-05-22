@@ -29,7 +29,7 @@ namespace MyRecipes.ViewModel.DesignTime
                 },
                 GetTestCategories(),
                 new RecipeImage(@"D:\Program Files (x86)\Steam\userdata\96277141\760\remote\588650\screenshots\20210406161102_1.jpg"), 
-                6);
+                6, -1);
         }
 
         public static Ingredient GetTestIngredient(string name, string link = "")

@@ -27,7 +27,7 @@
     <DockPanel Width="340">
         <Image Height="200" DockPanel.Dock="Top" 
                Source="{Binding Recipe.RecipeImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-               RenderOptions.BitmapScalingMode="HighQuality"/>
+               RenderOptions.BitmapScalingMode="HighQuality" Margin="-6,-4,-6,0"/>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,8">
             <TextBlock Text="Portionen:" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" Margin="0,0,8,0"/>
             <metro:NumericUpDown Value="{Binding Servings}" ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
@@ -84,7 +84,7 @@
             </ListView.ItemTemplate>
         </ListView>
     </DockPanel>
-    <Border Style="{StaticResource SplitterAccentVerticalStyle}" Margin="6,4"/>
+    <Border Style="{StaticResource SplitterAccentVerticalStyle}" Margin="6,-4"/>
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
                    Margin="0,0,0,6"/>

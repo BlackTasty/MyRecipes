@@ -1,6 +1,7 @@
 ﻿using MyRecipes.Core;
 using MyRecipes.Core.Observer;
 using MyRecipes.ViewModel.Communication;
+using MyRecipes.ViewModel.Sorting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -200,13 +201,13 @@ namespace MyRecipes.ViewModel
             }
         }
 
-        public void Reset(T value)
+        public void Set(T value)
         {
             Clear();
             Add(value);
         }
 
-        public void Reset(IEnumerable<T> values)
+        public void Set(IEnumerable<T> values)
         {
             Clear();
             AddRange(values);
@@ -265,6 +266,16 @@ namespace MyRecipes.ViewModel
 
             return copy;
         }
+
+        /*public void Sort(SortFactory sortFactory)
+        {
+            observeChanges = false;
+            Clear();
+            AddRange(sortFactory.Execute());
+
+            observeChanges = true;
+            changeManager?.ObserveProperty(this, CollectionName);
+        }*/
 
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

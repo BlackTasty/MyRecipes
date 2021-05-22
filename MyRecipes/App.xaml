@@ -12,7 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Sienna.xaml" />
 
-                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="DeepPurple" />
+                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="LightGreen" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
@@ -36,10 +36,10 @@
                 <!-- accent color -->
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.DeepPurple.xaml" />
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.LightGreen.xaml" />
                     </ResourceDictionary.MergedDictionaries>
-                    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{StaticResource Accent400}" />
-                    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{StaticResource Accent400Foreground}" />
+                    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{StaticResource Primary600}" />
+                    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{StaticResource Primary600Foreground}" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
@@ -83,7 +83,7 @@
                 <Setter Property="BorderThickness" Value="0,1,0,0"/>
             </Style>
 
-            <Style x:Key="SplitterLightVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+            <Style x:Key="SplitterLightVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterLightHorizontalStyle}">
                 <Setter Property="BorderThickness" Value="1,0,0,0"/>
             </Style>
 
@@ -92,7 +92,7 @@
                 <Setter Property="BorderThickness" Value="0,1,0,0"/>
             </Style>
 
-            <Style x:Key="SplitterMidVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+            <Style x:Key="SplitterMidVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterMidHorizontalStyle}">
                 <Setter Property="BorderThickness" Value="1,0,0,0"/>
             </Style>
 
@@ -101,7 +101,7 @@
                 <Setter Property="BorderThickness" Value="0,1,0,0"/>
             </Style>
 
-            <Style x:Key="SplitterDarkVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterAccentHorizontalStyle}">
+            <Style x:Key="SplitterDarkVerticalStyle" TargetType="Border" BasedOn="{StaticResource SplitterDarkHorizontalStyle}">
                 <Setter Property="BorderThickness" Value="1,0,0,0"/>
             </Style>
 

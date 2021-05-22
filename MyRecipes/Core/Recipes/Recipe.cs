@@ -18,8 +18,19 @@ namespace MyRecipes.Core.Recipes
 
         private RecipeImage mRecipeImage;
         private int mServings;
+        private int mPriority = -1; //0 = top priority; -1 = ignore priority
 
         private bool ignoreHasImageFlag;
+
+        public int Priority
+        {
+            get => mPriority;
+            set
+            {
+                mPriority = value;
+                InvokePropertyChanged();
+            }
+        }
 
         public VeryObservableCollection<RecipeIngredient> Ingredients
         {
@@ -106,13 +117,15 @@ namespace MyRecipes.Core.Recipes
 
         [JsonConstructor]
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
-            List<Category> categories, RecipeImage recipeImage, int servings) : base(guid, name, description, lastModifyDate)
+            List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
         {
             mIngredients.AddRange(ingredients);
             mPreparationSteps.AddRange(preparationSteps);
+            categories = categories.OrderBy(x => x.Name).ToList();
             mCategories.AddRange(categories);
             mRecipeImage = recipeImage;
             Servings = servings;
+            Priority = priority;
         }
 
         public Recipe(FileInfo fi) : base(fi)
@@ -154,6 +167,7 @@ namespace MyRecipes.Core.Recipes
             }
 
             fileName = Name + ".json";
+            Categories.Set(Categories.OrderBy(x => x.Name).ToList());
 
             ignoreHasImageFlag = true;
             SaveFile(parentPath, this);

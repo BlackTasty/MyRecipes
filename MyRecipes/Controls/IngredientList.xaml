@@ -155,12 +155,12 @@
                                 <material:PackIcon Kind="Close" />
                             </Button>
                             <Button Style="{StaticResource MaterialDesignIconButton}" DataContext="{Binding}"
-                                    DockPanel.Dock="Right" ToolTip="Umrechnung konfigurieren">
+                                    DockPanel.Dock="Right" ToolTip="Umrechnung konfigurieren" Visibility="Collapsed">
                                 <material:PackIcon Kind="ScaleBalance"/>
                             </Button>
                             <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:Unit}}}"
                                       SelectedItem="{Binding MeasurementType}" DockPanel.Dock="Right" Width="60"
-                                      material:HintAssist.Hint="Maßeinheit"/>
+                                      material:HintAssist.Hint="Maßeinheit" Visibility="Collapsed"/>
                             <Button
                                     DockPanel.Dock="Right" ToolTip="Saison konfigurieren" DataContext="{Binding}"
                                     Click="OpenSeasonConfigurator_Click">

@@ -87,51 +87,124 @@
         </material:DialogHost.DialogContent>
         <DockPanel>
             <material:Card DockPanel.Dock="Top" Padding="4">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Suche nach Rezept" 
-                                     IsChecked="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}"/>
-                        <RadioButton Content="Suche nach Zutaten" Margin="8,0"
-                                     IsChecked="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}"/>
-                        <RadioButton Content="Suche nach Kategorie" 
-                                     IsChecked="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
-                    <DockPanel Margin="0,4">
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                <DockPanel>
+                    <ToggleButton DockPanel.Dock="Right"
+                              material:ToggleButtonAssist.OnContent="{material:PackIcon Kind=SortAlphabeticalAscending}"
+                              IsChecked="{Binding SortAscending, UpdateSourceTrigger=PropertyChanged}" Margin="8,4">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                                <Setter Property="ToolTip" Value="Absteigend sortiert"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                    <DataTrigger Binding="{Binding SortAscending}" Value="True">
+                                        <Setter Property="ToolTip" Value="Aufsteigend sortiert"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </DockPanel.Style>
-                        <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
-                        <TextBox VerticalAlignment="Center" KeyDown="SearchRecipeName_KeyDown"
+                        </ToggleButton.Style>
+                        <material:PackIcon Kind="SortAlphabeticalDescending"/>
+                    </ToggleButton>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Suche nach Rezept" 
+                                     IsChecked="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}"/>
+                            <RadioButton Content="Suche nach Zutaten" Margin="8,0"
+                                     IsChecked="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}"/>
+                            <RadioButton Content="Suche nach Kategorie" 
+                                     IsChecked="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <DockPanel Margin="0,4">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchByRecipe, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                            <TextBox VerticalAlignment="Center" KeyDown="SearchRecipeName_KeyDown"
                                  Text="{Binding SearchRecipeName, UpdateSourceTrigger=PropertyChanged}"
                                  material:TextFieldAssist.HasClearButton="True"
                                  material:HintAssist.Hint="Rezept"
                                  material:HintAssist.IsFloating="True"/>
-                    </DockPanel>
-                    <UniformGrid Margin="0,4" Rows="2">
-                        <UniformGrid.Style>
-                            <Style TargetType="UniformGrid">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </UniformGrid.Style>
-                        <DockPanel>
-                            <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
-                            <ComboBox ItemsSource="{Binding AvailableIngredients, UpdateSourceTrigger=PropertyChanged}" 
+                        </DockPanel>
+                        <UniformGrid Margin="0,4" Rows="2">
+                            <UniformGrid.Style>
+                                <Style TargetType="UniformGrid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchByIngredient, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UniformGrid.Style>
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                                <ComboBox ItemsSource="{Binding AvailableIngredients, UpdateSourceTrigger=PropertyChanged}" 
                                       SelectionChanged="ComboBox_SelectionChanged"
                                       material:HintAssist.Hint="Zutat"
                                       material:TextFieldAssist.HasClearButton="True"
                                       material:HintAssist.IsFloating="True">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </DockPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Ausgewählte Zutaten:" VerticalAlignment="Center"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                <ListView ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,-4" 
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                         ItemsSource="{Binding SelectedIngredients, UpdateSourceTrigger=PropertyChanged}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <material:Chip Content="{Binding Name}" IsDeletable="True"
+                                           DeleteClick="Chip_DeleteClick"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                </ListView>
+                            </StackPanel>
+                        </UniformGrid>
+                        <DockPanel Margin="0,4">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
+                            <Button DockPanel.Dock="Right" ToolTip="Auswahl löschen"  Margin="0,-8"
+                                Click="ClearCategorySelection_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <material:PackIcon Kind="Close" Width="16" Height="16"/>
+                            </Button>
+                            <ComboBox ItemsSource="{Binding AvailableCategories, UpdateSourceTrigger=PropertyChanged}" 
+                                  SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionChanged="FilterCategory_SelectionChanged"
+                                  material:HintAssist.Hint="Kategorie"
+                                  material:HintAssist.IsFloating="True">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel />
@@ -139,64 +212,8 @@
                                 </ComboBox.ItemsPanel>
                             </ComboBox>
                         </DockPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Ausgewählte Zutaten:" VerticalAlignment="Center"
-                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
-                            <ListView ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,-4" 
-                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                         ItemsSource="{Binding SelectedIngredients, UpdateSourceTrigger=PropertyChanged}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <material:Chip Content="{Binding Name}" IsDeletable="True"
-                                           DeleteClick="Chip_DeleteClick"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-                            </ListView>
-                        </StackPanel>
-                    </UniformGrid>
-                    <DockPanel Margin="0,4">
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SearchByCategory, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
-                        <Button DockPanel.Dock="Right" Content="SUCHEN" Margin="12,0,0,0" Click="Search_Click"/>
-                        <Button DockPanel.Dock="Right" ToolTip="Auswahl löschen"  Margin="0,-8"
-                                Click="ClearCategorySelection_Click">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <material:PackIcon Kind="Close" Width="16" Height="16"/>
-                        </Button>
-                        <ComboBox ItemsSource="{Binding AvailableCategories, UpdateSourceTrigger=PropertyChanged}" 
-                                  SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectionChanged="FilterCategory_SelectionChanged"
-                                  material:HintAssist.Hint="Kategorie"
-                                  material:HintAssist.IsFloating="True">
-                            <ComboBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel />
-                                </ItemsPanelTemplate>
-                            </ComboBox.ItemsPanel>
-                        </ComboBox>
-                    </DockPanel>
-                </StackPanel>
+                    </StackPanel>
+                </DockPanel>
             </material:Card>
             <Grid Margin="0,4,0,0">
                 <ListView ItemsSource="{Binding AvailableRecipes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch"

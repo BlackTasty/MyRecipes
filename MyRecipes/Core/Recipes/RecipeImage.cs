@@ -25,6 +25,8 @@ namespace MyRecipes.Core.Recipes
             get => changeManager.UnsavedChanges;
         }
 
+        public bool IsImageSet => image != null;
+
         public string FilePath
         {
             get => filePath;
@@ -34,6 +36,7 @@ namespace MyRecipes.Core.Recipes
                 filePath = value;
                 image = Utils.FileToBitmapImage(value);
                 InvokePropertyChanged("Image");
+                InvokePropertyChanged("IsImageSet");
             }
         }
 

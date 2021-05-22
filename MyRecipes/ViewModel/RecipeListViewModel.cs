@@ -28,6 +28,7 @@ namespace MyRecipes.ViewModel
         private VeryObservableCollection<FilterObject> mAvailableCategories = new VeryObservableCollection<FilterObject>("AvailableCategories");
 
         private string mNewRecipeName;
+        private bool mSortAscending;
 
         public Recipe SelectedRecipeForDeletion
         {
@@ -39,7 +40,22 @@ namespace MyRecipes.ViewModel
             }
         }
 
-        public VeryObservableCollection<Recipe> AvailableRecipes => ShowFiltered ? mFilteredRecipes : App.AvailableRecipes;
+        public List<Recipe> AvailableRecipes
+        {
+            get
+            {
+                var data = ShowFiltered ? mFilteredRecipes : App.AvailableRecipes;
+
+                if (mSortAscending)
+                {
+                    return data.OrderBy(x => x.Priority >= 0 ? x.Priority : 0).ThenBy(x => x.Name).ToList();
+                }
+                else
+                {
+                    return data.OrderByDescending(x => x.Priority >= 0 ? x.Priority : 0).ThenByDescending(x => x.Name).ToList();
+                }
+            }
+        }
 
         public VeryObservableCollection<FilterObject> AvailableIngredients => mAvailableIngredients;
 
@@ -52,6 +68,17 @@ namespace MyRecipes.ViewModel
             {
                 mSelectedIngredients = value;
                 InvokePropertyChanged();
+            }
+        }
+
+        public bool SortAscending
+        {
+            get => mSortAscending;
+            set
+            {
+                mSortAscending = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("AvailableRecipes");
             }
         }
 

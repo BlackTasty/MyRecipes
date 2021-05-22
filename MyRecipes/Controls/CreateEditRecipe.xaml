@@ -95,6 +95,12 @@
                             VerticalAlignment="Bottom" Margin="4" Click="UploadImage_Click" ToolTip="Bild hinzufügen">
                     <material:PackIcon Kind="Upload"/>
                 </Button>
+                <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Margin="4,4,48,4" Click="RemoveImage_Click"  ToolTip="Bild entfernen"
+                        Background="{StaticResource WarnColor}" BorderBrush="{StaticResource WarnColor}"
+                        Visibility="{Binding Recipe.RecipeImage.IsImageSet, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <material:PackIcon Kind="Remove"/>
+                </Button>
             </Grid>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,8">
                 <TextBlock Text="Portionen:" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" Margin="0,0,8,0"/>
