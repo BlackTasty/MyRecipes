@@ -164,7 +164,8 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <material:Chip Content="{Binding Name}" IsDeletable="True"
-                                           DeleteClick="Chip_DeleteClick"/>
+                                                           Foreground="#FF000000"
+                                                           DeleteClick="Chip_DeleteClick"/>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                     <ListView.ItemsPanel>
@@ -274,7 +275,8 @@
                                      ItemsSource="{Binding Categories, UpdateSourceTrigger=PropertyChanged}" Margin="0,-4">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <material:Chip Content="{Binding Name}" DataContext="{Binding}" Click="Category_Click"/>
+                                                <material:Chip Content="{Binding Name}" DataContext="{Binding}" 
+                                                               Click="Category_Click" Foreground="#FF000000"/>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                         <ListBox.ItemsPanel>

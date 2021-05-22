@@ -96,6 +96,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <material:Chip Content="{Binding Name}" DataContext="{Binding}"
+                                       Foreground="#FF000000"
                                        Click="Category_Click"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

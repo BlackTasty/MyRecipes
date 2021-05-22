@@ -11,6 +11,8 @@ namespace MyRecipes.Core.Recipes
 {
     public class Recipe : BaseData<Recipe>
     {
+        private string nameCurrent;
+
         private VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
         private VeryObservableCollection<string> mPreparationSteps = new VeryObservableCollection<string>("PreparationSteps");
         private VeryObservableCollection<Category> mCategories = new VeryObservableCollection<Category>("Categories");
@@ -27,6 +29,7 @@ namespace MyRecipes.Core.Recipes
             get => mPriority;
             set
             {
+                changeManager.ObserveProperty(value);
                 mPriority = value;
                 InvokePropertyChanged();
             }
@@ -126,6 +129,7 @@ namespace MyRecipes.Core.Recipes
             mRecipeImage = recipeImage;
             Servings = servings;
             Priority = priority;
+            nameCurrent = Name;
         }
 
         public Recipe(FileInfo fi) : base(fi)
@@ -137,6 +141,7 @@ namespace MyRecipes.Core.Recipes
         {
             LastAccessDate = new DateTime(0);
             mServings = 1;
+            nameCurrent = Name;
         }
 
         public void Load()
@@ -155,15 +160,20 @@ namespace MyRecipes.Core.Recipes
             mRecipeImage = recipe.RecipeImage;
 
             Servings = recipe.mServings;
+            nameCurrent = Name;
         }
 
         public void Save(string parentPath)
         {
             Directory.CreateDirectory(parentPath);
 
-            if (fromFile && File.Exists(fileName) && fileName != Name + ".json") //Recipe has been renamed, remove old file
+            if (nameCurrent != null)
             {
-                File.Delete(fileName);
+                string oldFileName = Path.Combine(filePath, nameCurrent + ".json");
+                if (fromFile && Name != nameCurrent && File.Exists(oldFileName)) //Recipe has been renamed, remove old file
+                {
+                    File.Delete(oldFileName);
+                }
             }
 
             fileName = Name + ".json";
@@ -172,6 +182,7 @@ namespace MyRecipes.Core.Recipes
             ignoreHasImageFlag = true;
             SaveFile(parentPath, this);
             ignoreHasImageFlag = false;
+            nameCurrent = Name;
         }
     }
 }

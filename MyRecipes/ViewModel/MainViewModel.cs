@@ -27,6 +27,8 @@ namespace MyRecipes.ViewModel
         private bool mShowBackToRecipesButton;
         private bool mShowSaisonCalendarButton;
         private bool mShowShoppingList;
+        private bool mShowSaveRecipeButton;
+        private bool mEnableSaveRecipeButton;
 
         private ShoppingList mShoppingList = new ShoppingList();
 
@@ -41,20 +43,32 @@ namespace MyRecipes.ViewModel
                 {
                     recipeView.CategoryClicked -= RecipeView_CategoryClicked;
                 }
+                else if (value is RecipeList recipeList)
+                {
+                    recipeList.ReloadList();
+                }
 
                 if (value is CreateEditRecipe createEditRecipe)
                 {
                     mIsCreateEditRecipeOpen = true;
+                    ShowSaveRecipeButton = true;
                     createEditRecipe.Finished += CreateEditRecipe_Finished;
+                    createEditRecipe.RecipeChanged += CreateEditRecipe_RecipeChanged;
                 }
                 else if (mIsCreateEditRecipeOpen && mContent is CreateEditRecipe createEditClosed)
                 {
                     mIsCreateEditRecipeOpen = false;
                     createEditClosed.Finished -= CreateEditRecipe_Finished;
+                    createEditClosed.RecipeChanged -= CreateEditRecipe_RecipeChanged;
                 }
                 mContent = value;
                 InvokePropertyChanged();
             }
+        }
+
+        private void CreateEditRecipe_RecipeChanged(object sender, Core.Observer.ChangeObservedEventArgs e)
+        {
+            EnableSaveRecipeButton = e.UnsavedChanges;
         }
 
         public bool ShowBackToIngredientsButton
@@ -93,6 +107,26 @@ namespace MyRecipes.ViewModel
             set
             {
                 mShowShoppingList = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public bool ShowSaveRecipeButton
+        {
+            get => mShowSaveRecipeButton;
+            set
+            {
+                mShowSaveRecipeButton = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public bool EnableSaveRecipeButton
+        {
+            get => mEnableSaveRecipeButton;
+            set
+            {
+                mEnableSaveRecipeButton = value;
                 InvokePropertyChanged();
             }
         }
@@ -155,18 +189,22 @@ namespace MyRecipes.ViewModel
                     ShowBackToIngredientsButton = false;
                     ShowSaisonCalendarButton = true;
                     ShowBackToRecipesButton = false;
+                    ShowSaveRecipeButton = false;
                 }
                 else if (value == 3)
                 {
                     ShowBackToIngredientsButton = true;
                     ShowSaisonCalendarButton = false;
                     ShowBackToRecipesButton = false;
+                    ShowSaveRecipeButton = false;
                 }
-                else if (value > -1)
+                else
                 {
                     ShowBackToIngredientsButton = false;
                     ShowSaisonCalendarButton = false;
                     ShowBackToRecipesButton = false;
+                    EnableSaveRecipeButton = false;
+                    ShowSaveRecipeButton = mIsCreateEditRecipeOpen;
                 }
 
                 mSelectedSidebarIndex = value;
@@ -214,6 +252,14 @@ namespace MyRecipes.ViewModel
         {
             InvokePropertyChanged("ShoppingList");
             InvokePropertyChanged("ShowShoppingListButton");
+        }
+
+        public void SaveRecipe()
+        {
+            if (Content is CreateEditRecipe createEditRecipe)
+            {
+                createEditRecipe.SaveRecipe();
+            }
         }
 
         private void RecipeList_AddingToShoppingList(object sender, Core.Events.RecipeOpeningEventArgs e)

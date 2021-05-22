@@ -3,6 +3,7 @@ using MaterialDesignExtensions.Controls;
 using MaterialDesignExtensions.Model;
 using MaterialDesignThemes.Wpf;
 using MyRecipes.Core.Enum;
+using MyRecipes.Core.Observer;
 using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
 using System;
@@ -28,6 +29,7 @@ namespace MyRecipes.Controls
     public partial class CreateEditRecipe : Grid
     {
         public event EventHandler<EventArgs> Finished;
+        public event EventHandler<ChangeObservedEventArgs> RecipeChanged;
 
         public CreateEditRecipe()
         {
@@ -41,6 +43,23 @@ namespace MyRecipes.Controls
             CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
             vm.Recipe = recipe;
             vm.IsEdit = isEdit;
+            vm.RecipeChanged += ViewModel_RecipeChanged;
+        }
+
+        public void SaveRecipe()
+        {
+            CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
+            vm.Recipe.Save(App.Settings.RecipeDirectory);
+            if (!vm.IsEdit)
+            {
+                App.AvailableRecipes.Add(vm.Recipe);
+                OnFinished(EventArgs.Empty);
+            }
+        }
+
+        private void ViewModel_RecipeChanged(object sender, ChangeObservedEventArgs e)
+        {
+            OnRecipeChanged(e);
         }
 
         public CreateEditRecipe(string name) : this(new Recipe(name), false)
@@ -67,13 +86,7 @@ namespace MyRecipes.Controls
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
-            if (!vm.IsEdit)
-            {
-                App.AvailableRecipes.Add(vm.Recipe);
-            }
-            vm.Recipe.Save(App.Settings.RecipeDirectory);
-            OnFinished(EventArgs.Empty);
+            SaveRecipe();
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
@@ -170,6 +183,11 @@ namespace MyRecipes.Controls
                 view.Refresh();
                 vm.NewPreparationStepText = "";
             }
+        }
+
+        protected virtual void OnRecipeChanged(ChangeObservedEventArgs e)
+        {
+            RecipeChanged?.Invoke(this, e);
         }
     }
 }

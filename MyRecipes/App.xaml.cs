@@ -106,6 +106,7 @@ namespace MyRecipes
                 Directory.CreateDirectory(Settings.RecipeDirectory);
             }
 
+            AvailableRecipes.Clear();
             foreach (FileInfo fi in new DirectoryInfo(Settings.RecipeDirectory).EnumerateFiles("*.json"))
             {
                 AvailableRecipes.Add(new Recipe(fi));

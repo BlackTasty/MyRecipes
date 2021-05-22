@@ -86,7 +86,7 @@
                     <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToIngredientsList_Click"
                             Visibility="{Binding ShowBackToIngredientsButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             ToolTip="Zurück zu Zutaten">
-                        <Grid>
+                        <Grid Margin="0,-2,0,0">
                             <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" 
                                                RenderTransformOrigin="0.5,0.5">
                                 <material:PackIcon.RenderTransform>
@@ -104,7 +104,7 @@
                     <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToRecipes_Click" 
                             Visibility="{Binding ShowBackToRecipesButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             ToolTip="Zurück zu Rezepten">
-                        <Grid>
+                        <Grid Margin="0,-2,0,0">
                             <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" RenderTransformOrigin="0.5,0.5">
                                 <material:PackIcon.RenderTransform>
                                     <TransformGroup>
@@ -117,6 +117,12 @@
                             </material:PackIcon>
                             <material:PackIcon Kind="ChefHat" Width="18" Height="18" VerticalAlignment="Center" Margin="-2,4,0,0"/>
                         </Grid>
+                    </Button>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
+                            Visibility="{Binding ShowSaveRecipeButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsEnabled="{Binding EnableSaveRecipeButton}"
+                            ToolTip="Rezept speichern" Click="SaveRecipe_Click">
+                        <material:PackIcon Kind="ContentSave"/>
                     </Button>
                     <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="OpenSaisonCalendar_Click" 
                             Visibility="{Binding ShowSaisonCalendarButton, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"

@@ -83,5 +83,10 @@ namespace MyRecipes
         {
 
         }
+
+        private void SaveRecipe_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).SaveRecipe();
+        }
     }
 }

@@ -34,6 +34,22 @@ namespace MyRecipes.Controls
             InitializeComponent();
         }
 
+        public void SetCategoryFilter(Category category)
+        {
+            RecipeListViewModel vm = DataContext as RecipeListViewModel;
+            if (!vm.SearchByCategory)
+            {
+                vm.SearchByCategory = true;
+            }
+            vm.SelectedCategory = vm.AvailableCategories.FirstOrDefault(x => x.Name == category.Name);
+            ExecuteSearch();
+        }
+
+        public void ReloadList()
+        {
+            ExecuteSearch();
+        }
+
         private void Chip_DeleteClick(object sender, RoutedEventArgs e)
         {
             if (sender is Chip chip && chip.DataContext is FilterObject ingredient)
@@ -149,17 +165,6 @@ namespace MyRecipes.Controls
             }
         }
 
-        public void SetCategoryFilter(Category category)
-        {
-            RecipeListViewModel vm = DataContext as RecipeListViewModel;
-            if (!vm.SearchByCategory)
-            {
-                vm.SearchByCategory = true;
-            }
-            vm.SelectedCategory = vm.AvailableCategories.FirstOrDefault(x => x.Name == category.Name);
-            ExecuteSearch();
-        }
-
         protected virtual void OnRecipeEditing(RecipeOpeningEventArgs e)
         {
             RecipeEditing?.Invoke(this, e);
@@ -209,8 +214,9 @@ namespace MyRecipes.Controls
         {
             RecipeListViewModel vm = DataContext as RecipeListViewModel;
             vm.SelectedRecipeForDeletion.Delete();
-            vm.AvailableRecipes.Remove(vm.SelectedRecipeForDeletion);
+            App.AvailableRecipes.Remove(vm.SelectedRecipeForDeletion);
             App.LoadHistory();
+            ReloadList();
         }
 
         private void ClearCategorySelection_Click(object sender, RoutedEventArgs e)

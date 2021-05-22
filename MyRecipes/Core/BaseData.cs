@@ -72,6 +72,7 @@ namespace MyRecipes.Core
             mName = name;
             mDescription = description;
             this.mLastModifyDate = lastModifyDate;
+            changeManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace MyRecipes.Core
 
         public BaseData(FileInfo fi) : base(fi)
         {
-
+            changeManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
         public override string ToString()
@@ -129,6 +130,16 @@ namespace MyRecipes.Core
             mLastModifyDate = DateTime.Now;
             InvokePropertyChanged("LastModifyDate");
             base.SaveFile(filePath, @object);
+        }
+
+        private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
+        }
+
+        protected void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

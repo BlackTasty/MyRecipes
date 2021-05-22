@@ -1,4 +1,5 @@
-﻿using MyRecipes.Core.Recipes;
+﻿using MyRecipes.Core.Observer;
+using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace MyRecipes.ViewModel
 {
     class RecipeViewViewModel : ViewModelBase
     {
+        public event EventHandler<ChangeObservedEventArgs> RecipeChanged;
+
         private OpenUrlCommand mOpenUrlCommand = new OpenUrlCommand();
         private Recipe mRecipe;
         private int mServings;
@@ -20,10 +23,16 @@ namespace MyRecipes.ViewModel
             get => mRecipe;
             set
             {
+                if (mRecipe != null)
+                {
+                    mRecipe.ChangeObserved -= Recipe_ChangeObserved;
+                }
+
                 mRecipe = value;
                 if (value != null)
                 {
                     Servings = value.Servings;
+                    mRecipe.ChangeObserved += Recipe_ChangeObserved;
                 }
                 else
                 {
@@ -31,6 +40,11 @@ namespace MyRecipes.ViewModel
                 }
                 InvokePropertyChanged();
             }
+        }
+
+        private void Recipe_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnRecipeChanged(new ChangeObservedEventArgs(Recipe.UnsavedChanges, e.NewValue, e.Observer));
         }
 
         public int Servings
@@ -66,5 +80,10 @@ namespace MyRecipes.ViewModel
         }
 
         public OpenUrlCommand OpenUrlCommand => mOpenUrlCommand;
+
+        protected virtual void OnRecipeChanged(ChangeObservedEventArgs e)
+        {
+            RecipeChanged?.Invoke(this, e);
+        }
     }
 }

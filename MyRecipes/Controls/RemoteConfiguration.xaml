@@ -98,7 +98,7 @@
                     Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
             </DockPanel>
             <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="26,8"
-                    Click="ClearLog_Click"
+                    Click="ClearLog_Click" ToolTip="Server log leeren"
                     Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
                 <material:PackIcon Kind="PlaylistRemove"/>
             </Button>

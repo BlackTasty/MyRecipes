@@ -13,7 +13,7 @@
       xmlns:commands="clr-namespace:MyRecipes.ViewModel.Commands"
       xmlns:enum="clr-namespace:MyRecipes.Core.Enum"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="700"
+      d:DesignHeight="500" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance {x:Type dvm:CreateEditRecipeDesignViewModel}, IsDesignTimeCreatable=True}">
     <Grid.Style>
         <Style TargetType="Grid">
@@ -38,28 +38,41 @@
         <commands:OpenUrlCommand x:Key="OpenUrlCommand"/>
     </Grid.Resources>
     <DockPanel>
-        <TextBox DockPanel.Dock="Top" Text="{Binding Recipe.Name, UpdateSourceTrigger=PropertyChanged}" 
+        <DockPanel DockPanel.Dock="Top" Margin="4,0">
+            <DockPanel LastChildFill="False" DockPanel.Dock="Right" Margin="16,0,0,0">
+                <metro:NumericUpDown Value="{Binding Recipe.Priority, UpdateSourceTrigger=PropertyChanged}" 
+                                     ParsingNumberStyle="Integer"  NumericInputMode="Numbers" 
+                                     Minimum="-1" BorderThickness="0,0,0,1" Background="Transparent" 
+                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" DockPanel.Dock="Bottom"
+                                     Height="21" MinHeight="21" Margin="0,0,0,4" SnapsToDevicePixels="True"
+                                     ToolTip="-1 = Ignorieren, 0 = höchste Priorität"/>
+                <TextBlock Text="Priorität" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+            </DockPanel>
+            <TextBox Text="{Binding Recipe.Name, UpdateSourceTrigger=PropertyChanged}" 
                  material:HintAssist.Hint="Rezept Name" material:TextFieldAssist.HasClearButton="True" 
                  material:HintAssist.IsFloating="True" Margin="0,0,0,4" FontSize="15"/>
+        </DockPanel>
         <material:Card DockPanel.Dock="Bottom">
-            <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
-                    <Button Click="Save_Click" Margin="8,0">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                                <Setter Property="Content" Value="SPEICHERN"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsEdit}" Value="False">
-                                        <Setter Property="Content" Value="ERSTELLEN"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="Abort_Click"
-                            Background="{StaticResource WarnColor}"
-                            BorderBrush="{StaticResource WarnColor}"/>
-                </StackPanel>
+            <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0" 
+                       LastChildFill="False">
+                <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="Abort_Click"
+                        Background="{StaticResource WarnColor}" DockPanel.Dock="Right"
+                        BorderBrush="{StaticResource WarnColor}" Margin="4"
+                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
+                <Button Click="Save_Click" DockPanel.Dock="Right" Margin="4">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                            <Setter Property="Content" Value="SPEICHERN"/>
+                            <Setter Property="IsEnabled" Value="{Binding UnsavedChanges}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEdit}" Value="False">
+                                    <Setter Property="Content" Value="ERSTELLEN"/>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </DockPanel>
         </material:Card>
         <DockPanel Width="340">
@@ -88,7 +101,7 @@
                     </ComboBox.ItemsPanel>
                 </ComboBox>
             </DockPanel>
-            <Grid Height="170" DockPanel.Dock="Top">
+            <Grid Height="170" DockPanel.Dock="Top" Margin="-4,-4,-6,0">
                 <Image Source="{Binding Recipe.RecipeImage.Image, UpdateSourceTrigger=PropertyChanged}"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
@@ -98,6 +111,7 @@
                 <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
                         VerticalAlignment="Bottom" Margin="4,4,48,4" Click="RemoveImage_Click"  ToolTip="Bild entfernen"
                         Background="{StaticResource WarnColor}" BorderBrush="{StaticResource WarnColor}"
+                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
                         Visibility="{Binding Recipe.RecipeImage.IsImageSet, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <material:PackIcon Kind="Remove"/>
                 </Button>
@@ -134,8 +148,9 @@
                             <TextBlock Text="{Binding MeasurementType, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" 
                                        Margin="6,0,0,0"/>
                             <Button Style="{DynamicResource MaterialDesignIconButton}" DockPanel.Dock="Right"
-                                            Height="24" Width="24" Click="RemoveIngredient_Click" ToolTip="Zutat entfernen"
-                                            DataContext="{Binding}">
+                                    Height="24" Width="24" Click="RemoveIngredient_Click" ToolTip="Zutat entfernen"
+                                    DataContext="{Binding}"
+                                    Foreground="{StaticResource WarnColor}">
                                 <material:PackIcon Kind="Remove"/>
                             </Button>
                             <TextBlock Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"
@@ -161,7 +176,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </DockPanel>
-        <Border Margin="6,4" Style="{StaticResource SplitterAccentVerticalStyle}"/>
+        <Border Margin="6,-4,6,0" Style="{StaticResource SplitterAccentVerticalStyle}"/>
         <material:DialogHost x:Name="dialogHost" DialogTheme="Inherit">
             <material:DialogHost.DialogContent>
                 <StackPanel Margin="16" x:Name="dialog_preparationStep">
@@ -207,7 +222,7 @@
                         Style="{StaticResource MaterialDesignOutlinedButton}"
                         Command="{x:Static material:DialogHost.OpenDialogCommand}"/>
                 <material:Transitioner DockPanel.Dock="Bottom" SelectedIndex="0">
-                    <DockPanel Height="40">
+                    <DockPanel Height="60">
                         <TextBlock Text="Kategorien:" Style="{DynamicResource MaterialDesignBody1TextBlock}"
                                    VerticalAlignment="Center"/>
                         <Button DockPanel.Dock="Right" Width="30" Height="30"
@@ -218,11 +233,12 @@
                             <material:PackIcon Kind="Add"/>
                         </Button>
                         <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         ItemsSource="{Binding Recipe.Categories}" Margin="0,-4">
+                         ItemsSource="{Binding Recipe.Categories}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <material:Chip Content="{Binding Name}" IsDeletable="True"
-                                           DeleteClick="Category_DeleteClick" DataContext="{Binding}"/>
+                                    <material:Chip Content="{Binding Name}" IsDeletable="True" Margin="0,0,0,-8"
+                                                   Foreground="#FF000000"
+                                                   DeleteClick="Category_DeleteClick" DataContext="{Binding}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                             <ListBox.ItemsPanel>
@@ -249,10 +265,11 @@
                             <DockPanel MaxWidth="{Binding ElementName=preparationStepsList, Path=ActualWidth,
                                 Converter={StaticResource LengthConverter}, ConverterParameter=-30}">
                                 <Button Style="{StaticResource MaterialDesignIconButton}"
-                                DockPanel.Dock="Right" ToolTip="Schritt entfernen"
-                                    Click="RemovePreparationStep_Click" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                  AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
-                                                  ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}">
+                                        DockPanel.Dock="Right" ToolTip="Schritt entfernen"
+                                        Click="RemovePreparationStep_Click" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                        AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
+                                        ConverterParameter=0, UpdateSourceTrigger=PropertyChanged}"
+                                        Foreground="{StaticResource WarnColor}">
                                     <material:PackIcon Kind="Close" />
                                 </Button>
                                 <Button Style="{StaticResource MaterialDesignIconButton}"
@@ -266,7 +283,8 @@
                                 </Button>
                                 <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
                                                   AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}, 
-                                                  ConverterParameter=1, UpdateSourceTrigger=PropertyChanged}" Margin="0,-8,8,0" 
+                                                  ConverterParameter=1, UpdateSourceTrigger=PropertyChanged,
+                                                  StringFormat={}{0}.}" Margin="0,-8,8,0" 
                                            Style="{DynamicResource MaterialDesignHeadline4TextBlock}"
                                            MinWidth="40" TextAlignment="Right"/>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap"/>

@@ -1,4 +1,5 @@
-﻿using MyRecipes.Core.Recipes;
+﻿using MyRecipes.Core.Observer;
+using MyRecipes.Core.Recipes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace MyRecipes.ViewModel
                 InvokePropertyChanged("AddCategoryEnabled");
             }
         }
+
+        public bool UnsavedChanges => Recipe?.UnsavedChanges ?? false;
 
         public bool AddCategoryEnabled => SelectedCategory != null;
 
@@ -109,5 +112,11 @@ namespace MyRecipes.ViewModel
         }
 
         public bool AddPreparationStepEnabled => !string.IsNullOrWhiteSpace(mNewPreparationStepText);
+
+        protected override void OnRecipeChanged(ChangeObservedEventArgs e)
+        {
+            base.OnRecipeChanged(e);
+            InvokePropertyChanged("UnsavedChanges");
+        }
     }
 }
