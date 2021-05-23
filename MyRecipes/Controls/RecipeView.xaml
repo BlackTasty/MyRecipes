@@ -25,7 +25,7 @@
         <commands:OpenUrlCommand x:Key="OpenUrlCommand"/>
     </DockPanel.Resources>
     <DockPanel Width="340">
-        <Image Height="200" DockPanel.Dock="Top" 
+        <Image Height="200" DockPanel.Dock="Top" Stretch="UniformToFill"
                Source="{Binding Recipe.RecipeImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                RenderOptions.BitmapScalingMode="HighQuality" Margin="-6,-4,-6,0"/>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,8">

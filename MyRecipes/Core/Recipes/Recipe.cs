@@ -130,6 +130,7 @@ namespace MyRecipes.Core.Recipes
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
             List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
         {
+            RegisterChildObservers();
             Ingredients.AddRange(ingredients);
             PreparationSteps.AddRange(preparationSteps);
             categories = categories.OrderBy(x => x.Name).ToList();
@@ -138,7 +139,6 @@ namespace MyRecipes.Core.Recipes
             Servings = servings;
             Priority = priority;
             nameCurrent = Name;
-            RegisterChildObservers();
         }
 
         public Recipe(FileInfo fi) : base(fi)
@@ -149,10 +149,10 @@ namespace MyRecipes.Core.Recipes
 
         public Recipe(string name) : base(name)
         {
+            RegisterChildObservers();
             LastAccessDate = new DateTime(0);
             Servings = 1;
             nameCurrent = Name;
-            RegisterChildObservers();
         }
 
         ~Recipe()
@@ -205,12 +205,14 @@ namespace MyRecipes.Core.Recipes
         private void RegisterChildObservers()
         {
             Ingredients.RegisterParent(ChangeManager);
+            PreparationSteps.RegisterParent(ChangeManager);
             Categories.RegisterParent(ChangeManager);
         }
 
         private void UnregisterChildObservers()
         {
             Ingredients.UnregisterParent(ChangeManager);
+            PreparationSteps.UnregisterParent(ChangeManager);
             Categories.UnregisterParent(ChangeManager);
         }
     }
