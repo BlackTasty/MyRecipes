@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core.Recipes
 {
     class ShoppingList : ViewModelBase
     {
-        private VeryObservableCollection<ShoppingRecipe> mSelectedRecipes = new VeryObservableCollection<ShoppingRecipe>("SelectedRecipes");
+        private JsonObservableCollection<ShoppingRecipe> mSelectedRecipes = new JsonObservableCollection<ShoppingRecipe>("SelectedRecipes", true);
 
-        public VeryObservableCollection<ShoppingRecipe> SelectedRecipes
+        public JsonObservableCollection<ShoppingRecipe> SelectedRecipes
         {
             get => mSelectedRecipes;
             set

@@ -1,5 +1,4 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.ViewModel;
+﻿using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Tasty.ViewModel;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core.Recipes
 {
@@ -14,15 +15,15 @@ namespace MyRecipes.Core.Recipes
     {
         private string filePath;
         private ImageSource image;
-        protected ObserverManager changeManager = new ObserverManager();
+        protected ObserverManager observerManager = new ObserverManager();
 
         [JsonIgnore]
-        public ObserverManager ChangeManager => changeManager;
+        public ObserverManager ObserverManager => observerManager;
 
         [JsonIgnore]
         public bool UnsavedChanges
         {
-            get => changeManager.UnsavedChanges;
+            get => observerManager.UnsavedChanges;
         }
 
         public bool IsImageSet => image != null;
@@ -32,7 +33,7 @@ namespace MyRecipes.Core.Recipes
             get => filePath;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 filePath = value;
                 image = Utils.FileToBitmapImage(value);
                 InvokePropertyChanged("Image");

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core.Recipes
 {
@@ -16,14 +17,14 @@ namespace MyRecipes.Core.Recipes
         private IngredientCategory mIngredientCategory;
         private Unit mMeasurementType;
         private MeasurementConversion mMeasurementConversion;
-        private VeryObservableCollection<Season> mSeasons = new VeryObservableCollection<Season>("Seasons");
+        private JsonObservableCollection<Season> mSeasons = new JsonObservableCollection<Season>("Seasons", true);
 
         public string ProductLink
         {
             get => mProductLink;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mProductLink = value;
                 InvokePropertyChanged();
             }
@@ -55,18 +56,18 @@ namespace MyRecipes.Core.Recipes
             get => mIngredientCategory;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mIngredientCategory = value;
                 InvokePropertyChanged();
             }
         }
 
-        public VeryObservableCollection<Season> Seasons
+        public JsonObservableCollection<Season> Seasons
         {
             get => mSeasons;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mSeasons = value;
                 InvokePropertyChanged();
             }
@@ -125,12 +126,12 @@ namespace MyRecipes.Core.Recipes
 
         private void RegisterParent()
         {
-            Seasons.RegisterParent(ChangeManager);
+            Seasons.RegisterParent(ObserverManager);
         }
 
         private void UnregisterParent()
         {
-            Seasons.UnregisterParent(ChangeManager);
+            Seasons.UnregisterParent(ObserverManager);
         }
     }
 }

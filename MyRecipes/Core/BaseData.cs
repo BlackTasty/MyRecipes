@@ -1,5 +1,4 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.ViewModel;
+﻿using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core
 {
@@ -33,7 +33,7 @@ namespace MyRecipes.Core
             get => mName;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mName = value;
                 InvokePropertyChanged();
             }
@@ -44,7 +44,7 @@ namespace MyRecipes.Core
             get => mDescription;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mDescription = value;
                 InvokePropertyChanged();
             }
@@ -72,8 +72,8 @@ namespace MyRecipes.Core
             Name = name;
             Description = description;
             mLastModifyDate = lastModifyDate;
-            changeManager.RootGuid = guid;
-            changeManager.ChangeObserved += ChangeManager_ChangeObserved;
+            observerManager.RootGuid = guid;
+            observerManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
         /// <summary>
@@ -87,8 +87,8 @@ namespace MyRecipes.Core
 
         public BaseData(FileInfo fi) : base(fi)
         {
-            changeManager.RootGuid = guid;
-            changeManager.ChangeObserved += ChangeManager_ChangeObserved;
+            observerManager.RootGuid = guid;
+            observerManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
         public override string ToString()
@@ -112,7 +112,7 @@ namespace MyRecipes.Core
             {
                 Name = data.Name;
                 guid = data.Guid;
-                changeManager.RootGuid = guid;
+                observerManager.RootGuid = guid;
                 Description = data.Description;
                 mLastAccessDate = data.LastAccessDate;
                 mLastModifyDate = data.LastModifyDate;
@@ -143,6 +143,14 @@ namespace MyRecipes.Core
         protected void OnChangeObserved(ChangeObservedEventArgs e)
         {
             ChangeObserved?.Invoke(this, e);
+        }
+
+        IObservableClass IObservableClass.Copy()
+        {
+            return new BaseData<T>(guid, Name, Description, LastModifyDate)
+            {
+                LastAccessDate = LastAccessDate
+            };
         }
     }
 }

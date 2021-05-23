@@ -1,10 +1,11 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.Core.Recipes;
+﻿using MyRecipes.Core.Recipes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.JsonNet;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.ViewModel
 {
@@ -43,9 +44,9 @@ namespace MyRecipes.ViewModel
             }
         }
 
-        public VeryObservableCollection<Ingredient> AvailableIngredients => App.AvailableIngredients;
+        public JsonObservableCollection<Ingredient> AvailableIngredients => App.AvailableIngredients;
 
-        public VeryObservableCollection<Category> AvailableCategories => App.AvailableCategories;
+        public JsonObservableCollection<Category> AvailableCategories => App.AvailableCategories;
 
         public Category SelectedCategory
         {

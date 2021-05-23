@@ -1,5 +1,4 @@
 ﻿using MyRecipes.Core.Enum;
-using MyRecipes.Core.Observer;
 using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -7,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core.Recipes
 {
@@ -15,10 +16,10 @@ namespace MyRecipes.Core.Recipes
         private Ingredient mIngredient;
         private double mAmount;
         private Unit mMeasurementType;
-        protected ObserverManager changeManager = new ObserverManager();
+        protected ObserverManager observerManager = new ObserverManager();
 
         [JsonIgnore]
-        public ObserverManager ChangeManager => changeManager;
+        public ObserverManager ObserverManager => observerManager;
 
         public Ingredient Ingredient
         {
@@ -27,12 +28,12 @@ namespace MyRecipes.Core.Recipes
             {
                 if (mIngredient != null)
                 {
-                    changeManager.UnregisterChild(mIngredient.ChangeManager);
+                    observerManager.UnregisterChild(mIngredient.ObserverManager);
                 }
                 mIngredient = value;
                 if (value != null)
                 {
-                    changeManager.UnregisterChild(value.ChangeManager);
+                    observerManager.UnregisterChild(value.ObserverManager);
                 }
                 InvokePropertyChanged();
             }
@@ -43,7 +44,7 @@ namespace MyRecipes.Core.Recipes
             get => mAmount;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mAmount = value;
                 InvokePropertyChanged();
             }
@@ -54,7 +55,7 @@ namespace MyRecipes.Core.Recipes
             get => mMeasurementType;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mMeasurementType = value;
                 InvokePropertyChanged();
             }

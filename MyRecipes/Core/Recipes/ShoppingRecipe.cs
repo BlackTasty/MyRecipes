@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core.Recipes
 {
@@ -11,7 +13,7 @@ namespace MyRecipes.Core.Recipes
     {
         private Recipe mRecipe;
         private int mServings;
-        private VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
+        private JsonObservableCollection<RecipeIngredient> mIngredients = new JsonObservableCollection<RecipeIngredient>("Ingredients", true);
 
         public Recipe Recipe
         {
@@ -53,7 +55,7 @@ namespace MyRecipes.Core.Recipes
             }
         }
 
-        public VeryObservableCollection<RecipeIngredient> Ingredients
+        public JsonObservableCollection<RecipeIngredient> Ingredients
         {
             get => mIngredients;
             set

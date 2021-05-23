@@ -7,17 +7,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core
 {
     class CookingData : JsonFile<CookingData>
     {
-        private VeryObservableCollection<Ingredient> availableIngredients = new VeryObservableCollection<Ingredient>("AvailableIngredients");
-        private VeryObservableCollection<Category> availableCategories = new VeryObservableCollection<Category>("AvailableCategories");
+        private JsonObservableCollection<Ingredient> availableIngredients = new JsonObservableCollection<Ingredient>("AvailableIngredients", true);
+        private JsonObservableCollection<Category> availableCategories = new JsonObservableCollection<Category>("AvailableCategories", true);
 
-        public VeryObservableCollection<Ingredient> AvailableIngredients => availableIngredients;
+        public JsonObservableCollection<Ingredient> AvailableIngredients => availableIngredients;
 
-        public VeryObservableCollection<Category> AvailableCategories => availableCategories;
+        public JsonObservableCollection<Category> AvailableCategories => availableCategories;
 
         [JsonConstructor]
         public CookingData(List<Ingredient> availableIngredients, List<Category> availableCategories)

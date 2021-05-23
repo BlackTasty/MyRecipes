@@ -3,7 +3,6 @@ using MaterialDesignExtensions.Controls;
 using MaterialDesignExtensions.Model;
 using MaterialDesignThemes.Wpf;
 using MyRecipes.Core.Enum;
-using MyRecipes.Core.Observer;
 using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
 using System;
@@ -21,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Controls
 {

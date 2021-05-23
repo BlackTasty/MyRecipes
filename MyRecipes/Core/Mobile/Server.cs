@@ -19,6 +19,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core.Mobile
 {
@@ -34,7 +36,7 @@ namespace MyRecipes.Core.Mobile
         private MqttFactory factory;
         private IMqttServer mqttServer;
         private bool mIsRunning;
-        private VeryObservableCollection<string> mClientIds = new VeryObservableCollection<string>("ClientIds");
+        private JsonObservableCollection<string> mClientIds = new JsonObservableCollection<string>("ClientIds");
         private bool mIsIdle = true;
 
         public bool IsRunning

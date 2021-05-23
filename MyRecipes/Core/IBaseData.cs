@@ -1,18 +1,14 @@
-﻿using MyRecipes.Core.Observer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core
 {
-    public interface IBaseData
+    public interface IBaseData : IObservableClass
     {
-        ObserverManager ChangeManager { get; }
-
-        string Guid { get; }
-
         string Name { get; set; }
 
         string Description { get; set; }
@@ -21,8 +17,6 @@ namespace MyRecipes.Core
 
         DateTime LastAccessDate { get; }
 
-        bool UnsavedChanges { get; }
-
-        IBaseData Copy();
+        new IBaseData Copy();
     }
 }

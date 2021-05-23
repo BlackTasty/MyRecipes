@@ -1,5 +1,4 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.ViewModel;
+﻿using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel.JsonNet;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core.Recipes
 {
@@ -14,9 +15,9 @@ namespace MyRecipes.Core.Recipes
     {
         private string nameCurrent;
 
-        private VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
-        private VeryObservableCollection<string> mPreparationSteps = new VeryObservableCollection<string>("PreparationSteps");
-        private VeryObservableCollection<Category> mCategories = new VeryObservableCollection<Category>("Categories");
+        private JsonObservableCollection<RecipeIngredient> mIngredients = new JsonObservableCollection<RecipeIngredient>("Ingredients", true);
+        private JsonObservableCollection<string> mPreparationSteps = new JsonObservableCollection<string>("PreparationSteps", true);
+        private JsonObservableCollection<Category> mCategories = new JsonObservableCollection<Category>("Categories", true);
         //private VeryObservableCollection<RecipeImage> mRecipeImages = new VeryObservableCollection<RecipeImage>("RecipeImages");
 
         private RecipeImage mRecipeImage;
@@ -30,40 +31,40 @@ namespace MyRecipes.Core.Recipes
             get => mPriority;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mPriority = value;
                 InvokePropertyChanged();
             }
         }
 
-        public VeryObservableCollection<RecipeIngredient> Ingredients
+        public JsonObservableCollection<RecipeIngredient> Ingredients
         {
             get => mIngredients;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mIngredients = value;
                 InvokePropertyChanged();
             }
         }
 
-        public VeryObservableCollection<string> PreparationSteps
+        public JsonObservableCollection<string> PreparationSteps
         {
             get => mPreparationSteps;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mPreparationSteps = value;
                 InvokePropertyChanged();
             }
         }
 
-        public VeryObservableCollection<Category> Categories
+        public JsonObservableCollection<Category> Categories
         {
             get => mCategories;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mCategories = value;
                 InvokePropertyChanged();
             }
@@ -77,15 +78,15 @@ namespace MyRecipes.Core.Recipes
             get => ignoreHasImageFlag || HasImage ? mRecipeImage : null; //new RecipeImage(Utils.BitmapToBitmapImage(Properties.Resources.no_image))
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 if (mRecipeImage != null)
                 {
-                    ChangeManager.UnregisterChild(mRecipeImage.ChangeManager);
+                    ObserverManager.UnregisterChild(mRecipeImage.ObserverManager);
                 }
                 mRecipeImage = value;
                 if (value != null)
                 {
-                    ChangeManager.RegisterChild(value.ChangeManager);
+                    ObserverManager.RegisterChild(value.ObserverManager);
                 }
                 InvokePropertyChanged();
                 InvokePropertyChanged("HasImage");
@@ -111,7 +112,7 @@ namespace MyRecipes.Core.Recipes
             }
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mRecipeImages = value;
                 InvokePropertyChanged();
             }
@@ -122,7 +123,7 @@ namespace MyRecipes.Core.Recipes
             get => mServings;
             set
             {
-                changeManager.ObserveProperty(value);
+                observerManager.ObserveProperty(value);
                 mServings = Math.Max(1, value);
                 InvokePropertyChanged();
             }
@@ -132,7 +133,6 @@ namespace MyRecipes.Core.Recipes
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
             List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
         {
-            AttachObserverManager();
             Ingredients.AddRange(ingredients);
             PreparationSteps.AddRange(preparationSteps);
             categories = categories.OrderBy(x => x.Name).ToList();
@@ -145,13 +145,11 @@ namespace MyRecipes.Core.Recipes
 
         public Recipe(FileInfo fi) : base(fi)
         {
-            AttachObserverManager();
             Load();
         }
 
         public Recipe(string name) : base(name)
         {
-            AttachObserverManager();
             LastAccessDate = new DateTime(0);
             Servings = 1;
             nameCurrent = Name;
@@ -179,7 +177,7 @@ namespace MyRecipes.Core.Recipes
 
             Servings = recipe.mServings;
             nameCurrent = Name;
-            changeManager.ResetObservers();
+            observerManager.ResetObservers();
         }
 
         public void Save(string parentPath)
@@ -206,25 +204,18 @@ namespace MyRecipes.Core.Recipes
 
         public void RegisterChildObservers()
         {
-            ChangeManager.RegisterChild(Ingredients.ChangeManager);
-            ChangeManager.RegisterChild(PreparationSteps.ChangeManager);
-            ChangeManager.RegisterChild(Categories.ChangeManager);
+            ObserverManager.RegisterChild(Ingredients.ObserverManager);
+            ObserverManager.RegisterChild(PreparationSteps.ObserverManager);
+            ObserverManager.RegisterChild(Categories.ObserverManager);
 
-            ChangeManager.ResetObservers();
+            ObserverManager.ResetObservers();
         }
 
         public void UnregisterChildObservers()
         {
-            ChangeManager.UnregisterChild(Ingredients.ChangeManager);
-            ChangeManager.UnregisterChild(PreparationSteps.ChangeManager);
-            ChangeManager.UnregisterChild(Categories.ChangeManager);
-        }
-
-        private void AttachObserverManager()
-        {
-            Ingredients.ChangeManager = new ObserverManager();
-            PreparationSteps.ChangeManager = new ObserverManager();
-            Categories.ChangeManager = new ObserverManager();
+            ObserverManager.UnregisterChild(Ingredients.ObserverManager);
+            ObserverManager.UnregisterChild(PreparationSteps.ObserverManager);
+            ObserverManager.UnregisterChild(Categories.ObserverManager);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MyRecipes.Core;
 using MyRecipes.Core.Mobile;
 using MyRecipes.Core.Recipes;
-using MyRecipes.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Tasty.ViewModel;
+using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes
 {
@@ -21,7 +22,7 @@ namespace MyRecipes
         private static readonly string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyRecipes");
 
         private static CookingData cookingData = new CookingData();
-        private static VeryObservableCollection<Recipe> availableRecipes = new VeryObservableCollection<Recipe>("AvailableRecipes");
+        private static JsonObservableCollection<Recipe> availableRecipes = new JsonObservableCollection<Recipe>("AvailableRecipes", true);
         private static VeryObservableStackCollection<Recipe> mHistory = new VeryObservableStackCollection<Recipe>("History", 10);
 
         private static Server server = new Server();
@@ -34,11 +35,11 @@ namespace MyRecipes
 
         public static VeryObservableStackCollection<Recipe> History => mHistory;
 
-        public static VeryObservableCollection<Ingredient> AvailableIngredients => cookingData.AvailableIngredients;
+        public static JsonObservableCollection<Ingredient> AvailableIngredients => cookingData.AvailableIngredients;
 
-        public static VeryObservableCollection<Category> AvailableCategories => cookingData.AvailableCategories;
+        public static JsonObservableCollection<Category> AvailableCategories => cookingData.AvailableCategories;
 
-        public static VeryObservableCollection<Recipe> AvailableRecipes => availableRecipes;
+        public static JsonObservableCollection<Recipe> AvailableRecipes => availableRecipes;
 
         public static AppSettings Settings
         {

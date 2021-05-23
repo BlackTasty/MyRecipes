@@ -1,11 +1,13 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.Core.Recipes;
+﻿using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.JsonNet;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.ViewModel
 {

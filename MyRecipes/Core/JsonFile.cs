@@ -1,5 +1,4 @@
-﻿using MyRecipes.Core.Observer;
-using MyRecipes.ViewModel;
+﻿using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tasty.ViewModel;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Core
 {
@@ -17,15 +18,15 @@ namespace MyRecipes.Core
         protected string fileName;
         protected bool fromFile;
         protected bool isFile;
-        protected ObserverManager changeManager = new ObserverManager();
+        protected ObserverManager observerManager = new ObserverManager();
 
         [JsonIgnore]
-        public ObserverManager ChangeManager => changeManager;
+        public ObserverManager ObserverManager => observerManager;
 
         [JsonIgnore]
         public bool UnsavedChanges
         {
-            get => changeManager.UnsavedChanges;
+            get => observerManager.UnsavedChanges;
         }
 
         /// <summary>
@@ -118,7 +119,7 @@ namespace MyRecipes.Core
             {
                 isFile = true;
             }
-            changeManager.ResetObservers();
+            observerManager.ResetObservers();
         }
 
         protected virtual void SaveFile(string filePath, T @object)

@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Tasty.ViewModel;
+using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.ViewModel
 {
@@ -66,7 +68,7 @@ namespace MyRecipes.ViewModel
             }
         }
 
-        private void CreateEditRecipe_RecipeChanged(object sender, Core.Observer.ChangeObservedEventArgs e)
+        private void CreateEditRecipe_RecipeChanged(object sender, ChangeObservedEventArgs e)
         {
             EnableSaveRecipeButton = e.UnsavedChanges;
         }
