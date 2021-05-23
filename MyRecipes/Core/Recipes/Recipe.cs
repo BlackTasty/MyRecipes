@@ -1,4 +1,5 @@
-﻿using MyRecipes.ViewModel;
+﻿using MyRecipes.Core.Observer;
+using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -79,12 +80,12 @@ namespace MyRecipes.Core.Recipes
                 changeManager.ObserveProperty(value);
                 if (mRecipeImage != null)
                 {
-                    mRecipeImage.ChangeManager.UnregisterParent(mRecipeImage.ChangeManager);
+                    ChangeManager.UnregisterChild(mRecipeImage.ChangeManager);
                 }
                 mRecipeImage = value;
                 if (value != null)
                 {
-                    mRecipeImage.ChangeManager.RegisterParent(value.ChangeManager);
+                    ChangeManager.RegisterChild(value.ChangeManager);
                 }
                 InvokePropertyChanged();
                 InvokePropertyChanged("HasImage");
@@ -131,7 +132,7 @@ namespace MyRecipes.Core.Recipes
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
             List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
         {
-            RegisterChildObservers();
+            AttachObserverManager();
             Ingredients.AddRange(ingredients);
             PreparationSteps.AddRange(preparationSteps);
             categories = categories.OrderBy(x => x.Name).ToList();
@@ -144,13 +145,13 @@ namespace MyRecipes.Core.Recipes
 
         public Recipe(FileInfo fi) : base(fi)
         {
-            RegisterChildObservers();
+            AttachObserverManager();
             Load();
         }
 
         public Recipe(string name) : base(name)
         {
-            RegisterChildObservers();
+            AttachObserverManager();
             LastAccessDate = new DateTime(0);
             Servings = 1;
             nameCurrent = Name;
@@ -203,18 +204,27 @@ namespace MyRecipes.Core.Recipes
             nameCurrent = Name;
         }
 
-        private void RegisterChildObservers()
+        public void RegisterChildObservers()
         {
-            Ingredients.RegisterParent(ChangeManager);
-            PreparationSteps.RegisterParent(ChangeManager);
-            Categories.RegisterParent(ChangeManager);
+            ChangeManager.RegisterChild(Ingredients.ChangeManager);
+            ChangeManager.RegisterChild(PreparationSteps.ChangeManager);
+            ChangeManager.RegisterChild(Categories.ChangeManager);
+
+            ChangeManager.ResetObservers();
         }
 
-        private void UnregisterChildObservers()
+        public void UnregisterChildObservers()
         {
-            Ingredients.UnregisterParent(ChangeManager);
-            PreparationSteps.UnregisterParent(ChangeManager);
-            Categories.UnregisterParent(ChangeManager);
+            ChangeManager.UnregisterChild(Ingredients.ChangeManager);
+            ChangeManager.UnregisterChild(PreparationSteps.ChangeManager);
+            ChangeManager.UnregisterChild(Categories.ChangeManager);
+        }
+
+        private void AttachObserverManager()
+        {
+            Ingredients.ChangeManager = new ObserverManager();
+            PreparationSteps.ChangeManager = new ObserverManager();
+            Categories.ChangeManager = new ObserverManager();
         }
     }
 }

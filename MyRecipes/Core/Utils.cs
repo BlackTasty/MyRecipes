@@ -11,7 +11,6 @@ namespace MyRecipes.Core
 {
     static class Utils
     {
-
         public static BitmapImage FileToBitmapImage(string path, Size? desiredSize = null)
         {
             if (File.Exists(path))

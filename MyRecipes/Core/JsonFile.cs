@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyRecipes.Core
 {
+    //[ObservableClass]
     public class JsonFile<T> : ViewModelBase
     {
         protected string filePath;

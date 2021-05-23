@@ -72,6 +72,7 @@ namespace MyRecipes.Core
             Name = name;
             Description = description;
             mLastModifyDate = lastModifyDate;
+            changeManager.RootGuid = guid;
             changeManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
@@ -86,6 +87,7 @@ namespace MyRecipes.Core
 
         public BaseData(FileInfo fi) : base(fi)
         {
+            changeManager.RootGuid = guid;
             changeManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 
@@ -110,6 +112,7 @@ namespace MyRecipes.Core
             {
                 Name = data.Name;
                 guid = data.Guid;
+                changeManager.RootGuid = guid;
                 Description = data.Description;
                 mLastAccessDate = data.LastAccessDate;
                 mLastModifyDate = data.LastModifyDate;

@@ -1,4 +1,5 @@
 ﻿using MyRecipes.Core;
+using MyRecipes.Core.Mobile.Encryption;
 using MyRecipes.Core.Observer;
 using MyRecipes.ViewModel.Communication;
 using MyRecipes.ViewModel.Sorting;
@@ -12,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace MyRecipes.ViewModel
 {
@@ -30,14 +33,35 @@ namespace MyRecipes.ViewModel
         protected ViewModelMessage message;
         protected ObserverManager changeManager;
 
+        private List<string> itemChecksums = new List<string>();
+        private string checksum;
+
         new event PropertyChangedEventHandler PropertyChanged;
 
         public string CollectionName { get; }
+
+        public string Checksum
+        {
+            get => checksum;
+        }
 
         [JsonIgnore]
         public new int Count
         {
             get => base.Count;
+        }
+
+        [JsonIgnore]
+        public ObserverManager ChangeManager
+        {
+            get => changeManager;
+            set
+            {
+                if (changeManager == null)
+                {
+                    changeManager = value;
+                }
+            }
         }
 
         [JsonIgnore]
@@ -90,7 +114,7 @@ namespace MyRecipes.ViewModel
             this.message = message;
             this.changeManager = changeManager;
 
-            changeManager?.ObserveProperty(Count, "Count");
+            RefreshChecksum();
         }
 
         /// <summary>
@@ -120,21 +144,13 @@ namespace MyRecipes.ViewModel
         public void RegisterParent(ObserverManager parent)
         {
             changeManager = parent;
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         public void UnregisterParent(ObserverManager parent)
         {
             
-        }
-
-        private void Collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (observeChanges)
-            {
-                Refresh();
-            }
         }
 
         /// <summary>
@@ -150,8 +166,8 @@ namespace MyRecipes.ViewModel
             }
 
             observeChanges = true;
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         /// <summary>
@@ -179,16 +195,22 @@ namespace MyRecipes.ViewModel
             }
 
             observeChanges = true;
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         public virtual new void Add(T item)
         {
-            if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
+            if (GetChildFromItem(item) is ObserverManager child && child != null)
             {
-                changeManager.RegisterChild(child);
+                itemChecksums.Add(child.Guid);
+                changeManager?.RegisterChild(child);
+            } 
+            else
+            {
+                itemChecksums.Add(item.ToString() + Count);
             }
+
             base.Add(item);
             if (autoSort)
             {
@@ -206,18 +228,19 @@ namespace MyRecipes.ViewModel
 
             if (observeChanges)
             {
-                changeManager?.ObserveProperty(this, CollectionName);
-                changeManager?.ObserveProperty(Count, "Count");
+                //changeManager?.ObserveProperty(this, CollectionName);
+                RefreshChecksum();
             }
         }
 
         public new void Clear()
         {
+            itemChecksums.Clear();
             foreach (T item in this)
             {
                 if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
                 {
-                    changeManager.UnregisterParent(child);
+                    changeManager.UnregisterChild(child);
                 }
             }
 
@@ -234,8 +257,8 @@ namespace MyRecipes.ViewModel
                 }
                 observeChanges = true;
             }
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         public void Set(T value)
@@ -252,16 +275,21 @@ namespace MyRecipes.ViewModel
 
         public new void Remove(T item)
         {
-            if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
+            if (GetChildFromItem(item) is ObserverManager child && child != null)
             {
-                changeManager.UnregisterParent(child);
+                itemChecksums.Remove(child.Guid);
+                changeManager?.UnregisterChild(child);
+            }
+            else
+            {
+                itemChecksums.Remove(item.ToString() + Count);
             }
             base.Remove(item);
 
             if (observeChanges)
             {
-                changeManager?.ObserveProperty(this, CollectionName);
-                changeManager?.ObserveProperty(Count, "Count");
+                //changeManager?.ObserveProperty(this, CollectionName);
+                RefreshChecksum();
             }
         }
 
@@ -299,8 +327,8 @@ namespace MyRecipes.ViewModel
             }
             observeChanges = true;
 
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         public void Refresh()
@@ -320,8 +348,8 @@ namespace MyRecipes.ViewModel
                 }
             }
 
-            changeManager?.ObserveProperty(this, CollectionName);
-            changeManager?.ObserveProperty(Count, "Count");
+            //changeManager?.ObserveProperty(this, CollectionName);
+            RefreshChecksum();
         }
 
         public IVeryObservableCollection Copy()
@@ -367,6 +395,41 @@ namespace MyRecipes.ViewModel
             }
 
             return null;
+        }
+
+        private void Collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (observeChanges)
+            {
+                Refresh();
+            }
+        }
+
+        public void RefreshChecksum(bool resetObserver = false)
+        {
+            /*string newChecksum = Hasher.HashPassword(string.Concat(itemChecksums),
+                string.Format("{0}-{1}", CollectionName, Count));*/
+            string newChecksum = GetChecksumForString(string.Concat(itemChecksums));
+            changeManager?.ObserveProperty(newChecksum, "Checksum");
+            checksum = newChecksum;
+
+            if (resetObserver)
+            {
+                changeManager.ResetObservers();
+            }
+        }
+
+        private string GetChecksumForString(string target)
+        {
+            string hash;
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                hash = BitConverter.ToString(
+                  md5.ComputeHash(Encoding.UTF8.GetBytes(target))
+                ).Replace("-", String.Empty);
+            }
+
+            return hash;
         }
     }
 }

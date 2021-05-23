@@ -1,4 +1,5 @@
 ﻿using MyRecipes.Core.Enum;
+using MyRecipes.Core.Observer;
 using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -14,13 +15,25 @@ namespace MyRecipes.Core.Recipes
         private Ingredient mIngredient;
         private double mAmount;
         private Unit mMeasurementType;
+        protected ObserverManager changeManager = new ObserverManager();
+
+        [JsonIgnore]
+        public ObserverManager ChangeManager => changeManager;
 
         public Ingredient Ingredient
         {
             get => mIngredient;
             set
             {
+                if (mIngredient != null)
+                {
+                    changeManager.UnregisterChild(mIngredient.ChangeManager);
+                }
                 mIngredient = value;
+                if (value != null)
+                {
+                    changeManager.UnregisterChild(value.ChangeManager);
+                }
                 InvokePropertyChanged();
             }
         }
@@ -30,6 +43,7 @@ namespace MyRecipes.Core.Recipes
             get => mAmount;
             set
             {
+                changeManager.ObserveProperty(value);
                 mAmount = value;
                 InvokePropertyChanged();
             }
@@ -40,6 +54,7 @@ namespace MyRecipes.Core.Recipes
             get => mMeasurementType;
             set
             {
+                changeManager.ObserveProperty(value);
                 mMeasurementType = value;
                 InvokePropertyChanged();
             }

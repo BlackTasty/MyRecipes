@@ -39,6 +39,7 @@ namespace MyRecipes.ViewModel
             set
             {
                 base.Recipe = value;
+                base.Recipe.RegisterChildObservers();
             }
         }
 

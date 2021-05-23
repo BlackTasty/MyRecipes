@@ -100,6 +100,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Observer\ObservableProperty.cs" />
+    <Compile Include="Core\Observer\ObservableClass.cs" />
     <Compile Include="ViewModel\Sorting\SortChain.cs" />
     <Compile Include="ViewModel\Sorting\SortRule.cs" />
     <Page Include="App.xaml">
