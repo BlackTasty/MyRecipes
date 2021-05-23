@@ -13,10 +13,10 @@ namespace MyRecipes.ViewModel
     {
         public event EventHandler<ChangeObservedEventArgs> RecipeChanged;
 
-        private OpenUrlCommand mOpenUrlCommand = new OpenUrlCommand();
-        private Recipe mRecipe;
-        private int mServings;
-        private VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
+        protected OpenUrlCommand mOpenUrlCommand = new OpenUrlCommand();
+        protected Recipe mRecipe;
+        protected int mServings;
+        protected VeryObservableCollection<RecipeIngredient> mIngredients = new VeryObservableCollection<RecipeIngredient>("Ingredients");
 
         public Recipe Recipe
         {

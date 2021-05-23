@@ -196,18 +196,23 @@ namespace MyRecipes.Core.Mobile
 
                 if (!string.IsNullOrWhiteSpace(recipe.RecipeImage.FilePath))
                 {
-                SendRecipeImage(topic, recipe, e.ClientId);
+                    SendRecipeImage(topic, recipe, e.ClientId);
                 }
             }
-            else if (topic.StartsWith("recipes/")) // Mobile device is uploading an image for a recipe
+            else if (topic.StartsWith("recipes/upload/")) // Mobile device is uploading an image for a recipe
             {
-                string recipeGuid = topic.Replace("/recipes/", "");
+                string recipeGuid = topic.Replace("/recipes/upload/", "");
                 Recipe recipe = App.AvailableRecipes.FirstOrDefault(x => x.Guid == recipeGuid);
 
                 if (recipe != null)
                 {
-                    RecipeTransfer recipeTransfer = new RecipeTransfer(recipe);
                     //TODO: Set uploaded image as recipe image and confirm upload to uploading device
+                    string filePath = Path.Combine(App.BasePath, "uploads");
+                    Directory.CreateDirectory(filePath);
+                    filePath = Path.Combine(filePath, recipe.Name + ".jpg");
+
+                    File.WriteAllBytes(filePath, e.ApplicationMessage.Payload);
+                    recipe.RecipeImage.FilePath = filePath;
                 }
             }
             else if (topic == "season")

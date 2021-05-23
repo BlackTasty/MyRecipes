@@ -21,6 +21,15 @@ namespace MyRecipes.ViewModel
         private bool mIsEditPreparationStep;
         private Category mSelectedCategory;
 
+        public new Recipe Recipe
+        {
+            get => base.Recipe;
+            set
+            {
+                base.Recipe = value;
+            }
+        }
+
         public VeryObservableCollection<Ingredient> AvailableIngredients => App.AvailableIngredients;
 
         public VeryObservableCollection<Category> AvailableCategories => App.AvailableCategories;
@@ -35,6 +44,8 @@ namespace MyRecipes.ViewModel
                 InvokePropertyChanged("AddCategoryEnabled");
             }
         }
+
+        public bool IsImageSet => Recipe != null ? Recipe.HasImage && Recipe.RecipeImage.IsImageSet : false;
 
         public bool UnsavedChanges => Recipe?.UnsavedChanges ?? false;
 
@@ -117,6 +128,11 @@ namespace MyRecipes.ViewModel
         {
             base.OnRecipeChanged(e);
             InvokePropertyChanged("UnsavedChanges");
+
+            if (e.Observer.PropertyName == "FilePath")
+            {
+                InvokePropertyChanged("IsImageSet");
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace MyRecipes.Core.Observer
 {
@@ -12,7 +13,10 @@ namespace MyRecipes.Core.Observer
     {
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
+        private string guid;
         private List<IObserver> changeObservers = new List<IObserver>();
+        private List<ObserverManager> parents = new List<ObserverManager>();
+        private List<ObserverManager> children = new List<ObserverManager>();
 
         /// <summary>
         /// Returns true if any observer has unsaved changes
@@ -21,12 +25,66 @@ namespace MyRecipes.Core.Observer
 
         public List<IObserver> ChangeObservers => changeObservers;
 
+        public string Guid => guid;
+
+        public List<ObserverManager> Parents => parents;
+
+        public ObserverManager()
+        {
+            guid = System.Guid.NewGuid().ToString();
+        }
+
         ~ObserverManager()
         {
             foreach (var observer in changeObservers)
             {
                 observer.ChangeObserved -= Observer_ChangeObserved;
             }
+        }
+
+        public void RegisterParent(ObserverManager parent)
+        {
+            if (!parents.Any(x => x.guid == parent.guid))
+            {
+                parent.ChangeObserved += Child_ChangeObserved;
+                parents.Add(parent);
+            }
+        }
+
+        public void UnregisterParent(ObserverManager parent)
+        {
+            int index = parents.FindIndex(x => x.guid == parent.guid);
+
+            if (index > -1)
+            {
+                parent.ChangeObserved -= Child_ChangeObserved;
+                parents.RemoveAt(index);
+            }
+        }
+
+        public void RegisterChild(ObserverManager child)
+        {
+            if (!children.Any(x => x.guid == child.guid))
+            {
+                children.Add(child);
+                child.RegisterParent(this);
+            }
+        }
+
+        public void UnregisterChild(ObserverManager child)
+        {
+            int index = children.FindIndex(x => x.guid == child.guid);
+
+            if (index > -1)
+            {
+                child.UnregisterParent(this);
+                children.RemoveAt(index);
+            }
+        }
+
+        private void Child_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         /// <summary>
@@ -69,6 +127,12 @@ namespace MyRecipes.Core.Observer
                 observer.Reset();
                 OnChangeObserved(new ChangeObservedEventArgs(UnsavedChanges, observer.GetOriginalValue(), observer));
             }
+
+            /*foreach (var child in children)
+            {
+                ResetObservers();
+            }*/
+
             /*InvokePropertyChanged("UnsavedChanges");
             if (changeObservers.FirstOrDefault(x => x.PropertyName == "Name") is ChangeObserver<string> nameObserver)
             {

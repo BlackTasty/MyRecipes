@@ -69,9 +69,9 @@ namespace MyRecipes.Core
         public BaseData(string guid, string name, string description, DateTime lastModifyDate)
         {
             this.guid = guid;
-            mName = name;
-            mDescription = description;
-            this.mLastModifyDate = lastModifyDate;
+            Name = name;
+            Description = description;
+            mLastModifyDate = lastModifyDate;
             changeManager.ChangeObserved += ChangeManager_ChangeObserved;
         }
 

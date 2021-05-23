@@ -35,6 +35,12 @@ namespace MyRecipes.ViewModel
         public string CollectionName { get; }
 
         [JsonIgnore]
+        public new int Count
+        {
+            get => base.Count;
+        }
+
+        [JsonIgnore]
         public bool UnsavedChanged
         {
             get
@@ -83,6 +89,8 @@ namespace MyRecipes.ViewModel
             CollectionChanged += Collection_CollectionChanged;
             this.message = message;
             this.changeManager = changeManager;
+
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         /// <summary>
@@ -109,6 +117,18 @@ namespace MyRecipes.ViewModel
             }
         }
 
+        public void RegisterParent(ObserverManager parent)
+        {
+            changeManager = parent;
+            changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
+        }
+
+        public void UnregisterParent(ObserverManager parent)
+        {
+            
+        }
+
         private void Collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (observeChanges)
@@ -131,6 +151,7 @@ namespace MyRecipes.ViewModel
 
             observeChanges = true;
             changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         /// <summary>
@@ -159,10 +180,15 @@ namespace MyRecipes.ViewModel
 
             observeChanges = true;
             changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         public virtual new void Add(T item)
         {
+            if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
+            {
+                changeManager.RegisterChild(child);
+            }
             base.Add(item);
             if (autoSort)
             {
@@ -181,11 +207,20 @@ namespace MyRecipes.ViewModel
             if (observeChanges)
             {
                 changeManager?.ObserveProperty(this, CollectionName);
+                changeManager?.ObserveProperty(Count, "Count");
             }
         }
 
         public new void Clear()
         {
+            foreach (T item in this)
+            {
+                if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
+                {
+                    changeManager.UnregisterParent(child);
+                }
+            }
+
             try
             {
                 base.Clear();
@@ -199,6 +234,8 @@ namespace MyRecipes.ViewModel
                 }
                 observeChanges = true;
             }
+            changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         public void Set(T value)
@@ -211,6 +248,32 @@ namespace MyRecipes.ViewModel
         {
             Clear();
             AddRange(values);
+        }
+
+        public new void Remove(T item)
+        {
+            if (changeManager != null && GetChildFromItem(item) is ObserverManager child && child != null)
+            {
+                changeManager.UnregisterParent(child);
+            }
+            base.Remove(item);
+
+            if (observeChanges)
+            {
+                changeManager?.ObserveProperty(this, CollectionName);
+                changeManager?.ObserveProperty(Count, "Count");
+            }
+        }
+
+        public new void RemoveAt(int index)
+        {
+            if (index < 0 || index >= Count)
+            {
+                return;
+            }
+
+            T item = this[index];
+            Remove(item);
         }
 
         /// <summary>
@@ -237,6 +300,7 @@ namespace MyRecipes.ViewModel
             observeChanges = true;
 
             changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         public void Refresh()
@@ -257,6 +321,7 @@ namespace MyRecipes.ViewModel
             }
 
             changeManager?.ObserveProperty(this, CollectionName);
+            changeManager?.ObserveProperty(Count, "Count");
         }
 
         public IVeryObservableCollection Copy()
@@ -285,6 +350,23 @@ namespace MyRecipes.ViewModel
         protected virtual void OnObserveChanges(EventArgs e)
         {
             ObserveChanges?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Searches an object of <see cref="T"/> for a property with class <see cref="ObserverManager"/> and returns the latter.
+        /// </summary>
+        /// <param name="item">The object to search</param>
+        /// <returns>Returns the first occurrence of a property with class <see cref="ObserverManager"/> and returns it.
+        /// If nothing is found, null is returned.</returns>
+        private ObserverManager GetChildFromItem(T item)
+        {
+            var changeManagerProperty = typeof(T).GetProperties().FirstOrDefault(x => x.PropertyType == typeof(ObserverManager));
+            if (changeManagerProperty != null)
+            {
+                return changeManagerProperty.GetValue(item) as ObserverManager;
+            }
+
+            return null;
         }
     }
 }

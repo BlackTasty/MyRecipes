@@ -77,7 +77,15 @@ namespace MyRecipes.Core.Recipes
             set
             {
                 changeManager.ObserveProperty(value);
+                if (mRecipeImage != null)
+                {
+                    mRecipeImage.ChangeManager.UnregisterParent(mRecipeImage.ChangeManager);
+                }
                 mRecipeImage = value;
+                if (value != null)
+                {
+                    mRecipeImage.ChangeManager.RegisterParent(value.ChangeManager);
+                }
                 InvokePropertyChanged();
             }
         }
@@ -122,45 +130,54 @@ namespace MyRecipes.Core.Recipes
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
             List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
         {
-            mIngredients.AddRange(ingredients);
-            mPreparationSteps.AddRange(preparationSteps);
+            Ingredients.AddRange(ingredients);
+            PreparationSteps.AddRange(preparationSteps);
             categories = categories.OrderBy(x => x.Name).ToList();
-            mCategories.AddRange(categories);
-            mRecipeImage = recipeImage;
+            Categories.AddRange(categories);
+            RecipeImage = recipeImage;
             Servings = servings;
             Priority = priority;
             nameCurrent = Name;
+            RegisterChildObservers();
         }
 
         public Recipe(FileInfo fi) : base(fi)
         {
+            RegisterChildObservers();
             Load();
         }
 
         public Recipe(string name) : base(name)
         {
             LastAccessDate = new DateTime(0);
-            mServings = 1;
+            Servings = 1;
             nameCurrent = Name;
+            RegisterChildObservers();
+        }
+
+        ~Recipe()
+        {
+            UnregisterChildObservers();
         }
 
         public void Load()
         {
             Recipe recipe = LoadFile();
 
-            mIngredients.Clear();
-            mIngredients.AddRange(recipe.mIngredients);
+            Ingredients.Clear();
+            Ingredients.AddRange(recipe.mIngredients);
 
-            mPreparationSteps.Clear();
-            mPreparationSteps.AddRange(recipe.mPreparationSteps);
+            PreparationSteps.Clear();
+            PreparationSteps.AddRange(recipe.mPreparationSteps);
 
-            mCategories.Clear();
-            mCategories.AddRange(recipe.mCategories);
+            Categories.Clear();
+            Categories.AddRange(recipe.mCategories);
 
-            mRecipeImage = recipe.RecipeImage;
+            RecipeImage = recipe.RecipeImage;
 
             Servings = recipe.mServings;
             nameCurrent = Name;
+            changeManager.ResetObservers();
         }
 
         public void Save(string parentPath)
@@ -183,6 +200,18 @@ namespace MyRecipes.Core.Recipes
             SaveFile(parentPath, this);
             ignoreHasImageFlag = false;
             nameCurrent = Name;
+        }
+
+        private void RegisterChildObservers()
+        {
+            Ingredients.RegisterParent(ChangeManager);
+            Categories.RegisterParent(ChangeManager);
+        }
+
+        private void UnregisterChildObservers()
+        {
+            Ingredients.UnregisterParent(ChangeManager);
+            Categories.UnregisterParent(ChangeManager);
         }
     }
 }

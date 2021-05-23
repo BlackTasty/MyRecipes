@@ -101,19 +101,36 @@ namespace MyRecipes.Core.Recipes
             MeasurementConversion measurementConversion) : 
             base(guid, name, description, lastModifyDate)
         {
-            mProductLink = productLink;
-            mIngredientCategory = ingredientCategory;
-            mMeasurementType = measurementType;
+            RegisterParent();
+
+            ProductLink = productLink;
+            IngredientCategory = ingredientCategory;
+            MeasurementType = measurementType;
             if (seasons != null)
             {
-                mSeasons.AddRange(seasons);
+                Seasons.AddRange(seasons);
             }
-            mMeasurementConversion = measurementConversion != null ? measurementConversion : new MeasurementConversion(this);
+            MeasurementConversion = measurementConversion != null ? measurementConversion : new MeasurementConversion(this);
         }
 
         public Ingredient(string name) : base(name)
         {
+            RegisterParent();
+        }
 
+        ~Ingredient()
+        {
+            UnregisterParent();
+        }
+
+        private void RegisterParent()
+        {
+            Seasons.RegisterParent(ChangeManager);
+        }
+
+        private void UnregisterParent()
+        {
+            Seasons.UnregisterParent(ChangeManager);
         }
     }
 }
