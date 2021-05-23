@@ -35,6 +35,7 @@ namespace MyRecipes.ViewModel
 
         private List<string> itemChecksums = new List<string>();
         private string checksum;
+        private bool concatChecksums;
 
         new event PropertyChangedEventHandler PropertyChanged;
 
@@ -109,6 +110,11 @@ namespace MyRecipes.ViewModel
         public VeryObservableCollection(string collectionName,
             ObserverManager changeManager = null, ViewModelMessage message = ViewModelMessage.None)
         {
+            if (typeof(T).GetProperties().FirstOrDefault(x => x.PropertyType == typeof(ObserverManager)) != null)
+            {
+                concatChecksums = true;
+            }
+
             CollectionName = collectionName;
             CollectionChanged += Collection_CollectionChanged;
             this.message = message;
@@ -282,7 +288,7 @@ namespace MyRecipes.ViewModel
             }
             else
             {
-                itemChecksums.Remove(item.ToString() + Count);
+                itemChecksums.Remove(item.ToString() + (Count - 1));
             }
             base.Remove(item);
 
@@ -348,6 +354,15 @@ namespace MyRecipes.ViewModel
                 }
             }
 
+            if (!concatChecksums)
+            {
+                itemChecksums.Clear();
+                for (int i = 0; i < Count; i++)
+                {
+                    itemChecksums.Add(this[i].ToString() + i);
+                }
+            }
+
             //changeManager?.ObserveProperty(this, CollectionName);
             RefreshChecksum();
         }
@@ -373,6 +388,8 @@ namespace MyRecipes.ViewModel
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(sender, e);
+            
+            RefreshChecksum();
         }
 
         protected virtual void OnObserveChanges(EventArgs e)
@@ -409,7 +426,20 @@ namespace MyRecipes.ViewModel
         {
             /*string newChecksum = Hasher.HashPassword(string.Concat(itemChecksums),
                 string.Format("{0}-{1}", CollectionName, Count));*/
-            string newChecksum = GetChecksumForString(string.Concat(itemChecksums));
+            string newChecksum;
+            if (concatChecksums)
+            {
+                newChecksum = GetChecksumForString(string.Concat(itemChecksums));
+            }
+            else
+            {
+                newChecksum = "";
+                foreach (string itemChecksum in itemChecksums)
+                {
+                    newChecksum += itemChecksum;
+                }
+            }
+
             changeManager?.ObserveProperty(newChecksum, "Checksum");
             checksum = newChecksum;
 
