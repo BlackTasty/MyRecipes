@@ -13,7 +13,7 @@
                    Title="Rezeptebuch" Height="650" Width="1100" MinHeight="650" MinWidth="1000"
                    TextElement.Foreground="{DynamicResource MaterialDesignBody}" Background="{DynamicResource MaterialDesignPaper}"
                    TextElement.FontWeight="Medium" TextElement.FontSize="14" FontFamily="{material:MaterialDesignFont}"
-                   Closing="MetroWindow_Closing"
+                   Closing="MetroWindow_Closing" AllowDrop="True"
                    d:DataContext="{d:DesignInstance {x:Type dvm:MainDesignViewModel}, IsDesignTimeCreatable=True}">
     <metro:MetroWindow.DataContext>
         <vm:MainViewModel/>

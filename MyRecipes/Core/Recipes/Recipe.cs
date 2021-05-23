@@ -73,7 +73,7 @@ namespace MyRecipes.Core.Recipes
 
         public RecipeImage RecipeImage
         {
-            get => ignoreHasImageFlag || HasImage ? mRecipeImage : new RecipeImage(Utils.BitmapToBitmapImage(Properties.Resources.no_image));
+            get => ignoreHasImageFlag || HasImage ? mRecipeImage : null; //new RecipeImage(Utils.BitmapToBitmapImage(Properties.Resources.no_image))
             set
             {
                 changeManager.ObserveProperty(value);
@@ -87,6 +87,7 @@ namespace MyRecipes.Core.Recipes
                     mRecipeImage.ChangeManager.RegisterParent(value.ChangeManager);
                 }
                 InvokePropertyChanged();
+                InvokePropertyChanged("HasImage");
             }
         }
 

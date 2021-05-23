@@ -21,6 +21,18 @@ namespace MyRecipes.ViewModel
         private bool mIsEditPreparationStep;
         private Category mSelectedCategory;
 
+        private bool mIsDroppedFileValid;
+
+        public bool IsDroppedFileValid
+        {
+            get => mIsDroppedFileValid;
+            set
+            {
+                mIsDroppedFileValid = value;
+                InvokePropertyChanged();
+            }
+        }
+
         public new Recipe Recipe
         {
             get => base.Recipe;

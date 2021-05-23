@@ -104,6 +104,72 @@
             <Grid Height="170" DockPanel.Dock="Top" Margin="-4,-4,-6,0">
                 <Image Source="{Binding Recipe.RecipeImage.Image, UpdateSourceTrigger=PropertyChanged}"
                        RenderOptions.BitmapScalingMode="HighQuality" Stretch="UniformToFill"/>
+                <Border BorderThickness="2" DragDrop.Drop="UploadArea_Drop" DragEnter="UploadArea_DragEnter"
+                        DragLeave="Border_DragLeave" Background="Transparent"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16"
+                        CornerRadius="4">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <DrawingBrush Viewport="0,0,19,19" ViewportUnits="Absolute" TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="{StaticResource PrimaryHueLightBrush}">
+                                                    <GeometryDrawing.Geometry>
+                                                        <GeometryGroup>
+                                                            <RectangleGeometry Rect="0,0,50,50"/>
+                                                            <RectangleGeometry Rect="50,50,50,50" />
+                                                        </GeometryGroup>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDroppedFileValid}" Value="True">
+                                    <Setter Property="BorderBrush">
+                                        <Setter.Value>
+                                            <DrawingBrush Viewport="0,0,19,19" ViewportUnits="Absolute" TileMode="Tile">
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <GeometryDrawing Brush="{StaticResource SecondaryHueMidBrush}">
+                                                            <GeometryDrawing.Geometry>
+                                                                <GeometryGroup>
+                                                                    <RectangleGeometry Rect="0,0,50,50"/>
+                                                                    <RectangleGeometry Rect="50,50,50,50" />
+                                                                </GeometryGroup>
+                                                            </GeometryDrawing.Geometry>
+                                                        </GeometryDrawing>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel VerticalAlignment="Center" Margin="8">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Recipe.HasImage}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Bild per Drag&amp;Drop hochladen oder Button rechts unten nutzen"
+                                   TextAlignment="Center" TextWrapping="Wrap"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                        <TextBlock Text="Empfohlene Bildgröße (Pixel): 1920x1080" TextAlignment="Center" Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>
+                    </StackPanel>
+                </Border>
                 <Button Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"
                             VerticalAlignment="Bottom" Margin="4" Click="UploadImage_Click" ToolTip="Bild hinzufügen">
                     <material:PackIcon Kind="Upload"/>
@@ -112,7 +178,7 @@
                         VerticalAlignment="Bottom" Margin="4,4,48,4" Click="RemoveImage_Click"  ToolTip="Bild entfernen"
                         Background="{StaticResource WarnColor}" BorderBrush="{StaticResource WarnColor}"
                         Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                        Visibility="{Binding Recipe.RecipeImage.IsImageSet, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        Visibility="{Binding Recipe.HasImage, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <material:PackIcon Kind="Remove"/>
                 </Button>
             </Grid>

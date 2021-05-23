@@ -8,6 +8,7 @@ using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -188,6 +189,52 @@ namespace MyRecipes.Controls
         protected virtual void OnRecipeChanged(ChangeObservedEventArgs e)
         {
             RecipeChanged?.Invoke(this, e);
+        }
+
+        private void UploadArea_Drop(object sender, DragEventArgs e)
+        {
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (fileList != null)
+            {
+                foreach (string filePath in fileList)
+                {
+                    FileInfo fi = new FileInfo(filePath);
+                    if (fi.Extension == ".jpg" || fi.Extension == ".png")
+                    {
+                        e.Effects = DragDropEffects.Link;
+                        (DataContext as CreateEditRecipeViewModel).Recipe.RecipeImage = new RecipeImage(fi.FullName);
+                        (DataContext as CreateEditRecipeViewModel).IsDroppedFileValid = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void UploadArea_DragEnter(object sender, DragEventArgs e)
+        {
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (fileList != null)
+            {
+                foreach (string filePath in fileList)
+                {
+                    FileInfo fi = new FileInfo(filePath);
+                    if (fi.Extension == ".jpg" || fi.Extension == ".png")
+                    {
+                        e.Effects = DragDropEffects.Link;
+                        (DataContext as CreateEditRecipeViewModel).IsDroppedFileValid = true;
+                        return;
+                    }
+                }
+            }
+
+            (DataContext as CreateEditRecipeViewModel).IsDroppedFileValid = false;
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void Border_DragLeave(object sender, DragEventArgs e)
+        {
+            (DataContext as CreateEditRecipeViewModel).IsDroppedFileValid = false;
         }
     }
 }
