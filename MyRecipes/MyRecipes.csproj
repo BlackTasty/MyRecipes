@@ -80,11 +80,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Tasty.ViewModel, Version=1.0.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TastyApps.Core.ViewModel.1.0.3.4\lib\net452\Tasty.ViewModel.dll</HintPath>
+    <Reference Include="Tasty.ViewModel, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TastyApps.Core.ViewModel.1.0.4\lib\net452\Tasty.ViewModel.dll</HintPath>
     </Reference>
     <Reference Include="Tasty.ViewModel.JsonNet, Version=1.0.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TastyApps.Core.ViewModel.JsonNet.1.0.3.4\lib\net452\Tasty.ViewModel.JsonNet.dll</HintPath>
+      <HintPath>..\packages\TastyApps.Core.ViewModel.JsonNet.1.0.4\lib\net452\Tasty.ViewModel.JsonNet.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />

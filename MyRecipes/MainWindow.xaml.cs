@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using MyRecipes.Controls;
 using MyRecipes.Core.Sidebar;
 using MyRecipes.ViewModel;
 using MyRecipes.ViewModel.DesignTime;
@@ -87,6 +88,15 @@ namespace MyRecipes
         private void SaveRecipe_Click(object sender, RoutedEventArgs e)
         {
             (DataContext as MainViewModel).SaveRecipe();
+        }
+
+        private void EditRecipe_Click(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+            if (vm.Content is RecipeView recipeView && recipeView.DataContext is RecipeViewViewModel recipeVm)
+            {
+                vm.OpenRecipe(recipeVm.Recipe, true);
+            }
         }
     }
 }

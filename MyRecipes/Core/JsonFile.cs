@@ -120,6 +120,7 @@ namespace MyRecipes.Core
                 isFile = true;
             }
             observerManager.ResetObservers();
+            observerManager.ChangeObservers.FirstOrDefault(x => x.PropertyName == "")?.Reset();
         }
 
         protected virtual void SaveFile(string filePath, T @object)

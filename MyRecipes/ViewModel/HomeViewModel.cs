@@ -10,8 +10,6 @@ namespace MyRecipes.ViewModel
 {
     class HomeViewModel : ViewModelBase
     {
-        private VeryObservableCollection<Recipe> mHistory = new VeryObservableCollection<Recipe>("History");
-
         public VeryObservableCollection<Recipe> History
         {
             get => App.History;

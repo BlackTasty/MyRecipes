@@ -31,6 +31,7 @@ namespace MyRecipes.ViewModel
         private bool mShowShoppingList;
         private bool mShowSaveRecipeButton;
         private bool mEnableSaveRecipeButton;
+        private bool mShowEditRecipeButton;
 
         private ShoppingList mShoppingList = new ShoppingList();
 
@@ -49,6 +50,8 @@ namespace MyRecipes.ViewModel
                 {
                     recipeList.ReloadList();
                 }
+
+                ShowEditRecipeButton = value is RecipeView;
 
                 if (value is CreateEditRecipe createEditRecipe)
                 {
@@ -133,6 +136,16 @@ namespace MyRecipes.ViewModel
             }
         }
 
+        public bool ShowEditRecipeButton
+        {
+            get => mShowEditRecipeButton;
+            set
+            {
+                mShowEditRecipeButton = value;
+                InvokePropertyChanged();
+            }
+        }
+
         public bool ShowShoppingListButton => !mShoppingList?.IsEmpty ?? false;
 
         public ShoppingList ShoppingList
@@ -174,7 +187,7 @@ namespace MyRecipes.ViewModel
 
                     Content = Items[value].Content as FrameworkElement;
                 }
-                else 
+                else if (mSelectedSidebarIndex > -1)
                 {
                     if (Items[mSelectedSidebarIndex] is SidebarSubEntry subEntry)
                     {
@@ -281,9 +294,21 @@ namespace MyRecipes.ViewModel
 
         private void RecipeList_RecipeOpening(object sender, Core.Events.RecipeOpeningEventArgs e)
         {
-            RecipeView recipeView = new RecipeView(e.Recipe);
-            recipeView.CategoryClicked += RecipeView_CategoryClicked;
-            Content = recipeView;
+            OpenRecipe(e.Recipe, false);
+        }
+
+        public void OpenRecipe(Recipe recipe, bool isEdit)
+        {
+            if (isEdit)
+            {
+                Content = new CreateEditRecipe(recipe);
+            }
+            else
+            {
+                RecipeView recipeView = new RecipeView(recipe);
+                recipeView.CategoryClicked += RecipeView_CategoryClicked;
+                Content = recipeView;
+            }
 
             SelectedSidebarIndex = -1;
             ShowBackToIngredientsButton = false;
@@ -301,17 +326,16 @@ namespace MyRecipes.ViewModel
         {
             if (e.IsEdit)
             {
-                Content = new CreateEditRecipe(e.Recipe);
+                OpenRecipe(e.Recipe, true);
             }
             else
             {
                 Content = new CreateEditRecipe(e.RecipeName);
+                SelectedSidebarIndex = -1;
+                ShowBackToIngredientsButton = false;
+                ShowBackToRecipesButton = true;
+                ShowSaisonCalendarButton = false;
             }
-
-            SelectedSidebarIndex = -1;
-            ShowBackToIngredientsButton = false;
-            ShowBackToRecipesButton = true;
-            ShowSaisonCalendarButton = false;
         }
     }
 }

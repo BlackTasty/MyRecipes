@@ -124,6 +124,11 @@
                             ToolTip="Rezept speichern" Click="SaveRecipe_Click">
                         <material:PackIcon Kind="ContentSave"/>
                     </Button>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
+                            Visibility="{Binding ShowEditRecipeButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            ToolTip="Rezept bearbeiten" Click="EditRecipe_Click">
+                        <material:PackIcon Kind="Edit"/>
+                    </Button>
                     <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="OpenSaisonCalendar_Click" 
                             Visibility="{Binding ShowSaisonCalendarButton, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
                             ToolTip="Saisonkalendar">
