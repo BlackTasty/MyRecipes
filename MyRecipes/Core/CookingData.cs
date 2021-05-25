@@ -13,8 +13,8 @@ namespace MyRecipes.Core
 {
     class CookingData : JsonFile<CookingData>
     {
-        private JsonObservableCollection<Ingredient> availableIngredients = new JsonObservableCollection<Ingredient>("AvailableIngredients", true);
-        private JsonObservableCollection<Category> availableCategories = new JsonObservableCollection<Category>("AvailableCategories", true);
+        private JsonObservableCollection<Ingredient> availableIngredients = new JsonObservableCollection<Ingredient>("AvailableIngredients");
+        private JsonObservableCollection<Category> availableCategories = new JsonObservableCollection<Category>("AvailableCategories");
 
         public JsonObservableCollection<Ingredient> AvailableIngredients => availableIngredients;
 

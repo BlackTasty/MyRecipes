@@ -23,15 +23,15 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
             <Border Background="{StaticResource MaterialDesignPaper}" Width="30" Height="30" Margin="4,4,8,4"
                     CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
-            <TextBlock Text=" = nicht gelagert/geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
+            <TextBlock Text="nicht gelagert/geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
             <Border Background="{StaticResource SeasonWarehouseBackground}" Width="30" Height="30" Margin="4,4,8,4"
                     CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
-            <TextBlock Text=" = gelagert" VerticalAlignment="Center" Margin="0,0,32,0"
+            <TextBlock Text="gelagert" VerticalAlignment="Center" Margin="0,0,32,0"
                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
             <Border Background="{StaticResource SeasonFreshBackground}" Width="30" Height="30" Margin="4,4,8,4"
                     CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource PrimaryHueMidBrush}"/>
-            <TextBlock Text="Grau = wird geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
+            <TextBlock Text="wird geerntet" VerticalAlignment="Center" Margin="0,0,32,0"
                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
         </StackPanel>
     </material:Card>

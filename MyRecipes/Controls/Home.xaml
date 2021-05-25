@@ -21,9 +21,8 @@
     </DockPanel>
     <Border Style="{StaticResource SplitterAccentHorizontalStyle}" Margin="4,6" DockPanel.Dock="Top"/>
     <ListView Background="Transparent" BorderThickness="1,0,0,0" ItemsSource="{Binding History}" 
-              VerticalAlignment="Top"
-                      HorizontalContentAlignment="Stretch" Height="300" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              VerticalAlignment="Top" HorizontalContentAlignment="Stretch" 
+              ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.Resources>
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="Transparent"/>
             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>

@@ -22,7 +22,7 @@ namespace MyRecipes
         private static readonly string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyRecipes");
 
         private static CookingData cookingData = new CookingData();
-        private static JsonObservableCollection<Recipe> availableRecipes = new JsonObservableCollection<Recipe>("AvailableRecipes", true);
+        private static JsonObservableCollection<Recipe> availableRecipes = new JsonObservableCollection<Recipe>("AvailableRecipes");
         private static VeryObservableStackCollection<Recipe> mHistory = new VeryObservableStackCollection<Recipe>("History", 10);
 
         private static Server server = new Server();

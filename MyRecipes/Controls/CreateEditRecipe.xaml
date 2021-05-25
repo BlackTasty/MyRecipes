@@ -48,6 +48,14 @@
                                      ToolTip="-1 = Ignorieren, 0 = höchste Priorität"/>
                 <TextBlock Text="Priorität" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
             </DockPanel>
+            <DockPanel LastChildFill="False" DockPanel.Dock="Right" Margin="16,0,0,0">
+                <metro:NumericUpDown Value="{Binding Recipe.Time, UpdateSourceTrigger=PropertyChanged}" 
+                                     ParsingNumberStyle="Integer"  NumericInputMode="Numbers" 
+                                     Minimum="1" BorderThickness="0,0,0,1" Background="Transparent" 
+                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" DockPanel.Dock="Bottom"
+                                     Height="21" MinHeight="21" Margin="0,0,0,4" SnapsToDevicePixels="True"/>
+                <TextBlock Text="Zubereitungsdauer (in min)" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+            </DockPanel>
             <TextBox Text="{Binding Recipe.Name, UpdateSourceTrigger=PropertyChanged}" 
                  material:HintAssist.Hint="Rezept Name" material:TextFieldAssist.HasClearButton="True" 
                  material:HintAssist.IsFloating="True" Margin="0,0,0,4" FontSize="15"/>

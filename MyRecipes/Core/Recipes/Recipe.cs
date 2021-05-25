@@ -23,6 +23,7 @@ namespace MyRecipes.Core.Recipes
         private RecipeImage mRecipeImage;
         private int mServings;
         private int mPriority = -1; //0 = top priority; -1 = ignore priority
+        private int mTime;
 
         private bool ignoreHasImageFlag;
 
@@ -34,6 +35,17 @@ namespace MyRecipes.Core.Recipes
                 observerManager.ObserveProperty(value);
                 mPriority = value;
                 InvokePropertyChanged();
+            }
+        }
+
+        public int Time
+        {
+            get => mTime;
+            set
+            {
+                observerManager.ObserveProperty(value);
+                mTime = Math.Max(1, value);
+                InvokePropertiesChanged();
             }
         }
 
@@ -131,7 +143,7 @@ namespace MyRecipes.Core.Recipes
 
         [JsonConstructor]
         public Recipe(string guid, string name, string description, DateTime lastModifyDate, List<RecipeIngredient> ingredients, List<string> preparationSteps,
-            List<Category> categories, RecipeImage recipeImage, int servings, int priority) : base(guid, name, description, lastModifyDate)
+            List<Category> categories, RecipeImage recipeImage, int servings, int priority, int time) : base(guid, name, description, lastModifyDate)
         {
             Ingredients.AddRange(ingredients);
             PreparationSteps.AddRange(preparationSteps);
@@ -140,6 +152,7 @@ namespace MyRecipes.Core.Recipes
             RecipeImage = recipeImage;
             Servings = servings;
             Priority = priority;
+            Time = time;
             nameCurrent = Name;
         }
 
@@ -152,6 +165,7 @@ namespace MyRecipes.Core.Recipes
         {
             LastAccessDate = new DateTime(0);
             Servings = 1;
+            Time = 1;
             nameCurrent = Name;
         }
 
@@ -176,6 +190,7 @@ namespace MyRecipes.Core.Recipes
             RecipeImage = recipe.RecipeImage;
 
             Servings = recipe.mServings;
+            Time = recipe.Time;
             nameCurrent = Name;
             observerManager.ResetObservers();
         }

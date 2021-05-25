@@ -21,6 +21,7 @@
         <converter:StringEmptyConverter x:Key="StringEmptyConverter"/>
         <converter:IndexConverter x:Key="IndexConverter"/>
         <converter:ListIndexConverter x:Key="ListIndexConverter"/>
+        <converter:MinutesToStringConverter x:Key="MinutesToStringConverter"/>
 
         <commands:OpenUrlCommand x:Key="OpenUrlCommand"/>
     </DockPanel.Resources>
@@ -86,8 +87,17 @@
     </DockPanel>
     <Border Style="{StaticResource SplitterAccentVerticalStyle}" Margin="6,-4"/>
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
+        <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+            <TextBlock Text="Zubereitung" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
                    Margin="0,0,0,6"/>
+            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                <TextBlock Text="Zubereitungsdauer" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding Recipe.Time, Converter={StaticResource MinutesToStringConverter}}" 
+                               Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>
+                </StackPanel>
+            </StackPanel>
+        </DockPanel>
         <DockPanel DockPanel.Dock="Bottom" Height="40">
             <TextBlock Text="Kategorien:" Style="{DynamicResource MaterialDesignBody1TextBlock}"
                                    VerticalAlignment="Center"/>

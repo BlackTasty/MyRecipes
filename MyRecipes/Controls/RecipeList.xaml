@@ -17,6 +17,8 @@
     </DockPanel.DataContext>
     <DockPanel.Resources>
         <converter:ListIndexConverter x:Key="ListIndexConverter"/>
+        <converter:MinutesToStringConverter x:Key="MinutesToStringConverter"/>
+        
         <Storyboard x:Key="ExpandAddRecipeButton">
             <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="border_addRecipe">
                 <EasingThicknessKeyFrame KeyTime="0" Value="0,0,0,-48">
@@ -267,6 +269,13 @@
                                        HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Margin="8">
                                 </material:Card>
+                                <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Zubereitungsdauer" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding Time, Converter={StaticResource MinutesToStringConverter}}" 
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                    </StackPanel>
+                                </StackPanel>
                                 <UniformGrid Rows="2">
                                     <TextBlock Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignHeadline5TextBlock}"
                                VerticalAlignment="Center"/>

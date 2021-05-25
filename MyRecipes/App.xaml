@@ -115,9 +115,10 @@
                 <Setter Property="BorderThickness" Value="1,0,0,0"/>
             </Style>
 
-            <Style x:Key="SeasonHeaderBorderStyle" TargetType="Border" BasedOn="{StaticResource SplitterForegroundVerticalStyle}">
+            <Style x:Key="SeasonHeaderBorderStyle" TargetType="Border" BasedOn="{StaticResource SeasonBorderStyle}">
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
                 <Setter Property="Margin" Value="0,-4"/>
+                <Setter Property="Padding" Value="2"/>
             </Style>
 
             <converter:TagFormatConverter x:Key="TagFormatConverter"/>
