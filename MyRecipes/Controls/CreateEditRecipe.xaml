@@ -63,10 +63,27 @@
         <material:Card DockPanel.Dock="Bottom">
             <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0" 
                        LastChildFill="False">
-                <Button Content="ABBRECHEN" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="Abort_Click"
-                        Background="{StaticResource WarnColor}" DockPanel.Dock="Right"
-                        BorderBrush="{StaticResource WarnColor}" Margin="4"
-                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
+                <Button Click="Abort_Click" DockPanel.Dock="Right" Margin="4" Width="113">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                            <Setter Property="Content" Value="ZURÜCK"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource SecondaryHueMidBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource SecondaryHueMidBrush}"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEdit}" Value="True"/>
+                                        <Condition Binding="{Binding UnsavedChanges}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Content" Value="ABBRECHEN"/>
+                                    <Setter Property="Background" Value="{StaticResource WarnColor}"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource WarnColor}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidForegroundBrush}"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button Click="Save_Click" DockPanel.Dock="Right" Margin="4">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">

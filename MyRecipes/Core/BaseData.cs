@@ -66,7 +66,7 @@ namespace MyRecipes.Core
         /// Load an existing object from JSON
         /// </summary>
         [JsonConstructor]
-        public BaseData(string guid, string name, string description, DateTime lastModifyDate)
+        public BaseData(string guid, string name, string description, DateTime lastModifyDate) : base(true)
         {
             this.guid = guid;
             Name = name;
@@ -82,10 +82,10 @@ namespace MyRecipes.Core
         /// <param name="name">The name of this object</param>
         public BaseData(string name) : this(System.Guid.NewGuid().ToString(), name, "", DateTime.Now)
         {
-
+            observerManager.IsEnabled = true;
         }
 
-        public BaseData(FileInfo fi) : base(fi)
+        public BaseData(FileInfo fi) : base(fi, true)
         {
             observerManager.GuidOverride = guid;
             observerManager.ChangeObserved += ChangeManager_ChangeObserved;

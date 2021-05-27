@@ -203,7 +203,7 @@ namespace MyRecipes.Core.Mobile
             }
             else if (topic.StartsWith("recipes/upload/")) // Mobile device is uploading an image for a recipe
             {
-                string recipeGuid = topic.Replace("/recipes/upload/", "");
+                string recipeGuid = topic.Replace("recipes/upload/", "");
                 Recipe recipe = App.AvailableRecipes.FirstOrDefault(x => x.Guid == recipeGuid);
 
                 if (recipe != null)

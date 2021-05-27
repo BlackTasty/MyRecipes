@@ -26,7 +26,7 @@ namespace MyRecipes.Core
         }
 
         [JsonConstructor]
-        public AppSettings(string recipeDirectory, string cookingDataPath)
+        public AppSettings(string recipeDirectory, string cookingDataPath, bool observersEnabled) : this(observersEnabled)
         {
             this.recipeDirectory = recipeDirectory;
             this.cookingDataPath = cookingDataPath;
@@ -35,7 +35,7 @@ namespace MyRecipes.Core
         /// <summary>
         /// Generate a new <see cref="AppSettings"/> file.
         /// </summary>
-        public AppSettings()
+        public AppSettings(bool observersEnabled) : base(observersEnabled)
         {
         }
 
@@ -43,7 +43,7 @@ namespace MyRecipes.Core
         /// Loads existing <see cref="AppSettings"/> from a json file.
         /// </summary>
         /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the app settings</param>
-        public AppSettings(FileInfo fi) : base(fi)
+        public AppSettings(FileInfo fi, bool observersEnabled) : base(fi, observersEnabled)
         {
             Load();
         }

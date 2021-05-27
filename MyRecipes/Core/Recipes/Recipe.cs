@@ -166,6 +166,7 @@ namespace MyRecipes.Core.Recipes
             LastAccessDate = new DateTime(0);
             Servings = 1;
             Time = 1;
+            Priority = -1;
             nameCurrent = Name;
         }
 
@@ -191,6 +192,7 @@ namespace MyRecipes.Core.Recipes
 
             Servings = recipe.mServings;
             Time = recipe.Time;
+            Priority = recipe.Priority;
             nameCurrent = Name;
             observerManager.ResetObservers();
         }

@@ -21,18 +21,18 @@ namespace MyRecipes.Core
         public JsonObservableCollection<Category> AvailableCategories => availableCategories;
 
         [JsonConstructor]
-        public CookingData(List<Ingredient> availableIngredients, List<Category> availableCategories)
+        public CookingData(List<Ingredient> availableIngredients, List<Category> availableCategories, bool observersEnabled) : this(observersEnabled)
         {
             this.availableCategories.AddRange(availableCategories);
             this.availableIngredients.AddRange(availableIngredients);
         }
 
-        public CookingData(FileInfo fi) : base(fi)
+        public CookingData(FileInfo fi, bool observersEnabled) : base(fi, observersEnabled)
         {
             Load();
         }
 
-        public CookingData()
+        public CookingData(bool observersEnabled) : base(observersEnabled)
         {
 
         }

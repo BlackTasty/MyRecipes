@@ -21,7 +21,7 @@ namespace MyRecipes
     {
         private static readonly string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyRecipes");
 
-        private static CookingData cookingData = new CookingData();
+        private static CookingData cookingData = new CookingData(false);
         private static JsonObservableCollection<Recipe> availableRecipes = new JsonObservableCollection<Recipe>("AvailableRecipes");
         private static VeryObservableStackCollection<Recipe> mHistory = new VeryObservableStackCollection<Recipe>("History", 10);
 
@@ -54,11 +54,11 @@ namespace MyRecipes
             FileInfo fi = new FileInfo("settings.json");
             if (fi.Exists)
             {
-                Settings = new AppSettings(fi);
+                Settings = new AppSettings(fi, true);
             }
             else
             {
-                Settings = new AppSettings();
+                Settings = new AppSettings(true);
                 Settings.Save(AppDomain.CurrentDomain.BaseDirectory);
             }
 
@@ -87,11 +87,11 @@ namespace MyRecipes
             string filePath = Path.Combine(Settings.CookingDataPath, "data.json");
             if (File.Exists(filePath))
             {
-                cookingData = new CookingData(new FileInfo(filePath));
+                cookingData = new CookingData(new FileInfo(filePath), false);
             }
             else
             {
-                cookingData = new CookingData();
+                cookingData = new CookingData(false);
             }
         }
 

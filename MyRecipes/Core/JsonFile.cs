@@ -41,9 +41,12 @@ namespace MyRecipes.Core
         [JsonIgnore]
         public bool FromFile => fromFile;
 
-        public JsonFile() { }
+        public JsonFile(bool observersEnabled) 
+        {
+            observerManager.IsEnabled = observersEnabled;
+        }
 
-        public JsonFile(FileInfo fi)
+        public JsonFile(FileInfo fi, bool observersEnabled) : this(observersEnabled)
         {
             filePath = fi.DirectoryName;
             fileName = fi.Name;
@@ -53,7 +56,7 @@ namespace MyRecipes.Core
             isFile = true;
         }
 
-        public JsonFile(DirectoryInfo di)
+        public JsonFile(DirectoryInfo di, bool observersEnabled) : this(observersEnabled)
         {
             filePath = di.Parent.FullName;
             fileName = di.Name;
