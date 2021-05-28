@@ -26,7 +26,7 @@ namespace MyRecipes.ViewModel
         private Queue<string> mLoggedMessages = new Queue<string>(MAX_MESSAGES);
         protected string mLog;
 
-        public Server Server => App.Server;
+        public MqttBroker Server => App.Server;
 
         public string Username
         {

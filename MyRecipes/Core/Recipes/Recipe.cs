@@ -83,7 +83,7 @@ namespace MyRecipes.Core.Recipes
         }
 
         [JsonIgnore]
-        public bool HasImage => mRecipeImage != null;
+        public bool HasImage => mRecipeImage?.IsImageSet ?? false;
 
         public RecipeImage RecipeImage
         {

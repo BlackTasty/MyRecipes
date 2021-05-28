@@ -121,7 +121,7 @@ namespace MyRecipes.Controls
 
         private void RemoveImage_Click(object sender, RoutedEventArgs e)
         {
-            (DataContext as CreateEditRecipeViewModel).Recipe.RecipeImage = null;
+            (DataContext as CreateEditRecipeViewModel).Recipe.RecipeImage.FilePath = null;
         }
 
         private void dialog_Cancel(object sender, RoutedEventArgs e)

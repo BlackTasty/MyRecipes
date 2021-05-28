@@ -35,6 +35,8 @@ namespace MyRecipes.Core.Mobile.Transfer
 
         public List<Category> Categories => categories;
 
+        public string Checksum { get; set; }
+
         public RecipeTransfer(Recipe recipe)
         {
             guid = recipe.Guid;

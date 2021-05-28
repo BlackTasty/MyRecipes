@@ -156,9 +156,8 @@
     <Compile Include="Core\FilterObject.cs" />
     <Compile Include="Core\IBaseData.cs" />
     <Compile Include="Core\Mobile\Account\ConnectionCredentials.cs" />
-    <Compile Include="Core\Mobile\Server.cs" />
-    <Compile Include="Core\Mobile\Encryption\StringCiphering.cs" />
-    <Compile Include="Core\Mobile\Encryption\Hasher.cs" />
+    <Compile Include="Core\Mobile\MqttBroker.cs" />
+    <Compile Include="Core\HashUtils.cs" />
     <Compile Include="Core\Mobile\Transfer\RecipeImageTransfer.cs" />
     <Compile Include="Core\Mobile\Transfer\RecipeTransfer.cs" />
     <Compile Include="Core\Recipes\Category.cs" />

@@ -6,7 +6,6 @@ using MQTTnet.Protocol;
 using MQTTnet.Server;
 using MyRecipes.Core.Events;
 using MyRecipes.Core.Mobile.Account;
-using MyRecipes.Core.Mobile.Encryption;
 using MyRecipes.Core.Mobile.Transfer;
 using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
@@ -24,7 +23,7 @@ using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.Core.Mobile
 {
-    public class Server : ViewModelBase
+    public class MqttBroker : ViewModelBase
     {
         public event EventHandler<ServerLoggedEventArgs> ServerLogged;
         public event EventHandler<EventArgs> ServerStarting;
@@ -66,7 +65,7 @@ namespace MyRecipes.Core.Mobile
 
         public int ClientCount => ClientIds.Count;
 
-        public Server()
+        public MqttBroker()
         {
             factory = new MqttFactory();
             mqttServer = factory.CreateMqttServer();
@@ -167,36 +166,36 @@ namespace MyRecipes.Core.Mobile
             }
             else if (topic == "recipes")
             {
-                if (string.IsNullOrEmpty(payload)) // Mobile device requests recipe list
-                {
-                    SendMessage(topic + "/clear", null, e.ClientId);
-                    //List<RecipeTransfer> recipeTransfers = new List<RecipeTransfer>();
+                //SendMessage(topic + "/clear", null, e.ClientId);
+                //List<RecipeTransfer> recipeTransfers = new List<RecipeTransfer>();
 
-                    foreach (Recipe recipe in App.AvailableRecipes)
-                    {
-                        RecipeTransfer recipeTransfer = new RecipeTransfer(recipe);
-                        SendMessage(topic, JsonConvert.SerializeObject(recipeTransfer), e.ClientId);
-                        /*if (!string.IsNullOrWhiteSpace(recipe.RecipeImage.FilePath))
-                        {
-                            SendRecipeImage(topic, recipe, e.ClientId);
-                        }*/
-                    }
+                List<string> currentRecipeChecksums = null;
+                if (payload != null)
+                {
+                    currentRecipeChecksums = payload.Split(';').ToList();
                 }
-                else // Mobile device requests specific recipe (payload is recipe GUID)
-                {
-                    Recipe requested = App.AvailableRecipes.FirstOrDefault(x => x.Guid == payload);
 
-                    if (requested != null)
+                foreach (Recipe recipe in App.AvailableRecipes)
+                {
+                    RecipeTransfer recipeTransfer = new RecipeTransfer(recipe);
+                    string jsonRecipe = JsonConvert.SerializeObject(recipeTransfer);
+                    recipeTransfer.Checksum = Hasher.MakeSHA512Hash(jsonRecipe);
+
+                    if (currentRecipeChecksums?.Contains(recipeTransfer.Checksum) ?? false)
                     {
-                        SendMessage(topic + "/requested", JsonConvert.SerializeObject(requested), e.ClientId);
+                        continue;
                     }
+                    SendMessage(topic, JsonConvert.SerializeObject(recipeTransfer), e.ClientId);
+                    /*if (!string.IsNullOrWhiteSpace(recipe.RecipeImage.FilePath))
+                    {
+                        SendRecipeImage(topic, recipe, e.ClientId);
+                    }*/
                 }
             }
             else if (topic.StartsWith("recipes/img"))
             {
                 Recipe recipe = App.AvailableRecipes.FirstOrDefault(x => x.Guid == payload);
-
-                if (!string.IsNullOrWhiteSpace(recipe.RecipeImage.FilePath))
+                if (recipe != null)
                 {
                     SendRecipeImage(topic, recipe, e.ClientId);
                 }
@@ -214,7 +213,14 @@ namespace MyRecipes.Core.Mobile
                     filePath = Path.Combine(filePath, recipe.Name + ".jpg");
 
                     File.WriteAllBytes(filePath, e.ApplicationMessage.Payload);
-                    recipe.RecipeImage.FilePath = filePath;
+                    if (recipe.RecipeImage == null)
+                    {
+                        recipe.RecipeImage = new RecipeImage(filePath);
+                    }
+                    else
+                    {
+                        recipe.RecipeImage.FilePath = filePath;
+                    }
                 }
             }
             else if (topic == "season")
@@ -252,7 +258,7 @@ namespace MyRecipes.Core.Mobile
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithResponseTopic(topic)
-                .WithPayload(File.ReadAllBytes(recipe.RecipeImage.FilePath))
+                .WithPayload(recipe.HasImage ? File.ReadAllBytes(recipe.RecipeImage.FilePath) : null)
                 .Build();
 
             await mqttServer.PublishAsync(message, CancellationToken.None);

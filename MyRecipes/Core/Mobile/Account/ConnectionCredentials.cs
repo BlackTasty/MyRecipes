@@ -1,5 +1,4 @@
-﻿using MyRecipes.Core.Mobile.Encryption;
-using MyRecipes.ViewModel;
+﻿using MyRecipes.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -46,7 +45,7 @@ namespace MyRecipes.Core.Mobile.Account
             get => mPasswordEncrypted;
             set
             {
-                mPasswordEncrypted = Hasher.HashPassword(value, mUsername);
+                mPasswordEncrypted = Hasher.MakeSHA256Hash(value, mUsername);
                 InvokePropertyChanged();
             }
         }

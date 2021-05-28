@@ -13,7 +13,7 @@ namespace MyRecipes.Core
     {
         public static BitmapImage FileToBitmapImage(string path, Size? desiredSize = null)
         {
-            if (File.Exists(path))
+            if (path != null && File.Exists(path))
             {
                 BitmapImage bitmap;
                 if (desiredSize == null)

@@ -25,7 +25,7 @@ namespace MyRecipes
         private static JsonObservableCollection<Recipe> availableRecipes = new JsonObservableCollection<Recipe>("AvailableRecipes");
         private static VeryObservableStackCollection<Recipe> mHistory = new VeryObservableStackCollection<Recipe>("History", 10);
 
-        private static Server server = new Server();
+        private static MqttBroker server = new MqttBroker();
 
         public static string BasePath => basePath;
 
@@ -46,7 +46,7 @@ namespace MyRecipes
             get; set;
         }
 
-        public static Server Server => server;
+        public static MqttBroker Server => server;
 
         [STAThread]
         public static void Main()
