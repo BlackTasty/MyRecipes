@@ -44,6 +44,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
+            <BitmapImage x:Key="DefaultImage" UriSource="pack://siteoforigin:,,,/Resources/no_image.png"/>
             <SolidColorBrush x:Key="t">#fff</SolidColorBrush>
 
             <Style x:Key="SeasonBorderStyle" TargetType="Border">

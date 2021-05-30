@@ -92,7 +92,10 @@ namespace MyRecipes.Controls
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            (DataContext as CreateEditRecipeViewModel).Recipe.Load();
+            if ((DataContext as CreateEditRecipeViewModel).IsEdit)
+            {
+                (DataContext as CreateEditRecipeViewModel).Recipe.Load();
+            }
             OnFinished(EventArgs.Empty);
         }
 

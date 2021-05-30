@@ -235,7 +235,9 @@
                         <DataTemplate>
                             <DockPanel>
                                 <Image Width="150" Height="90" Margin="0,0,8,0"
-                                       Source="{Binding RecipeImage.Image, UpdateSourceTrigger=PropertyChanged}"
+                                       Source="{Binding RecipeImage.Image, UpdateSourceTrigger=PropertyChanged,
+                                                TargetNullValue={StaticResource DefaultImage},
+                                                FallbackValue={StaticResource DefaultImage}}"
                                        RenderOptions.BitmapScalingMode="HighQuality"/>
                                 <material:PopupBox PlacementMode="LeftAndAlignMiddles" DockPanel.Dock="Right"
                                                    Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"

@@ -191,6 +191,21 @@ namespace MyRecipes.Core.Mobile
                         SendRecipeImage(topic, recipe, e.ClientId);
                     }*/
                 }
+                // Signal start of transfer
+                SendMessage(topic + "/finish", null, e.ClientId);
+            }
+            else if (topic.StartsWith("recipes/img/remove"))
+            {
+                Recipe recipe = App.AvailableRecipes.FirstOrDefault(x => x.Guid == payload);
+                if (recipe != null)
+                {
+                    recipe.RecipeImage = null;
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        recipe.Save(App.Settings.RecipeDirectory);
+                    });
+                    SendMessage(topic, recipe.Guid, e.ClientId);
+                }
             }
             else if (topic.StartsWith("recipes/img"))
             {
@@ -221,6 +236,10 @@ namespace MyRecipes.Core.Mobile
                     {
                         recipe.RecipeImage.FilePath = filePath;
                     }
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        recipe.Save(App.Settings.RecipeDirectory);
+                    });
                 }
             }
             else if (topic == "season")
