@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,8 +60,30 @@ namespace MyRecipes.ViewModel
 
                 if (File.Exists(value))
                 {
-                    string json = File.ReadAllText(value);
+                    string tempPath = Path.Combine(Path.GetTempPath(), "MyRecipes", "import");
+                    if (Directory.Exists(tempPath))
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+
+                    Directory.CreateDirectory(tempPath);
+
+                    ZipFile.ExtractToDirectory(value, tempPath);
+                    string json = File.ReadAllText(Path.Combine(tempPath, "data.json"));
                     List<Recipe> fileRecipes = JsonConvert.DeserializeObject<List<Recipe>>(json);
+
+                    foreach (Recipe recipe in fileRecipes)
+                    {
+                        // Replace import identifier with path to extracted file
+                        recipe.IsImporting = true;
+                        if (recipe.RecipeImage?.FilePath.StartsWith("::temp::/") ?? false)
+                        {
+                            string fileName = recipe.RecipeImage.FilePath.Replace("::temp::/", "");
+                            recipe.RecipeImage.FilePath = Path.Combine(tempPath, "img", fileName);
+                        }
+                        recipe.IsImporting = false;
+                    }
+
                     Recipes = new ExportSet<Recipe>(fileRecipes, true);
                     OnRecipesChanged(EventArgs.Empty);
                 }

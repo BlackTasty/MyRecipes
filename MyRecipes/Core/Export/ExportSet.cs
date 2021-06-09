@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using MyRecipes.Core.Recipes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -106,16 +108,46 @@ namespace MyRecipes.Core.Export
         public void ExportSetTo(string folderPath, string fileName, string extension)
         {
             List<JsonFile<T>> selectedFiles = new List<JsonFile<T>>();
+            string tempFolder = Path.Combine(Path.GetTempPath(), "MyRecipes", "export");
+
+            if (Directory.Exists(tempFolder))
+            {
+                Directory.Delete(tempFolder, true);
+            }
+
+            Directory.CreateDirectory(tempFolder);
 
             foreach (ExportObject<T> selectedObject in mExportObjects.Where(x => x.IsSelected))
             {
-                selectedFiles.Add(selectedObject.Data);
+                JsonFile<T> jsonFile = selectedObject.Data;
+                if (jsonFile is Recipe recipe && recipe.HasImage && recipe.RecipeImage.IsImageSet
+                    && File.Exists(recipe.RecipeImage.FilePath))
+                {
+                    FileInfo fi = new FileInfo(recipe.RecipeImage.FilePath);
+                    string imageExportPath = Path.Combine(tempFolder, "img", fi.Name);
+                    Directory.CreateDirectory(Path.Combine(tempFolder, "img"));
+
+                    File.Copy(recipe.RecipeImage.FilePath, imageExportPath);
+                    recipe.RecipeImage.IsExporting = true;
+                    recipe.RecipeImage.FilePath = "::temp::/" + fi.Name;
+                    recipe.RecipeImage.IsExporting = false;
+                }
+
+                selectedFiles.Add(jsonFile);
             }
 
+
             string json = JsonConvert.SerializeObject(selectedFiles);
-            string filePath = Path.Combine(folderPath, string.Format("{0}.{1}", fileName, extension));
+            string filePath = Path.Combine(tempFolder, "data.json");
 
             File.WriteAllText(filePath, json);
+
+            string targetFilePath = Path.Combine(folderPath, string.Format("{0}.{1}", fileName, extension));
+            if (File.Exists(targetFilePath))
+            {
+                File.Delete(targetFilePath);
+            }
+            ZipFile.CreateFromDirectory(tempFolder, targetFilePath);
         }
 
         protected virtual void OnObjectIsSelectedChanged(EventArgs e)

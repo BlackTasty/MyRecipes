@@ -41,11 +41,26 @@ namespace MyRecipes.Controls.Dialogs
         private void Import_Click(object sender, RoutedEventArgs e)
         {
             ImportRecipeViewModel vm = DataContext as ImportRecipeViewModel;
+            string recipeImageFolder = Path.Combine(App.BasePath, "img");
+            if (!Directory.Exists(recipeImageFolder))
+            {
+                Directory.CreateDirectory(recipeImageFolder);
+            }
 
             foreach (ExportObject<Recipe> importedRecipe in vm.Recipes.ExportObjects.Where(x => x.IsSelected))
             {
                 if (importedRecipe.Data is Recipe recipe)
                 {
+                    // Copy imported recipe image to program documents folder "img"
+                    if (recipe.HasImage && recipe.RecipeImage.IsImageSet && File.Exists(recipe.RecipeImage.FilePath))
+                    {
+                        FileInfo fi = new FileInfo(recipe.RecipeImage.FilePath);
+                        string targetPath = Path.Combine(recipeImageFolder, fi.Name);
+                        File.Copy(recipe.RecipeImage.FilePath, targetPath);
+
+                        recipe.RecipeImage.FilePath = targetPath;
+                    }
+
                     // Iterate through recipe ingredients and scan user library for match.
                     // if match found, replace current with matching ingredient
                     foreach (RecipeIngredient ingredient in recipe.Ingredients)
@@ -97,6 +112,7 @@ namespace MyRecipes.Controls.Dialogs
                     }
 
                     string recipeName = recipe.Name;
+                    // If recipe with same name exists, append date and time of import
                     if (App.AvailableRecipes.Any(x => x.Name.Equals(recipeName)))
                     {
                         recipeName = recipeName + " - " + DateTime.Now.ToString("ddMMyyyy HHmmss");

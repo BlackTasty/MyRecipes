@@ -85,9 +85,12 @@ namespace MyRecipes.Core.Recipes
         [JsonIgnore]
         public bool HasImage => mRecipeImage?.IsImageSet ?? false;
 
+        [JsonIgnore]
+        public bool IsImporting { get; set; }
+
         public RecipeImage RecipeImage
         {
-            get => ignoreHasImageFlag || HasImage ? mRecipeImage : null; //new RecipeImage(Utils.BitmapToBitmapImage(Properties.Resources.no_image))
+            get => IsImporting || ignoreHasImageFlag || HasImage ? mRecipeImage : null; //new RecipeImage(Utils.BitmapToBitmapImage(Properties.Resources.no_image))
             set
             {
                 observerManager.ObserveProperty(value);

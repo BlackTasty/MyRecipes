@@ -18,6 +18,9 @@ namespace MyRecipes.Core.Recipes
         protected ObserverManager observerManager = new ObserverManager();
 
         [JsonIgnore]
+        public bool IsExporting { get; set; }
+
+        [JsonIgnore]
         public ObserverManager ObserverManager => observerManager;
 
         [JsonIgnore]
@@ -26,6 +29,7 @@ namespace MyRecipes.Core.Recipes
             get => observerManager.UnsavedChanges;
         }
 
+        [JsonIgnore]
         public bool IsImageSet => image != null;
 
         public string FilePath
@@ -33,11 +37,17 @@ namespace MyRecipes.Core.Recipes
             get => filePath;
             set
             {
-                observerManager.ObserveProperty(value);
+                if (!IsExporting)
+                {
+                    observerManager.ObserveProperty(value);
+                }
                 filePath = value;
-                image = Utils.FileToBitmapImage(value);
-                InvokePropertyChanged("Image");
-                InvokePropertyChanged("IsImageSet");
+                if (!IsExporting)
+                {
+                    image = Utils.FileToBitmapImage(value);
+                    InvokePropertyChanged("Image");
+                    InvokePropertyChanged("IsImageSet");
+                }
             }
         }
 
@@ -57,6 +67,11 @@ namespace MyRecipes.Core.Recipes
         {
             this.image = image;
             InvokePropertyChanged("Image");
+        }
+
+        public override string ToString()
+        {
+            return FilePath;
         }
     }
 }
