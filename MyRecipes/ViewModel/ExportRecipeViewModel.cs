@@ -12,7 +12,7 @@ namespace MyRecipes.ViewModel
 {
     class ExportRecipeViewModel : ViewModelBase
     {
-        private ExportSet<Recipe> mRecipes = new ExportSet<Recipe>(App.AvailableRecipes.ToList(), false);
+        private ExportSet<Recipe> mRecipes = new ExportSet<Recipe>(App.AvailableRecipes, false);
         private bool? mAllSelected = false;
         private string mExportPath;
         private string mExportName;

@@ -1,11 +1,13 @@
 ﻿using MyRecipes.Core;
 using MyRecipes.Core.Recipes;
+using MyRecipes.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tasty.ViewModel;
+using Tasty.ViewModel.Communication;
 using Tasty.ViewModel.JsonNet;
 
 namespace MyRecipes.ViewModel
@@ -209,6 +211,11 @@ namespace MyRecipes.ViewModel
         {
             UpdateIngredientsAndCategories();
             App.AvailableRecipes.ObserveChanges += AvailableRecipes_ObserveChanges;
+
+            Mediator.Instance.Register(o =>
+            {
+                RefreshRecipeBinding();
+            }, ViewModelMessage.RecipesImported);
         }
 
         public void SetFilteredRecipes(List<Recipe> filteredRecipes)

@@ -8,9 +8,7 @@ namespace MyRecipes.ViewModel.Communication
 {
     public enum ViewModelMessage
     {
-        None,
-        RoomsChanged,
-        FloorsChanged,
-        LoadedCollectionsChanged
+        CookingDataImported,
+        RecipesImported
     }
 }

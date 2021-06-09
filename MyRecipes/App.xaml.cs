@@ -33,6 +33,8 @@ namespace MyRecipes
 
         public static string DefaultCookingDataPath => Path.Combine(BasePath);
 
+        internal static CookingData CookingData => cookingData;
+
         public static VeryObservableStackCollection<Recipe> History => mHistory;
 
         public static JsonObservableCollection<Ingredient> AvailableIngredients => cookingData.AvailableIngredients;

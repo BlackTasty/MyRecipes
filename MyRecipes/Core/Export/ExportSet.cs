@@ -41,7 +41,7 @@ namespace MyRecipes.Core.Export
             }
         }
 
-        public ExportSet(List<T> objectsToExport, bool isSelected)
+        public ExportSet(IEnumerable<T> objectsToExport, bool isSelected)
         {
             if (objectsToExport == null)
             {

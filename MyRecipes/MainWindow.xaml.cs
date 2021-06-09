@@ -115,6 +115,10 @@ namespace MyRecipes
             {
                 DialogHost.Show(new ExportRecipeDialog(recipeListVm.SelectedRecipes), "main");
             }
+            else if (vm.Content is CategoryList || vm.Content is IngredientList)
+            {
+                DialogHost.Show(new ExportCookingDataDialog(), "main");
+            }
         }
 
         private void Import_Click(object sender, RoutedEventArgs e)
@@ -124,23 +128,11 @@ namespace MyRecipes
             if (vm.Content is RecipeView || vm.Content is RecipeList)
             {
                 DialogHost.Show(new ImportRecipeDialog(), "main");
-                /*FilePicker recipeFilePicker = new FilePicker()
-                {
-                    Title = "Rezept-Datei zum Importieren wählen",
-                    Filter = "Rezept-Datei|*.recps"
-                };
-
-                recipeFilePicker.DialogClosed += RecipeFilePicker_DialogClosed;
-                FilePicker.ShowDialog(recipeFilePicker, new MetroWindow());*/
             }
-        }
-
-        private void RecipeFilePicker_DialogClosed(object sender, FilePickerClosedEventArgs e)
-        {
-            /*if (e.DialogResult == MessageBoxResult.OK)
+            else if (vm.Content is CategoryList || vm.Content is IngredientList)
             {
-                DialogHost.Show(new ImportRecipeDialog(e.FilePath), "main");
-            }*/
+                DialogHost.Show(new ImportCookingDataDialog(), "main");
+            }
         }
     }
 }

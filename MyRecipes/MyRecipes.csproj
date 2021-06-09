@@ -110,8 +110,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Dialogs\ExportCookingDataDialog.xaml.cs">
+      <DependentUpon>ExportCookingDataDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Dialogs\ExportRecipeDialog.xaml.cs">
       <DependentUpon>ExportRecipeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Dialogs\ImportCookingDataDialog.xaml.cs">
+      <DependentUpon>ImportCookingDataDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Dialogs\ImportRecipeDialog.xaml.cs">
       <DependentUpon>ImportRecipeDialog.xaml</DependentUpon>
@@ -194,7 +200,9 @@
     <Compile Include="ViewModel\CreateEditRecipeViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\CategoryListDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\CreateEditRecipeDesignViewModel.cs" />
+    <Compile Include="ViewModel\DesignTime\ExportCookingDataDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ExportRecipeDesignViewModel.cs" />
+    <Compile Include="ViewModel\DesignTime\ImportCookingDataDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ImportRecipeDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\IngredientListDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\MainDesignViewModel.cs" />
@@ -204,8 +212,10 @@
     <Compile Include="ViewModel\DesignTime\SaisonCalendarDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\SeasonIngredientConfiguratorDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\TestData.cs" />
+    <Compile Include="ViewModel\ExportCookingDataViewModel.cs" />
     <Compile Include="ViewModel\ExportRecipeViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\ImportCookingDataViewModel.cs" />
     <Compile Include="ViewModel\ImportRecipeViewModel.cs" />
     <Compile Include="ViewModel\IngredientListViewModel.cs" />
     <Compile Include="ViewModel\IVeryObservableCollection.cs" />
@@ -223,7 +233,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Dialogs\ExportCookingDataDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Dialogs\ExportRecipeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Dialogs\ImportCookingDataDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,6 +2,7 @@
 using MyRecipes.Core.Export;
 using MyRecipes.Core.Recipes;
 using MyRecipes.ViewModel;
+using MyRecipes.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Tasty.MaterialDesign.FilePicker;
 using Tasty.MaterialDesign.FilePicker.Core;
+using Tasty.ViewModel.Communication;
 
 namespace MyRecipes.Controls.Dialogs
 {
@@ -32,11 +34,6 @@ namespace MyRecipes.Controls.Dialogs
             (DataContext as ImportRecipeViewModel).RecipesChanged += Recipes_ObjectIsSelectedChanged;
             ShowFilePicker();
         }
-
-        /*public ImportRecipeDialog(string filePath) : this()
-        {
-            (DataContext as ImportRecipeViewModel).FilePath = filePath;
-        }*/
 
         private void Import_Click(object sender, RoutedEventArgs e)
         {
@@ -129,6 +126,8 @@ namespace MyRecipes.Controls.Dialogs
             App.SaveRecipes();
             App.LoadRecipes();
             App.LoadHistory();
+
+            Mediator.Instance.NotifyColleagues(ViewModelMessage.RecipesImported, null);
         }
 
         private void ShowFilePicker()
