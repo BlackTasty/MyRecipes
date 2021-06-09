@@ -251,5 +251,14 @@ namespace MyRecipes.Controls
         {
             AddingToShoppingList?.Invoke(this, e);
         }
+
+        private void Recipes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListView recipeList)
+            {
+                RecipeListViewModel vm = DataContext as RecipeListViewModel;
+                vm.SelectedRecipes = recipeList.SelectedItems.Cast<Recipe>().ToList();
+            }
+        }
     }
 }

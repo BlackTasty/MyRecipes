@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Lime.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Tasty.MaterialDesign.FilePicker;component/Localisation/StringResources.de.xaml"/>
 
                 <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="LightGreen" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -120,6 +121,12 @@
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
                 <Setter Property="Margin" Value="0,-4"/>
                 <Setter Property="Padding" Value="2"/>
+            </Style>
+
+            <Style x:Key="WarnButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="{DynamicResource WarnColor}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource WarnColor}"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
             </Style>
 
             <converter:TagFormatConverter x:Key="TagFormatConverter"/>

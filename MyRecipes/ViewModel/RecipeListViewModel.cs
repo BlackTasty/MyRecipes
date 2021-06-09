@@ -32,6 +32,18 @@ namespace MyRecipes.ViewModel
         private string mNewRecipeName;
         private bool mSortAscending;
 
+        private List<Recipe> mSelectedRecipes;
+
+        public List<Recipe> SelectedRecipes
+        {
+            get => mSelectedRecipes;
+            set
+            {
+                mSelectedRecipes = value;
+                InvokePropertiesChanged();
+            }
+        }
+
         public Recipe SelectedRecipeForDeletion
         {
             get => mSelectedRecipeForDeletion;
@@ -204,6 +216,11 @@ namespace MyRecipes.ViewModel
             mFilteredRecipes.Clear();
             mFilteredRecipes.AddRange(filteredRecipes);
             ShowFiltered = true;
+        }
+
+        public void RefreshRecipeBinding()
+        {
+            InvokePropertiesChanged("AvailableRecipes");
         }
 
         private void AvailableRecipes_ObserveChanges(object sender, EventArgs e)

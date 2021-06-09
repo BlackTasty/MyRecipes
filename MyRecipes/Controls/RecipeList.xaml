@@ -219,8 +219,9 @@
                 </DockPanel>
             </material:Card>
             <Grid Margin="0,4,0,0">
-                <ListView ItemsSource="{Binding AvailableRecipes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView ItemsSource="{Binding AvailableRecipes, UpdateSourceTrigger=PropertyChanged}" 
+                          HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          SelectionChanged="Recipes_SelectionChanged">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <EventSetter Event="MouseDoubleClick" Handler="Recipe_MouseDoubleClick"/>

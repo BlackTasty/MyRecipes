@@ -244,6 +244,11 @@
                                     Foreground="{StaticResource WarnColor}">
                                 <material:PackIcon Kind="Remove"/>
                             </Button>
+                            <!--<Button Style="{DynamicResource MaterialDesignIconButton}" DockPanel.Dock="Right"
+                                    Height="24" Width="24" Click="EditIngredient_Click" ToolTip="Zutat entfernen"
+                                    DataContext="{Binding}" Margin="0,0,4,0">
+                                <material:PackIcon Kind="Edit"/>
+                            </Button>-->
                             <TextBlock Text="{Binding Ingredient.Name, UpdateSourceTrigger=PropertyChanged}"
                                                Visibility="Visible">
                                 <TextBlock.Style>
@@ -350,7 +355,8 @@
                     </material:TransitionerSlide>
                 </material:Transitioner>
                 <ListView x:Name="preparationStepsList" ItemsSource="{Binding Recipe.PreparationSteps, UpdateSourceTrigger=PropertyChanged}" 
-                          HorizontalContentAlignment="Stretch">
+                          HorizontalContentAlignment="Stretch" Margin="0,8,0,0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <DockPanel MaxWidth="{Binding ElementName=preparationStepsList, Path=ActualWidth,

@@ -8,19 +8,24 @@
                    xmlns:converter="clr-namespace:MyRecipes.Converter"
                    xmlns:vm="clr-namespace:MyRecipes.ViewModel"
                    xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+                   xmlns:dialogs="clr-namespace:MyRecipes.Controls.Dialogs"
                    xmlns:local="clr-namespace:MyRecipes"
                    mc:Ignorable="d"
                    Title="Rezeptebuch" Height="650" Width="1100" MinHeight="650" MinWidth="1000"
                    TextElement.Foreground="{DynamicResource MaterialDesignBody}" Background="{DynamicResource MaterialDesignPaper}"
                    TextElement.FontWeight="Medium" TextElement.FontSize="14" FontFamily="{material:MaterialDesignFont}"
                    Closing="MetroWindow_Closing" AllowDrop="True"
-                   d:DataContext="{d:DesignInstance {x:Type dvm:MainDesignViewModel}, IsDesignTimeCreatable=True}">
+                   d:DataContext="{d:DesignInstance {x:Type dvm:MainDesignViewModel}, IsDesignTimeCreatable=True}"
+                   WindowTitleBrush="{StaticResource SecondaryHueMidBrush}"
+                   BorderBrush="{StaticResource SecondaryHueMidBrush}">
     <metro:MetroWindow.DataContext>
         <vm:MainViewModel/>
     </metro:MetroWindow.DataContext>
     <metro:MetroWindow.Resources>
         <converter:LengthConverter x:Key="LengthConverter"/>
+        <converter:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
         <DataTemplate x:Key="EntryDataTemplate">
             <StackPanel Orientation="Horizontal">
                 <material:PackIcon Kind="{Binding Icon}" Height="32" Width="32" Margin="16,0,0,0"/>
@@ -78,164 +83,200 @@
                 </ListBox>
             </DockPanel>
         </material:DrawerHost.LeftDrawerContent>
-        <DockPanel>
-            <material:ColorZone Padding="16,13.5" material:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid"
+        <material:DialogHost Identifier="main">
+            <DockPanel>
+                <material:ColorZone Padding="16,13.5" material:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid"
                             DockPanel.Dock="Top">
-                <DockPanel>
-                    <ToggleButton x:Name="MenuToggleButton" Style="{StaticResource MaterialDesignHamburgerToggleButton}"/>
-                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToIngredientsList_Click"
+                    <DockPanel>
+                        <ToggleButton x:Name="MenuToggleButton" Style="{StaticResource MaterialDesignHamburgerToggleButton}"/>
+                        <material:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" 
+                                       StaysOpen="False" Margin="8,0,0,0">
+                            <material:PopupBox.Style>
+                                <Style TargetType="material:PopupBox">
+                                    <Setter Property="Visibility" 
+                                                Value="{Binding SelectedSidebarIndex, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1;2;4}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowBackToRecipesButton}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </material:PopupBox.Style>
+                            <StackPanel>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" 
+                                                Value="{Binding SelectedSidebarIndex, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1;2;4}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ShowBackToRecipesButton}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Button Content="Exportieren" Click="Export_Click">
+                                    </Button>
+                                    <Button Content="Importieren" Click="Import_Click"/>
+                                    <!--<Separator/>-->
+                                </StackPanel>
+                                <Button Content="Nach Updates suchen" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </material:PopupBox>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToIngredientsList_Click"
                             Visibility="{Binding ShowBackToIngredientsButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             ToolTip="Zurück zu Zutaten">
-                        <Grid Margin="0,-2,0,0">
-                            <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" 
+                            <Grid Margin="0,-2,0,0">
+                                <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" 
                                                RenderTransformOrigin="0.5,0.5">
-                                <material:PackIcon.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="-90"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </material:PackIcon.RenderTransform>
-                            </material:PackIcon>
-                            <material:PackIcon Kind="Barley" Width="20" Height="20" VerticalAlignment="Center" Margin="-2,0,0,0"/>
-                        </Grid>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToRecipes_Click" 
+                                    <material:PackIcon.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform Angle="-90"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </material:PackIcon.RenderTransform>
+                                </material:PackIcon>
+                                <material:PackIcon Kind="Barley" Width="20" Height="20" VerticalAlignment="Center" Margin="-2,0,0,0"/>
+                            </Grid>
+                        </Button>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="BackToRecipes_Click" 
                             Visibility="{Binding ShowBackToRecipesButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             ToolTip="Zurück zu Rezepten">
-                        <Grid Margin="0,-2,0,0">
-                            <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" RenderTransformOrigin="0.5,0.5">
-                                <material:PackIcon.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="-90"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </material:PackIcon.RenderTransform>
-                            </material:PackIcon>
-                            <material:PackIcon Kind="ChefHat" Width="18" Height="18" VerticalAlignment="Center" Margin="-2,4,0,0"/>
-                        </Grid>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
+                            <Grid Margin="0,-2,0,0">
+                                <material:PackIcon Kind="SubdirectoryArrowRight" Width="32" Height="32" Margin="2,0,0,0" RenderTransformOrigin="0.5,0.5">
+                                    <material:PackIcon.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform Angle="-90"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </material:PackIcon.RenderTransform>
+                                </material:PackIcon>
+                                <material:PackIcon Kind="ChefHat" Width="18" Height="18" VerticalAlignment="Center" Margin="-2,4,0,0"/>
+                            </Grid>
+                        </Button>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
                             Visibility="{Binding ShowSaveRecipeButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             IsEnabled="{Binding EnableSaveRecipeButton}"
                             ToolTip="Rezept speichern" Click="SaveRecipe_Click">
-                        <material:PackIcon Kind="ContentSave"/>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
+                            <material:PackIcon Kind="ContentSave"/>
+                        </Button>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}"
                             Visibility="{Binding ShowEditRecipeButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             ToolTip="Rezept bearbeiten" Click="EditRecipe_Click">
-                        <material:PackIcon Kind="Edit"/>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="OpenSaisonCalendar_Click" 
+                            <material:PackIcon Kind="Edit"/>
+                        </Button>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource AppBarButton}" Click="OpenSaisonCalendar_Click" 
                             Visibility="{Binding ShowSaisonCalendarButton, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
                             ToolTip="Saisonkalendar">
-                        <material:PackIcon Kind="Timetable"/>
-                    </Button>
-                    <material:Badged DockPanel.Dock="Right" Badge="{Binding ShoppingList.SelectedRecipes.Count}"
+                            <material:PackIcon Kind="Timetable"/>
+                        </Button>
+                        <material:Badged DockPanel.Dock="Right" Badge="{Binding ShoppingList.SelectedRecipes.Count}"
                                      Visibility="{Binding ShowShoppingListButton, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" 
                                      BadgePlacementMode="BottomRight" BadgeColorZoneMode="Dark"
                                      Style="{StaticResource AppBarBadge}">
-                        <Button Padding="0" Click="ToggleShoppingList_Click"
+                            <Button Padding="0" Click="ToggleShoppingList_Click"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 ToolTip="Einkaufsliste" Width="40" Height="40"
                                 Foreground="{StaticResource PrimaryHueMidForegroundBrush}">
-                            <material:PackIcon Kind="ShoppingBasket" Width="24" Height="24"/>
-                        </Button>
-                    </material:Badged>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" 
+                                <material:PackIcon Kind="ShoppingBasket" Width="24" Height="24"/>
+                            </Button>
+                        </material:Badged>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" 
                            Text="{Binding Content.Tag}"/>
-                </DockPanel>
-            </material:ColorZone>
-            <Grid x:Name="contentContainer" Margin="4">
-                <ContentControl Content="{Binding Content}"/>
-                <material:Card HorizontalAlignment="Right" MinWidth="350"
+                    </DockPanel>
+                </material:ColorZone>
+                <Grid x:Name="contentContainer" Margin="4">
+                    <ContentControl Content="{Binding Content}"/>
+                    <material:Card HorizontalAlignment="Right" MinWidth="350"
                                VerticalAlignment="Top"
                                MinHeight="210" Margin="0,0,8,64"
                                Visibility="{Binding ShowShoppingList, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <DockPanel>
-                        <DockPanel Margin="2" DockPanel.Dock="Top">
-                            <Button Style="{StaticResource MaterialDesignIconForegroundButton}" DockPanel.Dock="Right" 
+                        <DockPanel>
+                            <DockPanel Margin="2" DockPanel.Dock="Top">
+                                <Button Style="{StaticResource MaterialDesignIconForegroundButton}" DockPanel.Dock="Right" 
                                     Click="ToggleShoppingList_Click" ToolTip="Liste minimieren">
-                                <material:PackIcon Kind="ChevronUp"/>
-                            </Button>
-                            <TextBlock Text="Einkaufsliste" Margin="8,4" VerticalAlignment="Center"
+                                    <material:PackIcon Kind="ChevronUp"/>
+                                </Button>
+                                <TextBlock Text="Einkaufsliste" Margin="8,4" VerticalAlignment="Center"
                                        Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
-                        </DockPanel>
-                        <Border Style="{StaticResource SplitterForegroundHorizontalStyle}" Margin="8,2" DockPanel.Dock="Top"/>
-                        <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
-                            <Button Margin="4" Content="EXPORTIEREN" Click="ExportShoppingList_Click"
+                            </DockPanel>
+                            <Border Style="{StaticResource SplitterForegroundHorizontalStyle}" Margin="8,2" DockPanel.Dock="Top"/>
+                            <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button Margin="4" Content="EXPORTIEREN" Click="ExportShoppingList_Click"
                                     Style="{StaticResource MaterialDesignRaisedButton}"/>
-                            <Button Margin="4" Content="LISTE LÖSCHEN" Click="ClearShoppingList_Click"
+                                <Button Margin="4" Content="LISTE LÖSCHEN" Click="ClearShoppingList_Click"
                                     Background="{StaticResource WarnColor}"
                                     BorderBrush="{StaticResource WarnColor}"/>
-                        </StackPanel>
-                        <ScrollViewer VerticalScrollBarVisibility="Disabled">
-                            <ListView ItemsSource="{Binding ShoppingList.SelectedRecipes}" HorizontalContentAlignment="Stretch"
+                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Disabled">
+                                <ListView ItemsSource="{Binding ShoppingList.SelectedRecipes}" HorizontalContentAlignment="Stretch"
                                   ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <DockPanel DockPanel.Dock="Top">
-                                                <DockPanel LastChildFill="False" DockPanel.Dock="Right">
-                                                    <metro:NumericUpDown Value="{Binding Servings, UpdateSourceTrigger=PropertyChanged}" 
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Top">
+                                                    <DockPanel LastChildFill="False" DockPanel.Dock="Right">
+                                                        <metro:NumericUpDown Value="{Binding Servings, UpdateSourceTrigger=PropertyChanged}" 
                                                                          ParsingNumberStyle="AllowDecimalPoint" NumericInputMode="All" 
                                                                          Minimum=".01" BorderThickness="0,0,0,1" Background="Transparent" 
                                                                          BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" DockPanel.Dock="Bottom"
                                                                          Height="21" MinHeight="21" Margin="0,0,0,5" SnapsToDevicePixels="True"/>
-                                                    <TextBlock Text="Portionen" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
-                                                </DockPanel>
-                                                <TextBlock Text="{Binding Recipe.Name}"
+                                                        <TextBlock Text="Portionen" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                                    </DockPanel>
+                                                    <TextBlock Text="{Binding Recipe.Name}"
                                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
-                                            </DockPanel>
-                                            <DockPanel Margin="12,4,12,0" DockPanel.Dock="Top" IsHitTestVisible="False">
-                                                <TextBlock Text="Anzahl" DockPanel.Dock="Right" 
+                                                </DockPanel>
+                                                <DockPanel Margin="12,4,12,0" DockPanel.Dock="Top" IsHitTestVisible="False">
+                                                    <TextBlock Text="Anzahl" DockPanel.Dock="Right" 
                                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
-                                                <TextBlock Text="Zutat" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
-                                            </DockPanel>
-                                            <ListView ItemsSource="{Binding Ingredients}" Margin="0,4" AlternationCount="2" 
+                                                    <TextBlock Text="Zutat" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                                                </DockPanel>
+                                                <ListView ItemsSource="{Binding Ingredients}" Margin="0,4" AlternationCount="2" 
                                                   HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
-                                                <ListView.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <VirtualizingStackPanel/>
-                                                    </ItemsPanelTemplate>
-                                                </ListView.ItemsPanel>
-                                                <ListView.ItemContainerStyle>
-                                                    <Style TargetType="ListViewItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                    <ListView.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <VirtualizingStackPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ListView.ItemsPanel>
+                                                    <ListView.ItemContainerStyle>
+                                                        <Style TargetType="ListViewItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                                                                          Color="Transparent"/>
-                                                        </Style.Resources>
-                                                        <Style.Triggers>
-                                                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                                                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ListView.ItemContainerStyle>
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <DockPanel Margin="8,0">
-                                                            <TextBlock DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                                            </Style.Resources>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                                                    <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkSeparatorBackground}" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ListView.ItemContainerStyle>
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <DockPanel Margin="8,0">
+                                                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
                                                             <Run Text="{Binding Amount}"/>
                                                             <Run Text="{Binding MeasurementType}"/>
-                                                            </TextBlock>
-                                                            <TextBlock Text="{Binding Ingredient.Name}"
+                                                                </TextBlock>
+                                                                <TextBlock Text="{Binding Ingredient.Name}"
                                                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
-                                                        </DockPanel>
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                            </ListView>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </ScrollViewer>
-                    </DockPanel>
-                </material:Card>
-            </Grid>
-        </DockPanel>
+                                                            </DockPanel>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </material:Card>
+                </Grid>
+            </DockPanel>
+        </material:DialogHost>
     </material:DrawerHost>
 </metro:MetroWindow>

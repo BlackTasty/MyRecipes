@@ -240,5 +240,10 @@ namespace MyRecipes.Controls
         {
             (DataContext as CreateEditRecipeViewModel).IsDroppedFileValid = false;
         }
+
+        private void EditIngredient_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

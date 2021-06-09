@@ -1,5 +1,7 @@
 ﻿using MahApps.Metro.Controls;
+using MaterialDesignThemes.Wpf;
 using MyRecipes.Controls;
+using MyRecipes.Controls.Dialogs;
 using MyRecipes.Core.Sidebar;
 using MyRecipes.ViewModel;
 using MyRecipes.ViewModel.DesignTime;
@@ -18,6 +20,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Tasty.MaterialDesign.FilePicker;
+using Tasty.MaterialDesign.FilePicker.Core;
 
 namespace MyRecipes
 {
@@ -97,6 +101,46 @@ namespace MyRecipes
             {
                 vm.OpenRecipe(recipeVm.Recipe, true);
             }
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+
+            if (vm.Content is RecipeView recipeView && recipeView.DataContext is RecipeViewViewModel recipeVm)
+            {
+                DialogHost.Show(new ExportRecipeDialog(recipeVm.Recipe), "main");
+            }
+            else if (vm.Content is RecipeList recipeList && recipeList.DataContext is RecipeListViewModel recipeListVm)
+            {
+                DialogHost.Show(new ExportRecipeDialog(recipeListVm.SelectedRecipes), "main");
+            }
+        }
+
+        private void Import_Click(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+
+            if (vm.Content is RecipeView || vm.Content is RecipeList)
+            {
+                DialogHost.Show(new ImportRecipeDialog(), "main");
+                /*FilePicker recipeFilePicker = new FilePicker()
+                {
+                    Title = "Rezept-Datei zum Importieren wählen",
+                    Filter = "Rezept-Datei|*.recps"
+                };
+
+                recipeFilePicker.DialogClosed += RecipeFilePicker_DialogClosed;
+                FilePicker.ShowDialog(recipeFilePicker, new MetroWindow());*/
+            }
+        }
+
+        private void RecipeFilePicker_DialogClosed(object sender, FilePickerClosedEventArgs e)
+        {
+            /*if (e.DialogResult == MessageBoxResult.OK)
+            {
+                DialogHost.Show(new ImportRecipeDialog(e.FilePath), "main");
+            }*/
         }
     }
 }

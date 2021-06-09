@@ -201,7 +201,8 @@ namespace MyRecipes.Core.Recipes
         {
             Directory.CreateDirectory(parentPath);
 
-            if (nameCurrent != null)
+            if (nameCurrent != null && filePath != null && 
+                File.Exists(Path.Combine(filePath, nameCurrent + ".json")))
             {
                 string oldFileName = Path.Combine(filePath, nameCurrent + ".json");
                 if (fromFile && Name != nameCurrent && File.Exists(oldFileName)) //Recipe has been renamed, remove old file

@@ -39,7 +39,7 @@ namespace MyRecipes.Core
         public FilterObject(string name)
         {
             Name = name;
-            Counted = 1;
+            Counted = 0;
         }
 
         public FilterObject(IBaseData data) : this(data.Name)

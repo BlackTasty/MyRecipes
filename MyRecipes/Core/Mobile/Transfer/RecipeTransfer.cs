@@ -14,6 +14,7 @@ namespace MyRecipes.Core.Mobile.Transfer
         private string description;
         //private RecipeImageTransfer recipeImage;
         private int servings;
+        private string lastAccessDateRaw;
 
         private List<RecipeIngredient> ingredients;
         private List<string> preparationSteps;
@@ -37,6 +38,8 @@ namespace MyRecipes.Core.Mobile.Transfer
 
         public string Checksum { get; set; }
 
+        public string LastAccessDateRaw => lastAccessDateRaw;
+
         public RecipeTransfer(Recipe recipe)
         {
             guid = recipe.Guid;
@@ -46,6 +49,7 @@ namespace MyRecipes.Core.Mobile.Transfer
             ingredients = recipe.Ingredients.ToList();
             preparationSteps = recipe.PreparationSteps.ToList();
             categories = recipe.Categories.ToList();
+            lastAccessDateRaw = recipe.LastAccessDate.ToString("dd-MM-yyyy HH:mm:ss");
 
             /*if (recipe.HasImage)
             {

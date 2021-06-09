@@ -1,0 +1,121 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.Dialogs.ImportRecipeDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyRecipes.Controls.Dialogs"
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           mc:Ignorable="d" 
+           d:DesignHeight="550" d:DesignWidth="900" Margin="8"
+           MaxHeight="550" MaxWidth="900"
+           d:DataContext="{d:DesignInstance {x:Type dvm:ImportRecipeDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:ImportRecipeViewModel/>
+    </DockPanel.DataContext>
+    <TextBlock Text="Rezepte zum Importieren auswählen" Style="{DynamicResource MaterialDesignHeadline5TextBlock}" 
+                   DockPanel.Dock="Top"/>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom"
+                Margin="0,16,0,0">
+        <Button Content="IMPORTIEREN" Margin="0,0,8,0" Click="Import_Click"
+                IsEnabled="{Binding IsFormValid}"
+                Command="{x:Static material:DialogHost.CloseDialogCommand}">
+            <Button.CommandParameter>
+                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                    True
+                </system:Boolean>
+            </Button.CommandParameter>
+        </Button>
+        <Button Content="ABBRECHEN" Style="{DynamicResource WarnButtonStyle}"
+                    Command="{x:Static material:DialogHost.CloseDialogCommand}">
+            <Button.CommandParameter>
+                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                    False
+                </system:Boolean>
+            </Button.CommandParameter>
+        </Button>
+    </StackPanel>
+    <DockPanel>
+        <DockPanel>
+            <material:Card DockPanel.Dock="Top" Margin="8" Padding="8">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Pfad zur Rezept-Datei"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                    <Button DockPanel.Dock="Right" Content="..." Width="70"
+                            Click="OpenFileDialog_Click"/>
+                    <TextBox x:Name="txt_path" material:HintAssist.Hint="Datei-Pfad"
+                             material:HintAssist.IsFloating="True"
+                             Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,16,0"/>
+                </DockPanel>
+            </material:Card>
+            <Expander x:Name="expander_selection" Header="Rezepte wählen" IsExpanded="True"
+                      DockPanel.Dock="Top">
+                <DockPanel>
+                    <CheckBox DockPanel.Dock="Top" Margin="32,8,8,0" 
+                              IsChecked="{Binding AllSelected, UpdateSourceTrigger=PropertyChanged}"
+                              Style="{DynamicResource MaterialDesignAccentCheckBox}">
+                        <TextBlock>
+                            <Run Text="Alle auswählen ("/><Run Text="{Binding SelectedRecipesCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Run Text="ausgewählt)"/>
+                        </TextBlock>
+                    </CheckBox>
+                    <DataGrid x:Name="list_recipes" ItemsSource="{Binding Recipes.ExportObjects, UpdateSourceTrigger=PropertyChanged}" 
+                              AutoGenerateColumns="False" Margin="0,8"
+                              VerticalScrollBarVisibility="Visible">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Export" Width="80" MinWidth="80" MaxWidth="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Style="{DynamicResource MaterialDesignAccentCheckBox}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="" Width="116" MinWidth="116" MaxWidth="116">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Data.RecipeImage.Image, FallbackValue={StaticResource DefaultImage}}"
+                                   Width="100" Height="50"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Rezept" Width=".6*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Data.Name}" VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Kategorien" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                 VerticalAlignment="Center"
+                                                 ItemsSource="{Binding Data.Categories, UpdateSourceTrigger=PropertyChanged}" Margin="0,-4">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <material:Chip Content="{Binding Name}" DataContext="{Binding}" 
+                                                                   Foreground="#FF000000"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                        </ListBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Expander>
+        </DockPanel>
+    </DockPanel>
+</DockPanel>
