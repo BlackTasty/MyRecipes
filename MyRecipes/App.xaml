@@ -1,8 +1,9 @@
 ﻿<Application x:Class="MyRecipes.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:MyRecipes"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converter="clr-namespace:MyRecipes.Converter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -13,13 +14,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Lime.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Tasty.MaterialDesign.FilePicker;component/Localisation/StringResources.de.xaml"/>
 
-                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="LightGreen" />
+                <material:BundledTheme BaseTheme="Dark" PrimaryColor="Brown" SecondaryColor="LightGreen" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />
 
                 <!-- primary colors -->
                 <ResourceDictionary>
@@ -46,7 +45,16 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="DefaultImage" UriSource="pack://siteoforigin:,,,/Resources/no_image.png"/>
-            <SolidColorBrush x:Key="t">#fff</SolidColorBrush>
+
+            <Style TargetType="metro:MetroWindow" BasedOn="{StaticResource {x:Type metro:MetroWindow}}">
+                <Setter Property="WindowTitleBrush" Value="{StaticResource SecondaryHueMidBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource SecondaryHueMidBrush}"/>
+                <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource MaterialDesignBody}"/>
+                <Setter Property="TextElement.FontWeight" Value="Medium"/>
+                <Setter Property="TextElement.FontSize" Value="14"/>
+                <Setter Property="FontFamily" Value="{material:MaterialDesignFont}"/>
+            </Style>
 
             <Style x:Key="SeasonBorderStyle" TargetType="Border">
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
@@ -63,7 +71,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
             </Style>
 
-            <Style x:Key="AppBarBadge" TargetType="{x:Type materialDesign:Badged}">
+            <Style x:Key="AppBarBadge" TargetType="{x:Type material:Badged}">
                 <Setter Property="Padding" Value="0"/>
                 <Setter Property="Margin" Value="6,-2"/>
                 <Setter Property="Height" Value="36"/>

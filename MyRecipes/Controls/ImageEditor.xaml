@@ -1,0 +1,212 @@
+﻿<DockPanel x:Class="MyRecipes.Controls.ImageEditor"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+           xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+           xmlns:vm="clr-namespace:MyRecipes.ViewModel"
+           xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
+           xmlns:local="clr-namespace:MyRecipes.Controls"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800"
+           d:DataContext="{d:DesignInstance {x:Type dvm:ImageEditorDesignViewModel}, IsDesignTimeCreatable=True}">
+    <DockPanel.DataContext>
+        <vm:ImageEditorViewModel/>
+    </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </DockPanel.Resources>
+
+    <material:Card DockPanel.Dock="Bottom" Padding="4" Margin="0,4,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="SPEICHERN" Margin="0,0,8,0" Click="Save_Click"/>
+
+            <Button Content="ABBRECHEN" Style="{DynamicResource WarnButtonStyle}"
+                    Click="Close_Click"/>
+        </StackPanel>
+    </material:Card>
+    <DockPanel DockPanel.Dock="Right" MinWidth="300">
+        <StackPanel Orientation="Horizontal" Margin="8" DockPanel.Dock="Top">
+            <ToggleButton IsChecked="{Binding ShowImageCenter, UpdateSourceTrigger=PropertyChanged}"
+                          Checked="ShowCenter_CheckedChanged" Unchecked="ShowCenter_CheckedChanged">
+                <ToggleButton.Content>
+                    <material:PackIcon Kind="CardOutline"/>
+                </ToggleButton.Content>
+                <material:ToggleButtonAssist.OnContent>
+                    <material:PackIcon Kind="CameraMeteringSpot" />
+                </material:ToggleButtonAssist.OnContent>
+            </ToggleButton>
+            <TextBlock Text="Bildmitte anzeigen" Margin="8,0"/>
+        </StackPanel>
+        <ScrollViewer>
+            <StackPanel Margin="8,0">
+                <material:Card Margin="0,8">
+                    <Expander x:Name="image_crop" Header="Zuschneiden" Background="Transparent"
+                              Expanded="image_crop_Expanded">
+                        <Expander.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <material:PackIcon Kind="Crop" Margin="0,0,8,0"
+                                               Height="20" Width="20"/>
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}, 
+                                                Path=Header}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Expander.HeaderTemplate>
+                        <StackPanel Margin="16,0" DataContext="{Binding CropVm, UpdateSourceTrigger=PropertyChanged}">
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="Breite" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding Width, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="1" Maximum="{Binding WidthMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="Höhe" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding Height, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="1" Maximum="{Binding HeightMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="X" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding X, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="0" Maximum="{Binding XMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="Y" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding Y, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="0" Maximum="{Binding YMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" Margin="0,8">
+                                <Button Content="Anwenden" Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="0,0,4,0"
+                                    IsEnabled="{Binding HasChanges, UpdateSourceTrigger=PropertyChanged}" Click="ApplyCrop_Click"/>
+                                <Button Content="Zurücksetzen" Style="{StaticResource WarnButtonStyle}" Margin="4,0,0,0"
+                                    IsEnabled="{Binding HasChanges, UpdateSourceTrigger=PropertyChanged}" Click="ResetCrop_Click"/>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+                </material:Card>
+                <material:Card Margin="0,8">
+                    <Expander x:Name="image_resize" Header="Größe ändern" Background="Transparent"
+                              Expanded="image_resize_Expanded">
+                        <Expander.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <material:PackIcon Kind="ImageSizeSelectLarge" Margin="0,0,8,0"
+                                               Height="20" Width="20"/>
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}, 
+                                                Path=Header}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Expander.HeaderTemplate>
+                        <StackPanel Margin="16,0" DataContext="{Binding ResizeVm, UpdateSourceTrigger=PropertyChanged}">
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="Breite" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding Width, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="1" Maximum="{Binding WidthMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="Höhe" DockPanel.Dock="Bottom" FontSize="9" Opacity=".56"/>
+                                    <metro:NumericUpDown Value="{Binding Height, UpdateSourceTrigger=PropertyChanged}" 
+                                                     ParsingNumberStyle="Integer" NumericInputMode="Numbers" 
+                                                     Minimum="1" Maximum="{Binding HeightMax, UpdateSourceTrigger=PropertyChanged}"
+                                                     BorderThickness="0,0,0,1" Background="Transparent"
+                                                     BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}" 
+                                                     DockPanel.Dock="Bottom" Height="21" MinHeight="21" Margin="0,0,0,5" 
+                                                     SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" Margin="0,8">
+                                <Button Content="Anwenden" Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="0,0,4,0"
+                                    IsEnabled="{Binding HasChanges, UpdateSourceTrigger=PropertyChanged}" Click="ApplyResize_Click"/>
+                                <Button Content="Zurücksetzen" Style="{StaticResource WarnButtonStyle}" Margin="4,0,0,0"
+                                    IsEnabled="{Binding HasChanges, UpdateSourceTrigger=PropertyChanged}" Click="ResetResize_Click"/>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+                </material:Card>
+                <material:Card Margin="0,8">
+                    <Expander x:Name="image_filter" Header="Filter" Background="Transparent"
+                              Expanded="image_filter_Expanded">
+                        <Expander.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <material:PackIcon Kind="ImageEdit" Margin="0,0,8,0"
+                                               Height="20" Width="20"/>
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}, 
+                                                Path=Header}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Expander.HeaderTemplate>
+                    </Expander>
+                </material:Card>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+    <Border Style="{StaticResource SplitterAccentVerticalStyle}" HorizontalAlignment="Center"
+            DockPanel.Dock="Right"/>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <Button Style="{StaticResource MaterialDesignIconButton}"
+                    IsEnabled="False">
+                <material:PackIcon Kind="Undo"/>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignIconButton}"
+                    IsEnabled="False">
+                <material:PackIcon Kind="Redo"/>
+            </Button>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" HorizontalAlignment="Center">
+            <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                    ToolTip="90° links drehen"
+                    Click="RotateImageLeft_Click"
+                    Margin="4">
+                <material:PackIcon Kind="RotateLeft"/>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                    ToolTip="90° rechts drehen"
+                    Click="RotateImageRight_Click"
+                    Margin="4">
+                <material:PackIcon Kind="RotateRight"/>
+            </Button>
+        </DockPanel>
+        <Border Style="{StaticResource SplitterAccentHorizontalStyle}"
+            DockPanel.Dock="Top"/>
+        <Grid>
+            <Image Source="{Binding ResultImage, UpdateSourceTrigger=PropertyChanged}" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Source="{Binding CropVm.Preview, UpdateSourceTrigger=PropertyChanged}" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Border Style="{StaticResource SplitterLightVerticalStyle}" HorizontalAlignment="Center"
+                    Visibility="{Binding ShowImageCenter, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Border Style="{StaticResource SplitterLightHorizontalStyle}" VerticalAlignment="Center"
+                    Visibility="{Binding ShowImageCenter, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+    </DockPanel>
+</DockPanel>

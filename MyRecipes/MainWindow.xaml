@@ -115,11 +115,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <Button Content="Exportieren" Click="Export_Click">
-                                    </Button>
                                     <Button Content="Importieren" Click="Import_Click"/>
+                                    <Button Content="Exportieren" Click="Export_Click"/>
                                     <!--<Separator/>-->
                                 </StackPanel>
+                                <Button Content="Einstellungen" Visibility="Collapsed"/>
                                 <Button Content="Nach Updates suchen" Visibility="Collapsed"/>
                             </StackPanel>
                         </material:PopupBox>

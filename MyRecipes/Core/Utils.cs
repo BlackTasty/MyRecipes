@@ -1,10 +1,12 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MyRecipes.Core
@@ -42,6 +44,42 @@ namespace MyRecipes.Core
                 return null;
         }
 
+        public static BitmapImage SaveTransformedImage(BitmapSource image, string folderPath, string fileName)
+        {
+            string filePath = Path.Combine(folderPath, fileName);
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            else
+            {
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+
+            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+
+                encoder.Frames.Add(BitmapFrame.Create(image));  //the croppedBitmap is a CroppedBitmap object 
+                encoder.Save(fs);
+            }
+
+            BitmapImage saved = FileToBitmapImage(filePath);
+            saved.Freeze();
+            return saved;
+        }
+
         public static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
             if (bitmap != null)
@@ -56,7 +94,6 @@ namespace MyRecipes.Core
                     // According to MSDN, "The default OnDemand cache option retains access to the stream until the image is needed."
                     // Force the bitmap to load right now so we can dispose the stream.
                     result.CacheOption = BitmapCacheOption.OnLoad;
-                    //result.CacheOption = forceLoad ? BitmapCacheOption.OnLoad : BitmapCacheOption.OnDemand;
                     result.StreamSource = stream;
                     result.EndInit();
                     result.Freeze();
@@ -65,6 +102,30 @@ namespace MyRecipes.Core
             }
             else
                 return null;
+        }
+
+        public static byte[] BitmapImageToByteArray(BitmapImage image)
+        {
+            using (var ms = new MemoryStream())
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(ms);
+                return ms.ToArray();
+            }
+        }
+
+        public static BitmapImage ByteArrayToBitmapImage(byte[] array)
+        {
+            using (var ms = new MemoryStream(array))
+            {
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = ms;
+                image.EndInit();
+                return image;
+            }
         }
 
         public static string GetLocalIPAddress()

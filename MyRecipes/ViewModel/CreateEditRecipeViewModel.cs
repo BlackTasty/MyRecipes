@@ -12,7 +12,6 @@ namespace MyRecipes.ViewModel
     class CreateEditRecipeViewModel : RecipeViewViewModel
     {
         private bool mIsEdit;
-        private bool mShowOpenFileDialog;
 
         private double mIngredientAmount = 1;
         private int mSelectedMeasurementTypeIndex;
@@ -71,16 +70,6 @@ namespace MyRecipes.ViewModel
             set
             {
                 mIsEditPreparationStep = value;
-                InvokePropertyChanged();
-            }
-        }
-
-        public bool ShowOpenFileDialog
-        {
-            get => mShowOpenFileDialog;
-            set
-            {
-                mShowOpenFileDialog = value;
                 InvokePropertyChanged();
             }
         }

@@ -7,13 +7,12 @@
       xmlns:vm="clr-namespace:MyRecipes.ViewModel"
       xmlns:dvm="clr-namespace:MyRecipes.ViewModel.DesignTime"
       xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:materialExt="https://spiegelp.github.io/MaterialDesignExtensions/winfx/xaml"
       xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:converter="clr-namespace:MyRecipes.Converter"
       xmlns:commands="clr-namespace:MyRecipes.ViewModel.Commands"
       xmlns:enum="clr-namespace:MyRecipes.Core.Enum"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="800"
+      d:DesignHeight="500" d:DesignWidth="950"
       d:DataContext="{d:DesignInstance {x:Type dvm:CreateEditRecipeDesignViewModel}, IsDesignTimeCreatable=True}">
     <Grid.Style>
         <Style TargetType="Grid">
@@ -60,8 +59,8 @@
                  material:HintAssist.Hint="Rezept Name" material:TextFieldAssist.HasClearButton="True" 
                  material:HintAssist.IsFloating="True" Margin="0,0,0,4" FontSize="15"/>
         </DockPanel>
-        <material:Card DockPanel.Dock="Bottom">
-            <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Margin="0,2,0,0" 
+        <material:Card DockPanel.Dock="Bottom" Margin="0,4,0,0">
+            <DockPanel Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" 
                        LastChildFill="False">
                 <Button Click="Abort_Click" DockPanel.Dock="Right" Margin="4" Width="113">
                     <Button.Style>
@@ -397,8 +396,6 @@
             </DockPanel>
         </material:DialogHost>
     </DockPanel>
-    <materialExt:OpenFileControl x:Name="dialog" SwitchPathPartsAsButtonsEnabled="True"
-                                Visibility="{Binding ShowOpenFileDialog, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                materialExt:FileSystemControl.Cancel="dialog_Cancel"
-                                materialExt:BaseFileControl.FileSelected="dialog_FileSelected"/>
+    <local:ImageEditor x:Name="imageEditor" Background="{StaticResource MaterialDesignPaper}"
+                       Visibility="Collapsed"/>
 </Grid>

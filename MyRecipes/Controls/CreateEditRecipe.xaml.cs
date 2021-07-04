@@ -1,6 +1,4 @@
-﻿using MaterialDesignExtensions.Controllers;
-using MaterialDesignExtensions.Controls;
-using MaterialDesignExtensions.Model;
+﻿using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
 using MyRecipes.Core.Enum;
 using MyRecipes.Core.Recipes;
@@ -20,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Tasty.MaterialDesign.FilePicker;
 using Tasty.ViewModel.Observer;
 
 namespace MyRecipes.Controls
@@ -35,8 +34,6 @@ namespace MyRecipes.Controls
         public CreateEditRecipe()
         {
             InitializeComponent();
-            dialog.Filters = FileFilterHelper.ParseFileFilters("Bilder|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Alle Dateien|*.*");
-            dialog.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
 
         public CreateEditRecipe(Recipe recipe, bool isEdit = true) : this()
@@ -112,31 +109,40 @@ namespace MyRecipes.Controls
 
         private void UploadImage_Click(object sender, RoutedEventArgs e)
         {
-            /*OpenFileDialog dialog = new OpenFileDialog()
-            {
-                SwitchPathPartsAsButtonsEnabled = true
-            };
-            dialog.Filters = FileFilterHelper.ParseFileFilters("Bilder|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Alle Dateien|*.*");
-            dialog.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);*/
+            CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
+            string initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            (DataContext as CreateEditRecipeViewModel).ShowOpenFileDialog = true;
+            if (vm.Recipe?.RecipeImage?.IsImageSet ?? false && File.Exists(vm.Recipe.RecipeImage.FilePath))
+            {
+                FileInfo fi = new FileInfo(vm.Recipe.RecipeImage.FilePath);
+                initialDirectory = fi.Directory.FullName;
+            }
+
+            FilePicker filePicker = new FilePicker()
+            {
+                Title = "Bild für Rezept \"" + vm.Recipe.Name + "\" wählen",
+                Filter = "Bilder|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                InitialDirectory = initialDirectory
+            };
+
+            filePicker.DialogClosed += FilePicker_DialogClosed;
+            FilePicker.ShowDialog(filePicker, new MetroWindow());
+        }
+
+        private void FilePicker_DialogClosed(object sender, Tasty.MaterialDesign.FilePicker.Core.FilePickerClosedEventArgs e)
+        {
+            if (e.DialogResult == MessageBoxResult.OK)
+            {
+                imageEditor.EditImage(Core.Utils.FileToBitmapImage(e.FilePath));
+                //DialogHost.Show(new ImageEditor(this, Core.Utils.FileToBitmapImage(e.FilePath)), "main");
+                //CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
+                //vm.Recipe.RecipeImage = new RecipeImage(e.FilePath);
+            }
         }
 
         private void RemoveImage_Click(object sender, RoutedEventArgs e)
         {
             (DataContext as CreateEditRecipeViewModel).Recipe.RecipeImage.FilePath = null;
-        }
-
-        private void dialog_Cancel(object sender, RoutedEventArgs e)
-        {
-            (DataContext as CreateEditRecipeViewModel).ShowOpenFileDialog = false;
-        }
-
-        private void dialog_FileSelected(object sender, RoutedEventArgs e)
-        {
-            CreateEditRecipeViewModel vm = DataContext as CreateEditRecipeViewModel;
-            vm.Recipe.RecipeImage = new RecipeImage(dialog.CurrentFile);
-            vm.ShowOpenFileDialog = false;
         }
 
         private void RemoveIngredient_Click(object sender, RoutedEventArgs e)

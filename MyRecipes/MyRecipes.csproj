@@ -46,9 +46,6 @@
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignExtensions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c5ebccebe084d64f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignExtensions.3.3.0\lib\net45\MaterialDesignExtensions.dll</HintPath>
-    </Reference>
     <Reference Include="MaterialDesignThemes.MahApps, Version=0.1.7.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.MahApps.0.1.7\lib\net452\MaterialDesignThemes.MahApps.dll</HintPath>
     </Reference>
@@ -88,26 +85,11 @@
       <HintPath>..\packages\TastyApps.Core.ViewModel.1.0.5.1\lib\net452\Tasty.ViewModel.dll</HintPath>
     </Reference>
     <Reference Include="Tasty.ViewModel.JsonNet, Version=1.0.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TastyApps.Core.ViewModel.JsonNet.1.0.4\lib\net452\Tasty.ViewModel.JsonNet.dll</HintPath>
+      <HintPath>..\packages\TastyApps.Core.ViewModel.JsonNet.1.0.5.1\lib\net452\Tasty.ViewModel.JsonNet.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Dialogs\ExportCookingDataDialog.xaml.cs">
@@ -122,11 +104,17 @@
     <Compile Include="Controls\Dialogs\ImportRecipeDialog.xaml.cs">
       <DependentUpon>ImportRecipeDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImageEditor.xaml.cs">
+      <DependentUpon>ImageEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\IntToVisibilityConverter.cs" />
     <Compile Include="Converter\MinutesToStringConverter.cs" />
     <Compile Include="Core\Export\ExportObject.cs" />
     <Compile Include="Core\Export\ExportSet.cs" />
     <Compile Include="Core\Export\ObjectIsSelectedChangedEventArgs.cs" />
+    <Compile Include="Core\ImageEditor\IImageResizing.cs" />
+    <Compile Include="Core\ImageEditor\ImageEditedEventArgs.cs" />
+    <Compile Include="Core\ImageEditor\ImageResizing.cs" />
     <Compile Include="JsonObservableStackCollection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -202,6 +190,7 @@
     <Compile Include="ViewModel\DesignTime\CreateEditRecipeDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ExportCookingDataDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ExportRecipeDesignViewModel.cs" />
+    <Compile Include="ViewModel\DesignTime\ImageEditorDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ImportCookingDataDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\ImportRecipeDesignViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\IngredientListDesignViewModel.cs" />
@@ -215,6 +204,9 @@
     <Compile Include="ViewModel\ExportCookingDataViewModel.cs" />
     <Compile Include="ViewModel\ExportRecipeViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\ImageEditorViewModel.cs" />
+    <Compile Include="ViewModel\ImageEditor\CropImageViewModel.cs" />
+    <Compile Include="ViewModel\ImageEditor\ResizeImageViewModel.cs" />
     <Compile Include="ViewModel\ImportCookingDataViewModel.cs" />
     <Compile Include="ViewModel\ImportRecipeViewModel.cs" />
     <Compile Include="ViewModel\IngredientListViewModel.cs" />
@@ -250,6 +242,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ImageEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

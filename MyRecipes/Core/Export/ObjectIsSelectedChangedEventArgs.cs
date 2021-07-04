@@ -8,8 +8,8 @@ namespace MyRecipes.Core.Export
 {
     class ObjectIsSelectedChangedEventArgs<T> : EventArgs
     {
-        private ExportObject<T> changedObject;
+        //private ExportObject<T> changedObject;
 
-        public ExportObject<T> ChangedObject;
+        //public ExportObject<T> ChangedObject;
     }
 }

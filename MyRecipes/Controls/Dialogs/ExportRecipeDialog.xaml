@@ -84,7 +84,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Source="{Binding Data.RecipeImage.Image, FallbackValue={StaticResource DefaultImage}}"
-                                   Width="100" Height="50"/>
+                                   Width="100" Height="50" RenderOptions.BitmapScalingMode="HighQuality"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
